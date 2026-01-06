@@ -1,1 +1,26 @@
-<p>register works!</p>
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <div>
+    <label>Name</label>
+    <input type="text" formControlName="name">
+  </div>
+
+  <div>
+    <label>Email</label>
+    <input type="email" formControlName="email">
+  </div>
+
+  <div>
+    <label>Password</label>
+    <input type="password" formControlName="password">
+  </div>
+
+  <button type="submit">Register</button>
+
+  <!-- Error message -->
+  <ng-container *ngIf="error() as err">
+    <div style="color: red">{{ err }}</div>
+  </ng-container>
+</form>
+
+<a routerLink="/login">Already have an account? Login</a>
+
