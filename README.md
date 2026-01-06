@@ -13,7 +13,9 @@
 
 Neighbour-zone is a web app designed by three Full Stack Developers with it's purpose to encourage "neighbours" to ask and recieve help for duties.
 
-The reason for the production of this webapp is that this is our thesis.
+It combines an Angular frontend with a secure backend API and a PostgreSQL database, using an ORM for structured and maintainable data access.  
+The focus is on clean architecture, security, and long-term scalability.
+
 
 
 
