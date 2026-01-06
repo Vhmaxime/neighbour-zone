@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormControl, Validators, FormGroup } from '@angular/forms';
 import { Auth } from '../../services/auth';
 import { catchError, EMPTY } from 'rxjs';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule} from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -23,13 +23,18 @@ export class Login {
 
   private fb = inject(FormBuilder);
   private auth = inject(Auth);
+  private router = inject(Router);
 
   constructor() {
     this.form = this.fb.group({
       email: this.fb.control('', { validators: [Validators.required, Validators.email], nonNullable: true }),
       password: this.fb.control('', { validators: Validators.required, nonNullable: true }),
-      rememberMe: this.fb.control(false, { nonNullable: true }) // ADDED: nonNullable for boolean
+      rememberMe: this.fb.control(false, { nonNullable: true })
     });
+
+    if (this.auth.getToken()) {
+    this.router.navigate(['/dashboard']);
+    }
   }
 
   submit() {
@@ -50,18 +55,12 @@ export class Login {
         // Persist token based on Remember Me checkbox
         const token = response?.token; // replace with your actual token property
         if (token) {
-          if (rememberMe) {
-            localStorage.setItem('authToken', token); // persists across browser sessions
-          } else {
-            sessionStorage.setItem('authToken', token); // clears on browser/tab close
-          }
+          this.auth.saveToken(token, rememberMe);
+          this.router.navigate(['/dashboard']);
         }
 
         console.log('Logged in', response);
         this.error.set(null);
-
-        // Optional redirect if desired
-        // this.router.navigate(['/dashboard']);
       });
   }
 }

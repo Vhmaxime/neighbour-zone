@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 @Injectable({ providedIn: 'root' })
 export class Auth {
   private baseUrl: string = 'https://example.com/api';
-  
+
   constructor(private http: HttpClient) {}
 
   register(payload: { name: string; email: string; password: string }): Observable<any> {
@@ -20,6 +20,27 @@ export class Auth {
     return this.http.post(`${this.baseUrl}/reset-password`, { email });
   }
 
+  getToken(): string | null {
+  return localStorage.getItem('authToken')
+      || sessionStorage.getItem('authToken');
+}
+
+// Save token based on rememberMe
+saveToken(token: string, rememberMe: boolean): void {
+  if (rememberMe) {
+    localStorage.setItem('authToken', token);
+    sessionStorage.removeItem('authToken');
+  } else {
+    sessionStorage.setItem('authToken', token);
+    localStorage.removeItem('authToken');
+  }
+}
+
+// Clear token on logout
+logout(): void {
+  localStorage.removeItem('authToken');
+  sessionStorage.removeItem('authToken');
+}
 }
 
 
