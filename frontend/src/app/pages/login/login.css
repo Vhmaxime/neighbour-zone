@@ -63,3 +63,7 @@ a {
   text-decoration: underline;
   cursor: pointer;
 }
+
+p {
+    text-align: center;
+}

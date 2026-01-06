@@ -1,5 +1,5 @@
 <form [formGroup]="form" (ngSubmit)="submit()" class="login-form">
-  <h1>Login to your account</h1>
+  <h1>Log in to your account</h1>
 
   <div class="form-field">
     <label>Email</label>
@@ -11,7 +11,7 @@
     <input type="password" formControlName="password" placeholder="Enter your password">
   </div>
 
-  <button type="submit" [disabled]="form.invalid" class="btn">Login</button>
+  <button type="submit" [disabled]="form.invalid" class="btn">Log in</button>
 
   <ng-container *ngIf="error() as err">
     <div style="color: red; margin-top: 8px;">{{ err }}</div>
