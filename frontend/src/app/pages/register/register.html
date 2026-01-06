@@ -16,7 +16,7 @@
   </div>
 
   <div class="form-field">
-    <label>Confirm Password</label>
+    <label>Confirm password</label>
     <input type="password" formControlName="confirmPassword" placeholder="Confirm your password">
     <div *ngIf="form.errors?.['passwordMismatch'] && form.get('confirmPassword')?.touched" style="color: red">
       Passwords do not match

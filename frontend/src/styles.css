@@ -64,3 +64,8 @@ form {
   background-color: var(--bg-surface);
   border-radius: 12px;
 }
+
+.form-field label {
+  color: var(--text-pri);
+  font-weight: 600;
+}
