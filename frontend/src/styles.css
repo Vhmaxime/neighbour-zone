@@ -1,3 +1,49 @@
 /* You can add global styles to this file, and also import other style files */
 
 @import "tailwindcss";
+
+:root {
+  /* FONTS */
+  --font-heading: 'DM Sans', sans-serif;
+  --font-body:    'Inter', sans-serif;
+
+  /* COLOURS */
+  --bg-main:   #FAFAF9;  /* Warm off-white */
+  --bg-surface:#FFFFFF;  /* White */
+  --text-pri:  #1C1917;  /* Warm charcoal */
+  --text-sec:  #78716C;  /* Warm stone grey */
+  --accent:    #D97757;  /* Terracotta */
+}
+
+/* BODY STYLING */
+body {
+  font-family: var(--font-body);
+  background-color: var(--bg-main);
+  color: var(--text-sec); /* Secondary colour is easier on the eyes for longer text */
+
+   /* Modern Web App reset  */
+  line-height: 1.6;       /* Improves readability */
+  -webkit-font-smoothing: antialiased; /* Crisp text on Mac/iPhone */
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* HEADINGS */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  color: var(--text-pri);
+  font-weight: 700; 
+  line-height: 1.2;         /* Tighter line height for headings */
+  letter-spacing: -0.03em;  /* Makes it more compact and modern */
+}
+
+button, .btn {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  background-color: var(--accent);
+  color: white;
+  border-radius: 9999px; /* The pill shape */
+  padding: 0.75rem 1.5rem;
+  border: none;
+  cursor: pointer;
+}
