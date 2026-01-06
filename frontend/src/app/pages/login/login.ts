@@ -8,7 +8,8 @@ import { catchError, EMPTY } from 'rxjs';
   selector: 'app-login',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './login.html'
+  templateUrl: './login.html',
+  styleUrl: './login.css'
 })
 export class Login {
   error = signal<string | null>(null);

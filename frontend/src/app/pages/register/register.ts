@@ -8,7 +8,8 @@ import { catchError, EMPTY } from 'rxjs';
   selector: 'app-register',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './register.html'
+  templateUrl: './register.html',
+  styleUrl: './register.css'
 })
 export class Register {
   error = signal<string | null>(null);

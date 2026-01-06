@@ -9,11 +9,11 @@
     <input type="password" formControlName="password">
   </div>
 
-  <button type="submit">Login</button>
+  <button type="submit" id="loginBtn">Login</button>
 
   <ng-container *ngIf="error() as err">
     <div style="color: red">{{ err }}</div>
   </ng-container>
 </form>
 
-<a routerLink="/register">Create an account</a>
+<a routerLink="/register">No account yet? Create one</a>
