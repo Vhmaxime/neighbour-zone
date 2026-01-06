@@ -71,8 +71,22 @@ p {
 .forgot-password {
   margin: 8px 0;
   font-size: 0.9rem;
+  font-weight: 500;
 }
 .forgot-password a {
   text-decoration: underline;
   color: var(--accent);
+}
+
+.remember-me {
+  text-align: center;
+  margin: 12px 0;
+}
+
+.remember-me input[type="checkbox"] {
+  margin-right: 6px;
+}
+
+.reset-password {
+  margin-top: 20px;
 }
