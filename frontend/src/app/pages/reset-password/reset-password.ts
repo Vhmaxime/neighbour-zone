@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { Auth } from '../../services/auth';
 import { catchError, EMPTY } from 'rxjs';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-reset-password',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './reset-password.html',
   styleUrls: ['./reset-password.css']
 })
