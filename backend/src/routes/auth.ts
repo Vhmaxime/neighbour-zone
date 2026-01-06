@@ -118,7 +118,6 @@ authRouter.post(
           name: user.name,
           email: user.email,
         },
-        exp: Math.floor(Date.now() / 1000) + 60 * 60, // 1 hour expiration
       };
       return c.json(response);
     } catch (error) {
