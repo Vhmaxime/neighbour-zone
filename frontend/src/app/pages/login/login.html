@@ -11,6 +11,12 @@
     <input type="password" formControlName="password" placeholder="Enter your password">
   </div>
 
+  <p class="forgot-password">
+    <a routerLink="/reset-password" style="color: var(--accent); text-decoration: underline;">
+      Forgot your password?
+    </a>
+  </p>
+
   <button type="submit" [disabled]="form.invalid" class="btn">Log in</button>
 
   <ng-container *ngIf="error() as err">

@@ -2,22 +2,22 @@
   <h1>Create your account</h1>
   <div class="form-field">
     <label>Name</label>
-    <input type="text" formControlName="name">
+    <input type="text" formControlName="name" placeholder="Enter your name">
   </div>
 
   <div class="form-field">
     <label>Email</label>
-    <input type="email" formControlName="email">
+    <input type="email" formControlName="email" placeholder="Enter your email">
   </div>
 
   <div class="form-field">
     <label>Password</label>
-    <input type="password" formControlName="password">
+    <input type="password" formControlName="password" placeholder="Choose your password">
   </div>
 
   <div class="form-field">
     <label>Confirm Password</label>
-    <input type="password" formControlName="confirmPassword">
+    <input type="password" formControlName="confirmPassword" placeholder="Confirm your password">
     <div *ngIf="form.errors?.['passwordMismatch'] && form.get('confirmPassword')?.touched" style="color: red">
       Passwords do not match
     </div>

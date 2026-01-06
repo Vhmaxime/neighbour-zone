@@ -67,3 +67,12 @@ a {
 p {
     text-align: center;
 }
+
+.forgot-password {
+  margin: 8px 0;
+  font-size: 0.9rem;
+}
+.forgot-password a {
+  text-decoration: underline;
+  color: var(--accent);
+}
