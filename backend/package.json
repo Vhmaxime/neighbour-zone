@@ -2,8 +2,9 @@
   "name": "backend",
   "type": "module",
   "scripts": {
-    "dev": "vercel dev",
-    "deploy": "vercel deploy",
+    "start": "vercel dev",
+    "vercel:deploy": "vercel deploy",
+    "vercel:prod": "vercel --prod",
     "typecheck": "tsc --noEmit",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
