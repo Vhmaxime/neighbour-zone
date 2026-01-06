@@ -1,5 +1,6 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
+import { HTTPException } from "hono/http-exception";
 
 const app = new Hono();
 
@@ -10,6 +11,10 @@ app.get("/api/health", (c) => {
     status: "ok",
     timestamp: new Date().toISOString(),
   });
+});
+
+app.notFound(() => {
+  throw new HTTPException(404);
 });
 
 export default app;
