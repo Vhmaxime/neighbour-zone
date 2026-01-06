@@ -1,0 +1,1 @@
+Neighbour-zone is a web app designed by three Full Stack Developers with it's purpose to encourage "neighbours" to ask and recieve help for duties.
