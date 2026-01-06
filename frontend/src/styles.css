@@ -21,7 +21,7 @@ body {
   background-color: var(--bg-main);
   color: var(--text-sec); /* Secondary colour is easier on the eyes for longer text */
 
-   /* Modern Web App reset  */
+  /* Modern Web App reset  */
   line-height: 1.6;       /* Improves readability */
   -webkit-font-smoothing: antialiased; /* Crisp text on Mac/iPhone */
   -moz-osx-font-smoothing: grayscale;
