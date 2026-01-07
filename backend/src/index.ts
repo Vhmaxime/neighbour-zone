@@ -4,8 +4,8 @@ import { HTTPException } from "hono/http-exception";
 import authRouter from "./routes/auth.js";
 import { swaggerUI } from "@hono/swagger-ui";
 import { openApiDoc } from "./opeapi.js";
-import { constants } from "./config.js";
-import { Variables } from "./types.js";
+import { constants } from "./config/index.js";
+import { Variables } from "./types/index.js";
 import { logger } from "hono/logger";
 import { getBaseUrl } from "./utils/env.js";
 import userRouter from "./routes/user.js";
@@ -27,7 +27,7 @@ app.get("/health", (c) => {
     status: "ok",
     timestamp: new Date().toISOString(),
     env: constants.vercelEnv || "development",
-    server: getBaseUrl(),
+    origin: getBaseUrl(),
   });
 });
 

@@ -1,7 +1,7 @@
 import { Hono } from "hono";
-import { JwtPayload, Variables } from "../types.js";
+import { JwtPayload, Variables } from "../types/index.js";
 import { jwt } from "hono/jwt";
-import { constants } from "../config.js";
+import { constants } from "../config/index.js";
 import { db } from "../database/index.js";
 import { usersTable } from "../database/schema.js";
 import { eq } from "drizzle-orm";
