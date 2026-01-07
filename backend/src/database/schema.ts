@@ -21,16 +21,16 @@ export const usersTable = pgTable("users", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
-export const feedPostTypeEnum = pgEnum("feed_post_type", ["news", "tip"]);
+export const postTypeEnum = pgEnum("post_type", ["news", "tip"]);
 
-export const feedPostsTable = pgTable("feed_posts", {
+export const postsTable = pgTable("posts", {
   id: uuid("id").primaryKey().defaultRandom(),
   userId: uuid("user_id")
     .notNull()
     .references(() => usersTable.id, { onDelete: "cascade" }),
   title: text("title").notNull(),
   content: text("content").notNull(),
-  type: feedPostTypeEnum("type").notNull().default("news"),
+  type: postTypeEnum("type").notNull().default("news"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -94,7 +94,7 @@ export const postLikesTable = pgTable(
       .references(() => usersTable.id, { onDelete: "cascade" }),
     postId: uuid("post_id")
       .notNull()
-      .references(() => feedPostsTable.id, { onDelete: "cascade" }),
+      .references(() => postsTable.id, { onDelete: "cascade" }),
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
   (table) => [unique().on(table.userId, table.postId)]
@@ -146,7 +146,7 @@ export const eventAttendanceTable = pgTable(
 );
 
 export const usersRelations = relations(usersTable, ({ many }) => ({
-  feedPosts: many(feedPostsTable),
+  posts: many(postsTable),
   marketplaceItems: many(marketplaceItemsTable),
   events: many(eventsTable),
   postLikes: many(postLikesTable),
@@ -157,16 +157,13 @@ export const usersRelations = relations(usersTable, ({ many }) => ({
   friendshipsAsUser2: many(friendshipsTable),
 }));
 
-export const feedPostsRelations = relations(
-  feedPostsTable,
-  ({ one, many }) => ({
-    author: one(usersTable, {
-      fields: [feedPostsTable.userId],
-      references: [usersTable.id],
-    }),
-    likes: many(postLikesTable),
-  })
-);
+export const postsRelations = relations(postsTable, ({ one, many }) => ({
+  author: one(usersTable, {
+    fields: [postsTable.userId],
+    references: [usersTable.id],
+  }),
+  likes: many(postLikesTable),
+}));
 
 export const marketplaceItemsRelations = relations(
   marketplaceItemsTable,
@@ -206,9 +203,9 @@ export const postLikesRelations = relations(postLikesTable, ({ one }) => ({
     fields: [postLikesTable.userId],
     references: [usersTable.id],
   }),
-  post: one(feedPostsTable, {
+  post: one(postsTable, {
     fields: [postLikesTable.postId],
-    references: [feedPostsTable.id],
+    references: [postsTable.id],
   }),
 }));
 
