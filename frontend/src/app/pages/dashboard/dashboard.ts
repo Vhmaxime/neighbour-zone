@@ -25,6 +25,8 @@ export class Dashboard {
     { type: 'info', message: 'You have 2 upcoming events today.' }
   ];
 
+  profileCompletion: number = 75; // Progress value
+
   constructor() {
     this.userEmail = this.auth.currentUserEmail || 'Guest';
     // Get the first letter of the email for the avatar

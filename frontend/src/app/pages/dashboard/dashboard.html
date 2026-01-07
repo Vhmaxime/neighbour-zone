@@ -40,5 +40,24 @@
       </div>
     </div>
 
+    <div class="card completion-card">
+      <h3>Profile Status</h3>
+      
+      <div class="progress-container">
+        <div class="progress-info">
+          <span class="label">Completion</span>
+          <span class="percentage">{{ profileCompletion }}%</span>
+        </div>
+        
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" [style.width.%]="profileCompletion"></div>
+        </div>
+      </div>
+
+      <p class="completion-hint">Add your phone number to reach 100%.</p>
+      
+      <a routerLink="/profile" class="btn">Complete your profile</a>
+    </div>
+
   </div>
 </div>
