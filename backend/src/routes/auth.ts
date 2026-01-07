@@ -4,9 +4,12 @@ import { eq } from "drizzle-orm";
 import { db } from "../database/index.js";
 import { usersTable } from "../database/schema.js";
 import { loginSchema, registerSchema } from "../schemas/auth.js";
-import { sign } from "hono/jwt";
+import { sign, verify } from "hono/jwt";
 import { HTTPException } from "hono/http-exception";
 import { hashPassword, verifyPassword } from "../utils/password.js";
+import { constants } from "../config.js";
+import { getCookie, setCookie } from "hono/cookie";
+import { getEnvironment } from "../utils/env.js";
 
 const authRouter = new Hono();
 
@@ -44,26 +47,32 @@ authRouter.post(
         })
         .returning();
 
-      const token = await sign(
+      const accessToken = await sign(
         {
-          id: newUser.id,
-          email: newUser.email,
-          name: newUser.name,
-          exp: Math.floor(Date.now() / 1000) + 60 * 1, // 1 minute expiration
+          sub: newUser.id,
+          role: newUser.role,
+          exp: Math.floor(Date.now() / 1000) + 60 * 15, // 15 minutes expiration
         },
-        process.env.JWT_SECRET!
+        constants.jwtSecret
       );
 
-      const response = {
-        token,
-        user: {
-          id: newUser.id,
-          name: newUser.name,
-          email: newUser.email,
+      const refreshToken = await sign(
+        {
+          sub: newUser.id,
+          exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7, // 7 dagen
         },
-      };
+        constants.jwtRefreshSecret
+      );
 
-      return c.json(response, 201);
+      setCookie(c, "refresh_token", refreshToken, {
+        httpOnly: true,
+        secure: getEnvironment() != "development" ? true : false,
+        sameSite: "Strict",
+        path: "/",
+        maxAge: 60 * 60 * 24 * 7,
+      });
+
+      return c.json({ accessToken }, 201);
     } catch (error) {
       if (error instanceof HTTPException) {
         throw error;
@@ -101,25 +110,32 @@ authRouter.post(
       if (!isPasswordValid) {
         throw new HTTPException(401, { message: "Invalid credentials" });
       }
-      const token = await sign(
+      const accessToken = await sign(
         {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          exp: Math.floor(Date.now() / 1000) + 60 * 60, // 1 hour expiration
+          sub: user.id,
+          role: user.role,
+          exp: Math.floor(Date.now() / 1000) + 60 * 15, // 15 minutes expiration
         },
-        process.env.JWT_SECRET!
+        constants.jwtSecret
       );
 
-      const response = {
-        token,
-        user: {
-          id: user.id,
-          name: user.name,
-          email: user.email,
+      const refreshToken = await sign(
+        {
+          sub: user.id,
+          exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7, // 7 days expiration
         },
-      };
-      return c.json(response);
+        constants.jwtRefreshSecret
+      );
+
+      setCookie(c, "refresh_token", refreshToken, {
+        httpOnly: true,
+        secure: getEnvironment() != "development" ? true : false,
+        sameSite: "Strict",
+        path: "/",
+        maxAge: 60 * 60 * 24 * 7,
+      });
+
+      return c.json({ accessToken });
     } catch (error) {
       if (error instanceof HTTPException) {
         throw error;
@@ -129,5 +145,30 @@ authRouter.post(
     }
   }
 );
+
+authRouter.post("/refresh", async (c) => {
+  const refreshToken = getCookie(c, "refresh_token");
+
+  if (!refreshToken) {
+    return c.json({ error: "No refresh token provided" }, 401);
+  }
+
+  try {
+    const payload = await verify(refreshToken, constants.jwtRefreshSecret);
+
+    const newAccessToken = await sign(
+      {
+        sub: payload.sub,
+        role: payload.role,
+        exp: Math.floor(Date.now() / 1000) + 60 * 15,
+      },
+      constants.jwtSecret
+    );
+
+    return c.json({ accessToken: newAccessToken });
+  } catch (err) {
+    return c.json({ error: "Invalid refresh token" }, 401);
+  }
+});
 
 export default authRouter;
