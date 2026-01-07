@@ -149,13 +149,13 @@ authRouter.post(
 );
 
 authRouter.post("/refresh", async (c) => {
-  const refreshToken = getCookie(c, "refresh_token");
-
-  if (!refreshToken) {
-    return c.json({ error: "No refresh token provided" }, 401);
-  }
-
   try {
+    const refreshToken = getCookie(c, "refresh_token");
+
+    if (!refreshToken) {
+      return c.json({ error: "No refresh token provided" }, 401);
+    }
+
     const payload = (await verify(
       refreshToken,
       constants.jwtRefreshSecret
