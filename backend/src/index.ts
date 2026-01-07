@@ -4,10 +4,11 @@ import { HTTPException } from "hono/http-exception";
 import authRouter from "./routes/auth.js";
 import { swaggerUI } from "@hono/swagger-ui";
 import { openApiDoc } from "./utils/opeapi.js";
+import { constants } from "./config.js";
 
 const app = new Hono();
 
-app.use("*", cors());
+app.use("*", cors({ origin: [constants.baseUrl, constants.productionUrl] }));
 
 app.get("/api/health", (c) => {
   return c.json({
