@@ -1,20 +1,16 @@
+import { getBaseUrl, getEnvironment } from "./utils/env.js";
+
 export const openApiDoc = {
   openapi: "3.0.0",
   info: {
-    title: "Neighbour-zone API Documentation",
+    title: "Neighbour Zone API Documentation",
     version: "1.0.0",
-    description:
-      "API documentation for the Neighbour-zone service - A platform for local community services and support",
+    description: "API documentation for the Neighbour Zone API",
   },
   servers: [
     {
-      url: process.env.VERCEL_URL || "http://localhost:3000",
-      description:
-        process.env.VERCEL_ENV === "production"
-          ? "Production Deployment"
-          : process.env.VERCEL_ENV === "preview"
-          ? "Preview Deployment"
-          : "Local Development",
+      url: getBaseUrl(),
+      description: getEnvironment(),
     },
   ],
   tags: [
@@ -308,6 +304,55 @@ export const openApiDoc = {
         },
       },
     },
+    "/api/auth/refresh": {
+      post: {
+        tags: ["auth"],
+        summary: "Refresh access token",
+        description:
+          "Get a new access token using a valid refresh token from cookies",
+        responses: {
+          "200": {
+            description: "Token refreshed successfully",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    accessToken: {
+                      type: "string",
+                      description:
+                        "New JWT access token (expires in 15 minutes)",
+                      example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+                    },
+                  },
+                },
+              },
+            },
+          },
+          "401": {
+            description: "No refresh token provided or invalid refresh token",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    error: {
+                      type: "string",
+                      example: "No refresh token provided",
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        security: [
+          {
+            cookieAuth: [],
+          },
+        ],
+      },
+    },
   },
   components: {
     schemas: {
@@ -356,6 +401,13 @@ export const openApiDoc = {
         scheme: "bearer",
         bearerFormat: "JWT",
         description: "JWT token obtained from login or registration",
+      },
+      cookieAuth: {
+        type: "apiKey",
+        in: "cookie",
+        name: "refresh_token",
+        description:
+          "Refresh token stored in httpOnly cookie (expires in 7 days)",
       },
     },
   },
