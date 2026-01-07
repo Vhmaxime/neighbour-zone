@@ -1,5 +1,5 @@
 import { defineRelations } from "drizzle-orm";
-import * as schema from "./schema";
+import * as schema from "./schema.js";
 
 export const relations = defineRelations(schema, (r) => ({
   usersTable: {
@@ -19,7 +19,7 @@ export const relations = defineRelations(schema, (r) => ({
   },
   postsTable: {
     author: r.one.usersTable({
-      from: r.postsTable.userId,
+      from: r.postsTable.authorId,
       to: r.usersTable.id,
     }),
     likes: r.many.postLikesTable(),

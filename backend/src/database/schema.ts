@@ -8,8 +8,6 @@ import {
   unique,
   primaryKey,
 } from "drizzle-orm/pg-core";
-import { defineRelations } from "drizzle-orm";
-import * as schema from "./schema";
 
 export const userRoleEnum = pgEnum("user_role", ["user", "admin"]);
 
@@ -27,7 +25,7 @@ export const postTypeEnum = pgEnum("post_type", ["news", "tip"]);
 
 export const postsTable = pgTable("posts", {
   id: uuid("id").primaryKey().defaultRandom(),
-  userId: uuid("user_id")
+  authorId: uuid("author_id")
     .notNull()
     .references(() => usersTable.id, { onDelete: "cascade" }),
   title: text("title").notNull(),

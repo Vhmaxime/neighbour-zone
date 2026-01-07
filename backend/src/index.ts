@@ -11,9 +11,7 @@ import { getBaseUrl } from "./utils/env.js";
 import userRouter from "./routes/user.js";
 import postRouter from "./routes/posts.js";
 
-const app = new Hono<{ Variables: Variables }>();
-
-app.basePath("/api");
+const app = new Hono<{ Variables: Variables }>().basePath("/api");
 
 // Logger Middleware
 app.use(logger());
