@@ -15,6 +15,13 @@
       "when": 1767783674620,
       "tag": "0001_talented_zzzax",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1767791192005,
+      "tag": "0002_jittery_eddie_brock",
+      "breakpoints": true
     }
   ]
 }
