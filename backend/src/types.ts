@@ -1,7 +1,9 @@
+export type JwtPayload = {
+  sub: string;
+  role: string;
+  exp: number;
+};
+
 export type Variables = {
-  jwtPayload: {
-    sub: string;
-    role: string;
-    exp: number;
-  };
+  jwtPayload: JwtPayload;
 };
