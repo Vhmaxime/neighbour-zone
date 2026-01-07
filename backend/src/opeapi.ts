@@ -22,6 +22,14 @@ export const openApiDoc = {
       name: "auth",
       description: "Authentication endpoints",
     },
+    {
+      name: "user",
+      description: "User endpoints",
+    },
+    {
+      name: "posts",
+      description: "Post management endpoints",
+    },
   ],
   paths: {
     "/api/health": {
@@ -353,6 +361,552 @@ export const openApiDoc = {
         ],
       },
     },
+    "/api/user/me": {
+      get: {
+        tags: ["user"],
+        summary: "Get current user",
+        description: "Get the authenticated user's information",
+        security: [
+          {
+            bearerAuth: [],
+          },
+        ],
+        responses: {
+          "200": {
+            description: "User information retrieved successfully",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    id: {
+                      type: "string",
+                      format: "uuid",
+                      example: "123e4567-e89b-12d3-a456-426614174000",
+                    },
+                    name: {
+                      type: "string",
+                      example: "John Doe",
+                    },
+                    email: {
+                      type: "string",
+                      format: "email",
+                      example: "john.doe@example.com",
+                    },
+                    role: {
+                      type: "string",
+                      example: "user",
+                    },
+                  },
+                },
+              },
+            },
+          },
+          "401": {
+            description: "Unauthorized - invalid or missing token",
+            content: {
+              "application/json": {
+                schema: {
+                  $ref: "#/components/schemas/Error",
+                },
+              },
+            },
+          },
+          "500": {
+            description: "Internal server error",
+            content: {
+              "application/json": {
+                schema: {
+                  $ref: "#/components/schemas/Error",
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    "/api/post": {
+      get: {
+        tags: ["posts"],
+        summary: "Get all posts",
+        description:
+          "Retrieve a list of all posts with author information and like counts",
+        security: [
+          {
+            bearerAuth: [],
+          },
+        ],
+        responses: {
+          "200": {
+            description: "Posts retrieved successfully",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    posts: {
+                      type: "array",
+                      items: {
+                        type: "object",
+                        properties: {
+                          id: {
+                            type: "string",
+                            format: "uuid",
+                            example: "123e4567-e89b-12d3-a456-426614174000",
+                          },
+                          author: {
+                            type: "string",
+                            example: "John Doe",
+                          },
+                          authorId: {
+                            type: "string",
+                            format: "uuid",
+                            example: "123e4567-e89b-12d3-a456-426614174000",
+                          },
+                          title: {
+                            type: "string",
+                            example: "Community Event This Weekend",
+                          },
+                          content: {
+                            type: "string",
+                            example:
+                              "Join us for a neighborhood cleanup event...",
+                          },
+                          type: {
+                            type: "string",
+                            enum: ["news", "tip"],
+                            example: "news",
+                          },
+                          createdAt: {
+                            type: "string",
+                            format: "date-time",
+                            example: "2024-01-01T12:00:00.000Z",
+                          },
+                          likes: {
+                            type: "integer",
+                            example: 5,
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          "401": {
+            description: "Unauthorized - invalid or missing token",
+            content: {
+              "application/json": {
+                schema: {
+                  $ref: "#/components/schemas/Error",
+                },
+              },
+            },
+          },
+          "500": {
+            description: "Internal server error",
+            content: {
+              "application/json": {
+                schema: {
+                  $ref: "#/components/schemas/Error",
+                },
+              },
+            },
+          },
+        },
+      },
+      post: {
+        tags: ["posts"],
+        summary: "Create a new post",
+        description: "Create a new post (news or tip)",
+        security: [
+          {
+            bearerAuth: [],
+          },
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                required: ["title", "content", "type"],
+                properties: {
+                  title: {
+                    type: "string",
+                    minLength: 1,
+                    maxLength: 255,
+                    example: "Community Event This Weekend",
+                    description: "Post title (1-255 characters)",
+                  },
+                  content: {
+                    type: "string",
+                    minLength: 1,
+                    example: "Join us for a neighborhood cleanup event...",
+                    description: "Post content",
+                  },
+                  type: {
+                    type: "string",
+                    enum: ["news", "tip"],
+                    example: "news",
+                    description: "Type of post",
+                  },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          "201": {
+            description: "Post created successfully",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    post: {
+                      $ref: "#/components/schemas/Post",
+                    },
+                  },
+                },
+              },
+            },
+          },
+          "400": {
+            description: "Invalid request - validation errors",
+            content: {
+              "application/json": {
+                schema: {
+                  $ref: "#/components/schemas/Error",
+                },
+              },
+            },
+          },
+          "401": {
+            description: "Unauthorized - invalid or missing token",
+            content: {
+              "application/json": {
+                schema: {
+                  $ref: "#/components/schemas/Error",
+                },
+              },
+            },
+          },
+          "500": {
+            description: "Internal server error",
+            content: {
+              "application/json": {
+                schema: {
+                  $ref: "#/components/schemas/Error",
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    "/api/post/{id}": {
+      get: {
+        tags: ["posts"],
+        summary: "Get a single post",
+        description: "Retrieve a specific post by ID",
+        security: [
+          {
+            bearerAuth: [],
+          },
+        ],
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            required: true,
+            schema: {
+              type: "string",
+              format: "uuid",
+            },
+            description: "Post ID",
+          },
+        ],
+        responses: {
+          "200": {
+            description: "Post retrieved successfully",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    post: {
+                      $ref: "#/components/schemas/Post",
+                    },
+                  },
+                },
+              },
+            },
+          },
+          "400": {
+            description: "Invalid request - invalid ID format",
+            content: {
+              "application/json": {
+                schema: {
+                  $ref: "#/components/schemas/Error",
+                },
+              },
+            },
+          },
+          "401": {
+            description: "Unauthorized - invalid or missing token",
+            content: {
+              "application/json": {
+                schema: {
+                  $ref: "#/components/schemas/Error",
+                },
+              },
+            },
+          },
+          "404": {
+            description: "Post not found",
+            content: {
+              "application/json": {
+                schema: {
+                  $ref: "#/components/schemas/Error",
+                },
+              },
+            },
+          },
+          "500": {
+            description: "Internal server error",
+            content: {
+              "application/json": {
+                schema: {
+                  $ref: "#/components/schemas/Error",
+                },
+              },
+            },
+          },
+        },
+      },
+      patch: {
+        tags: ["posts"],
+        summary: "Update a post",
+        description: "Update an existing post (only by the author)",
+        security: [
+          {
+            bearerAuth: [],
+          },
+        ],
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            required: true,
+            schema: {
+              type: "string",
+              format: "uuid",
+            },
+            description: "Post ID",
+          },
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                required: ["title", "content", "type"],
+                properties: {
+                  title: {
+                    type: "string",
+                    minLength: 1,
+                    maxLength: 255,
+                    example: "Updated Post Title",
+                  },
+                  content: {
+                    type: "string",
+                    minLength: 1,
+                    example: "Updated post content...",
+                  },
+                  type: {
+                    type: "string",
+                    enum: ["news", "tip"],
+                    example: "news",
+                  },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          "200": {
+            description: "Post updated successfully",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    post: {
+                      $ref: "#/components/schemas/Post",
+                    },
+                  },
+                },
+              },
+            },
+          },
+          "400": {
+            description: "Invalid request - validation errors",
+            content: {
+              "application/json": {
+                schema: {
+                  $ref: "#/components/schemas/Error",
+                },
+              },
+            },
+          },
+          "401": {
+            description: "Unauthorized - invalid or missing token",
+            content: {
+              "application/json": {
+                schema: {
+                  $ref: "#/components/schemas/Error",
+                },
+              },
+            },
+          },
+          "403": {
+            description: "Forbidden - not the post author",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    message: {
+                      type: "string",
+                      example: "Unauthorized to update this post",
+                    },
+                  },
+                },
+              },
+            },
+          },
+          "404": {
+            description: "Post not found",
+            content: {
+              "application/json": {
+                schema: {
+                  $ref: "#/components/schemas/Error",
+                },
+              },
+            },
+          },
+          "500": {
+            description: "Internal server error",
+            content: {
+              "application/json": {
+                schema: {
+                  $ref: "#/components/schemas/Error",
+                },
+              },
+            },
+          },
+        },
+      },
+      delete: {
+        tags: ["posts"],
+        summary: "Delete a post",
+        description: "Delete a post (only by the author)",
+        security: [
+          {
+            bearerAuth: [],
+          },
+        ],
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            required: true,
+            schema: {
+              type: "string",
+              format: "uuid",
+            },
+            description: "Post ID",
+          },
+        ],
+        responses: {
+          "200": {
+            description: "Post deleted successfully",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    message: {
+                      type: "string",
+                      example: "Post deleted successfully",
+                    },
+                  },
+                },
+              },
+            },
+          },
+          "400": {
+            description: "Invalid request - invalid ID format",
+            content: {
+              "application/json": {
+                schema: {
+                  $ref: "#/components/schemas/Error",
+                },
+              },
+            },
+          },
+          "401": {
+            description: "Unauthorized - invalid or missing token",
+            content: {
+              "application/json": {
+                schema: {
+                  $ref: "#/components/schemas/Error",
+                },
+              },
+            },
+          },
+          "403": {
+            description: "Forbidden - not the post author",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    message: {
+                      type: "string",
+                      example: "Unauthorized to delete this post",
+                    },
+                  },
+                },
+              },
+            },
+          },
+          "404": {
+            description: "Post not found",
+            content: {
+              "application/json": {
+                schema: {
+                  $ref: "#/components/schemas/Error",
+                },
+              },
+            },
+          },
+          "500": {
+            description: "Internal server error",
+            content: {
+              "application/json": {
+                schema: {
+                  $ref: "#/components/schemas/Error",
+                },
+              },
+            },
+          },
+        },
+      },
+    },
   },
   components: {
     schemas: {
@@ -382,6 +936,47 @@ export const openApiDoc = {
             type: "string",
             format: "date-time",
             description: "Last account update timestamp",
+          },
+        },
+      },
+      Post: {
+        type: "object",
+        properties: {
+          id: {
+            type: "string",
+            format: "uuid",
+            description: "Unique post identifier",
+          },
+          authorId: {
+            type: "string",
+            format: "uuid",
+            description: "ID of the post author",
+          },
+          author: {
+            type: "string",
+            description: "Name of the post author",
+          },
+          title: {
+            type: "string",
+            description: "Post title",
+          },
+          content: {
+            type: "string",
+            description: "Post content",
+          },
+          type: {
+            type: "string",
+            enum: ["news", "tip"],
+            description: "Type of post",
+          },
+          createdAt: {
+            type: "string",
+            format: "date-time",
+            description: "Post creation timestamp",
+          },
+          likes: {
+            type: "integer",
+            description: "Number of likes",
           },
         },
       },

@@ -36,7 +36,7 @@ app.route("/post", postRouter);
 
 // Swagger UI and OpenAPI Document
 app.get("/doc", (c) => c.json(openApiDoc));
-app.get("/ui", swaggerUI({ url: "/doc" }));
+app.get("/ui", swaggerUI({ url: "/api/doc" }));
 
 app.notFound(() => {
   throw new HTTPException(404);
