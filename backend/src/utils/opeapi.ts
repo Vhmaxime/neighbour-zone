@@ -1,14 +1,15 @@
+import { constants } from "../config";
+
 export const openApiDoc = {
   openapi: "3.0.0",
   info: {
-    title: "Neighbour-zone API Documentation",
+    title: "Neighbour Zone API Documentation",
     version: "1.0.0",
-    description:
-      "API documentation for the Neighbour-zone service - A platform for local community services and support",
+    description: "API documentation for the Neighbour Zone API",
   },
   servers: [
     {
-      url: process.env.VERCEL_URL || "http://localhost:3000",
+      url: constants.baseUrl,
       description:
         process.env.VERCEL_ENV === "production"
           ? "Production Deployment"
