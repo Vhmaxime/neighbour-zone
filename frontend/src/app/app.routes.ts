@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { Login } from './pages/login/login';
 import { Register } from './pages/register/register';
-import { Dashboard } from './dashboard/dashboard';
+import { Dashboard } from './pages/dashboard/dashboard';
 import { authGuard } from './guards/auth-guard';
 import { ResetPassword } from './pages/reset-password/reset-password';
 
@@ -12,7 +12,7 @@ export const routes: Routes = [
   {
     path: 'dashboard',
     component: Dashboard,
-    canActivate: [authGuard]
+    // canActivate: [authGuard] // commented this out so I don't need to worry about tokens for the moment
   },
   { path: '', redirectTo: '/login', pathMatch: 'full' }
 ];

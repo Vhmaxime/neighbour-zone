@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import { Auth } from '../services/auth';
+import { Auth } from '../../services/auth';
 
 @Component({
   selector: 'app-dashboard',
