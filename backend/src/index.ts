@@ -9,8 +9,11 @@ import { Variables } from "./types.js";
 import { logger } from "hono/logger";
 import { getBaseUrl } from "./utils/env.js";
 import userRouter from "./routes/user.js";
+import postRouter from "./routes/posts.js";
 
 const app = new Hono<{ Variables: Variables }>();
+
+app.basePath("/api");
 
 // Logger Middleware
 app.use(logger());
@@ -19,7 +22,7 @@ app.use(logger());
 app.use(cors());
 
 // Health Check Endpoint
-app.get("/api/health", (c) => {
+app.get("/health", (c) => {
   return c.json({
     status: "ok",
     timestamp: new Date().toISOString(),
@@ -29,8 +32,9 @@ app.get("/api/health", (c) => {
 });
 
 // Mount Routers
-app.route("/api/auth", authRouter);
-app.route("/api/user", userRouter);
+app.route("/auth", authRouter);
+app.route("/user", userRouter);
+app.route("/post", postRouter);
 
 // Swagger UI and OpenAPI Document
 app.get("/doc", (c) => c.json(openApiDoc));
