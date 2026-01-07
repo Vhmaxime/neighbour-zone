@@ -1,0 +1,1121 @@
+{
+  "id": "bf76d420-2900-4c9a-b0f5-7a304bcf6e27",
+  "prevIds": [
+    "be5ede18-ab37-4e71-8b6a-e8190b943dfa"
+  ],
+  "version": "8",
+  "dialect": "postgres",
+  "ddl": [
+    {
+      "isRlsEnabled": false,
+      "name": "event_attendance",
+      "schema": "public",
+      "entityType": "tables"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "event_attendance_pkey",
+      "schema": "public",
+      "table": "event_attendance",
+      "entityType": "pks"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "gen_random_uuid()",
+      "generated": null,
+      "identity": null,
+      "name": "id",
+      "schema": "public",
+      "table": "event_attendance",
+      "entityType": "columns"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "user_id",
+      "schema": "public",
+      "table": "event_attendance",
+      "entityType": "columns"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "event_id",
+      "schema": "public",
+      "table": "event_attendance",
+      "entityType": "columns"
+    },
+    {
+      "type": "timestamp",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "now()",
+      "generated": null,
+      "identity": null,
+      "name": "created_at",
+      "schema": "public",
+      "table": "event_attendance",
+      "entityType": "columns"
+    },
+    {
+      "nameExplicit": false,
+      "columns": [
+        "user_id",
+        "event_id"
+      ],
+      "nullsNotDistinct": false,
+      "name": "event_attendance_user_id_event_id_unique",
+      "schema": "public",
+      "table": "event_attendance",
+      "entityType": "uniques"
+    },
+    {
+      "nameExplicit": false,
+      "columns": [
+        "user_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "users",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "name": "event_attendance_user_id_users_id_fk",
+      "schema": "public",
+      "table": "event_attendance",
+      "entityType": "fks"
+    },
+    {
+      "nameExplicit": false,
+      "columns": [
+        "event_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "events",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "name": "event_attendance_event_id_events_id_fk",
+      "schema": "public",
+      "table": "event_attendance",
+      "entityType": "fks"
+    },
+    {
+      "isRlsEnabled": false,
+      "name": "event_likes",
+      "schema": "public",
+      "entityType": "tables"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "event_likes_pkey",
+      "schema": "public",
+      "table": "event_likes",
+      "entityType": "pks"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "gen_random_uuid()",
+      "generated": null,
+      "identity": null,
+      "name": "id",
+      "schema": "public",
+      "table": "event_likes",
+      "entityType": "columns"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "user_id",
+      "schema": "public",
+      "table": "event_likes",
+      "entityType": "columns"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "event_id",
+      "schema": "public",
+      "table": "event_likes",
+      "entityType": "columns"
+    },
+    {
+      "type": "timestamp",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "now()",
+      "generated": null,
+      "identity": null,
+      "name": "created_at",
+      "schema": "public",
+      "table": "event_likes",
+      "entityType": "columns"
+    },
+    {
+      "nameExplicit": false,
+      "columns": [
+        "user_id",
+        "event_id"
+      ],
+      "nullsNotDistinct": false,
+      "name": "event_likes_user_id_event_id_unique",
+      "schema": "public",
+      "table": "event_likes",
+      "entityType": "uniques"
+    },
+    {
+      "nameExplicit": false,
+      "columns": [
+        "user_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "users",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "name": "event_likes_user_id_users_id_fk",
+      "schema": "public",
+      "table": "event_likes",
+      "entityType": "fks"
+    },
+    {
+      "nameExplicit": false,
+      "columns": [
+        "event_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "events",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "name": "event_likes_event_id_events_id_fk",
+      "schema": "public",
+      "table": "event_likes",
+      "entityType": "fks"
+    },
+    {
+      "isRlsEnabled": false,
+      "name": "events",
+      "schema": "public",
+      "entityType": "tables"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "events_pkey",
+      "schema": "public",
+      "table": "events",
+      "entityType": "pks"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "gen_random_uuid()",
+      "generated": null,
+      "identity": null,
+      "name": "id",
+      "schema": "public",
+      "table": "events",
+      "entityType": "columns"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "user_id",
+      "schema": "public",
+      "table": "events",
+      "entityType": "columns"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "title",
+      "schema": "public",
+      "table": "events",
+      "entityType": "columns"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "description",
+      "schema": "public",
+      "table": "events",
+      "entityType": "columns"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "location",
+      "schema": "public",
+      "table": "events",
+      "entityType": "columns"
+    },
+    {
+      "type": "timestamp",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "date_time",
+      "schema": "public",
+      "table": "events",
+      "entityType": "columns"
+    },
+    {
+      "type": "timestamp",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "end_at",
+      "schema": "public",
+      "table": "events",
+      "entityType": "columns"
+    },
+    {
+      "type": "timestamp",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "now()",
+      "generated": null,
+      "identity": null,
+      "name": "created_at",
+      "schema": "public",
+      "table": "events",
+      "entityType": "columns"
+    },
+    {
+      "nameExplicit": false,
+      "columns": [
+        "user_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "users",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "name": "events_user_id_users_id_fk",
+      "schema": "public",
+      "table": "events",
+      "entityType": "fks"
+    },
+    {
+      "isRlsEnabled": false,
+      "name": "friendships",
+      "schema": "public",
+      "entityType": "tables"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "friendships_pkey",
+      "schema": "public",
+      "table": "friendships",
+      "entityType": "pks"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "gen_random_uuid()",
+      "generated": null,
+      "identity": null,
+      "name": "id",
+      "schema": "public",
+      "table": "friendships",
+      "entityType": "columns"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "user_id_1",
+      "schema": "public",
+      "table": "friendships",
+      "entityType": "columns"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "user_id_2",
+      "schema": "public",
+      "table": "friendships",
+      "entityType": "columns"
+    },
+    {
+      "type": "friendship_status",
+      "typeSchema": "public",
+      "notNull": true,
+      "dimensions": 0,
+      "default": "'pending'",
+      "generated": null,
+      "identity": null,
+      "name": "status",
+      "schema": "public",
+      "table": "friendships",
+      "entityType": "columns"
+    },
+    {
+      "type": "timestamp",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "now()",
+      "generated": null,
+      "identity": null,
+      "name": "created_at",
+      "schema": "public",
+      "table": "friendships",
+      "entityType": "columns"
+    },
+    {
+      "nameExplicit": false,
+      "columns": [
+        "user_id_1",
+        "user_id_2"
+      ],
+      "nullsNotDistinct": false,
+      "name": "friendships_user_id_1_user_id_2_unique",
+      "schema": "public",
+      "table": "friendships",
+      "entityType": "uniques"
+    },
+    {
+      "nameExplicit": false,
+      "columns": [
+        "user_id_1"
+      ],
+      "schemaTo": "public",
+      "tableTo": "users",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "name": "friendships_user_id_1_users_id_fk",
+      "schema": "public",
+      "table": "friendships",
+      "entityType": "fks"
+    },
+    {
+      "nameExplicit": false,
+      "columns": [
+        "user_id_2"
+      ],
+      "schemaTo": "public",
+      "tableTo": "users",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "name": "friendships_user_id_2_users_id_fk",
+      "schema": "public",
+      "table": "friendships",
+      "entityType": "fks"
+    },
+    {
+      "isRlsEnabled": false,
+      "name": "marketplace_applications",
+      "schema": "public",
+      "entityType": "tables"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "marketplace_applications_pkey",
+      "schema": "public",
+      "table": "marketplace_applications",
+      "entityType": "pks"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "gen_random_uuid()",
+      "generated": null,
+      "identity": null,
+      "name": "id",
+      "schema": "public",
+      "table": "marketplace_applications",
+      "entityType": "columns"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "user_id",
+      "schema": "public",
+      "table": "marketplace_applications",
+      "entityType": "columns"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "marketplace_item_id",
+      "schema": "public",
+      "table": "marketplace_applications",
+      "entityType": "columns"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "message",
+      "schema": "public",
+      "table": "marketplace_applications",
+      "entityType": "columns"
+    },
+    {
+      "type": "timestamp",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "now()",
+      "generated": null,
+      "identity": null,
+      "name": "created_at",
+      "schema": "public",
+      "table": "marketplace_applications",
+      "entityType": "columns"
+    },
+    {
+      "nameExplicit": false,
+      "columns": [
+        "user_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "users",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "name": "marketplace_applications_user_id_users_id_fk",
+      "schema": "public",
+      "table": "marketplace_applications",
+      "entityType": "fks"
+    },
+    {
+      "nameExplicit": false,
+      "columns": [
+        "marketplace_item_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "marketplace_items",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "name": "marketplace_applications_marketplace_item_id_marketplace_items_",
+      "schema": "public",
+      "table": "marketplace_applications",
+      "entityType": "fks"
+    },
+    {
+      "isRlsEnabled": false,
+      "name": "marketplace_items",
+      "schema": "public",
+      "entityType": "tables"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "marketplace_items_pkey",
+      "schema": "public",
+      "table": "marketplace_items",
+      "entityType": "pks"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "gen_random_uuid()",
+      "generated": null,
+      "identity": null,
+      "name": "id",
+      "schema": "public",
+      "table": "marketplace_items",
+      "entityType": "columns"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "user_id",
+      "schema": "public",
+      "table": "marketplace_items",
+      "entityType": "columns"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "title",
+      "schema": "public",
+      "table": "marketplace_items",
+      "entityType": "columns"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "description",
+      "schema": "public",
+      "table": "marketplace_items",
+      "entityType": "columns"
+    },
+    {
+      "type": "numeric(10,2)",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "price",
+      "schema": "public",
+      "table": "marketplace_items",
+      "entityType": "columns"
+    },
+    {
+      "type": "marketplace_category",
+      "typeSchema": "public",
+      "notNull": true,
+      "dimensions": 0,
+      "default": "'offered'",
+      "generated": null,
+      "identity": null,
+      "name": "category",
+      "schema": "public",
+      "table": "marketplace_items",
+      "entityType": "columns"
+    },
+    {
+      "type": "timestamp",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "now()",
+      "generated": null,
+      "identity": null,
+      "name": "created_at",
+      "schema": "public",
+      "table": "marketplace_items",
+      "entityType": "columns"
+    },
+    {
+      "nameExplicit": false,
+      "columns": [
+        "user_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "users",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "name": "marketplace_items_user_id_users_id_fk",
+      "schema": "public",
+      "table": "marketplace_items",
+      "entityType": "fks"
+    },
+    {
+      "isRlsEnabled": false,
+      "name": "post_likes",
+      "schema": "public",
+      "entityType": "tables"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "post_likes_pkey",
+      "schema": "public",
+      "table": "post_likes",
+      "entityType": "pks"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "gen_random_uuid()",
+      "generated": null,
+      "identity": null,
+      "name": "id",
+      "schema": "public",
+      "table": "post_likes",
+      "entityType": "columns"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "user_id",
+      "schema": "public",
+      "table": "post_likes",
+      "entityType": "columns"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "post_id",
+      "schema": "public",
+      "table": "post_likes",
+      "entityType": "columns"
+    },
+    {
+      "type": "timestamp",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "now()",
+      "generated": null,
+      "identity": null,
+      "name": "created_at",
+      "schema": "public",
+      "table": "post_likes",
+      "entityType": "columns"
+    },
+    {
+      "nameExplicit": false,
+      "columns": [
+        "user_id",
+        "post_id"
+      ],
+      "nullsNotDistinct": false,
+      "name": "post_likes_user_id_post_id_unique",
+      "schema": "public",
+      "table": "post_likes",
+      "entityType": "uniques"
+    },
+    {
+      "nameExplicit": false,
+      "columns": [
+        "user_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "users",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "name": "post_likes_user_id_users_id_fk",
+      "schema": "public",
+      "table": "post_likes",
+      "entityType": "fks"
+    },
+    {
+      "nameExplicit": false,
+      "columns": [
+        "post_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "posts",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "name": "post_likes_post_id_posts_id_fk",
+      "schema": "public",
+      "table": "post_likes",
+      "entityType": "fks"
+    },
+    {
+      "isRlsEnabled": false,
+      "name": "posts",
+      "schema": "public",
+      "entityType": "tables"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "posts_pkey",
+      "schema": "public",
+      "table": "posts",
+      "entityType": "pks"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "gen_random_uuid()",
+      "generated": null,
+      "identity": null,
+      "name": "id",
+      "schema": "public",
+      "table": "posts",
+      "entityType": "columns"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "user_id",
+      "schema": "public",
+      "table": "posts",
+      "entityType": "columns"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "title",
+      "schema": "public",
+      "table": "posts",
+      "entityType": "columns"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "content",
+      "schema": "public",
+      "table": "posts",
+      "entityType": "columns"
+    },
+    {
+      "type": "post_type",
+      "typeSchema": "public",
+      "notNull": true,
+      "dimensions": 0,
+      "default": "'news'",
+      "generated": null,
+      "identity": null,
+      "name": "type",
+      "schema": "public",
+      "table": "posts",
+      "entityType": "columns"
+    },
+    {
+      "type": "timestamp",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "now()",
+      "generated": null,
+      "identity": null,
+      "name": "created_at",
+      "schema": "public",
+      "table": "posts",
+      "entityType": "columns"
+    },
+    {
+      "nameExplicit": false,
+      "columns": [
+        "user_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "users",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "name": "posts_user_id_users_id_fk",
+      "schema": "public",
+      "table": "posts",
+      "entityType": "fks"
+    },
+    {
+      "isRlsEnabled": false,
+      "name": "users",
+      "schema": "public",
+      "entityType": "tables"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "users_pkey",
+      "schema": "public",
+      "table": "users",
+      "entityType": "pks"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "gen_random_uuid()",
+      "generated": null,
+      "identity": null,
+      "name": "id",
+      "schema": "public",
+      "table": "users",
+      "entityType": "columns"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "name",
+      "schema": "public",
+      "table": "users",
+      "entityType": "columns"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "email",
+      "schema": "public",
+      "table": "users",
+      "entityType": "columns"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "password",
+      "schema": "public",
+      "table": "users",
+      "entityType": "columns"
+    },
+    {
+      "type": "user_role",
+      "typeSchema": "public",
+      "notNull": true,
+      "dimensions": 0,
+      "default": "'user'",
+      "generated": null,
+      "identity": null,
+      "name": "role",
+      "schema": "public",
+      "table": "users",
+      "entityType": "columns"
+    },
+    {
+      "type": "timestamp",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "now()",
+      "generated": null,
+      "identity": null,
+      "name": "created_at",
+      "schema": "public",
+      "table": "users",
+      "entityType": "columns"
+    },
+    {
+      "type": "timestamp",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "now()",
+      "generated": null,
+      "identity": null,
+      "name": "updated_at",
+      "schema": "public",
+      "table": "users",
+      "entityType": "columns"
+    },
+    {
+      "nameExplicit": false,
+      "columns": [
+        "email"
+      ],
+      "nullsNotDistinct": false,
+      "name": "users_email_unique",
+      "schema": "public",
+      "table": "users",
+      "entityType": "uniques"
+    },
+    {
+      "values": [
+        "pending",
+        "accepted"
+      ],
+      "name": "friendship_status",
+      "schema": "public",
+      "entityType": "enums"
+    },
+    {
+      "values": [
+        "wanted",
+        "offered"
+      ],
+      "name": "marketplace_category",
+      "schema": "public",
+      "entityType": "enums"
+    },
+    {
+      "values": [
+        "news",
+        "tip"
+      ],
+      "name": "post_type",
+      "schema": "public",
+      "entityType": "enums"
+    },
+    {
+      "values": [
+        "user",
+        "admin"
+      ],
+      "name": "user_role",
+      "schema": "public",
+      "entityType": "enums"
+    }
+  ],
+  "renames": []
+}

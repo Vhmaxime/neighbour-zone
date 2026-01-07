@@ -6,8 +6,10 @@ import {
   decimal,
   pgEnum,
   unique,
+  primaryKey,
 } from "drizzle-orm/pg-core";
-import { relations } from "drizzle-orm";
+import { defineRelations } from "drizzle-orm";
+import * as schema from "./schema";
 
 export const userRoleEnum = pgEnum("user_role", ["user", "admin"]);
 
@@ -88,7 +90,6 @@ export const friendshipsTable = pgTable(
 export const postLikesTable = pgTable(
   "post_likes",
   {
-    id: uuid("id").primaryKey().defaultRandom(),
     userId: uuid("user_id")
       .notNull()
       .references(() => usersTable.id, { onDelete: "cascade" }),
@@ -97,13 +98,12 @@ export const postLikesTable = pgTable(
       .references(() => postsTable.id, { onDelete: "cascade" }),
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
-  (table) => [unique().on(table.userId, table.postId)]
+  (table) => [primaryKey({ columns: [table.userId, table.postId] })]
 );
 
 export const eventLikesTable = pgTable(
   "event_likes",
   {
-    id: uuid("id").primaryKey().defaultRandom(),
     userId: uuid("user_id")
       .notNull()
       .references(() => usersTable.id, { onDelete: "cascade" }),
@@ -112,7 +112,7 @@ export const eventLikesTable = pgTable(
       .references(() => eventsTable.id, { onDelete: "cascade" }),
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
-  (table) => [unique().on(table.userId, table.eventId)]
+  (table) => [primaryKey({ columns: [table.userId, table.eventId] })]
 );
 
 export const marketplaceApplicationsTable = pgTable(
@@ -127,13 +127,13 @@ export const marketplaceApplicationsTable = pgTable(
       .references(() => marketplaceItemsTable.id, { onDelete: "cascade" }),
     message: text("message"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
-  }
+  },
+  (table) => [unique().on(table.userId, table.marketplaceItemId)]
 );
 
 export const eventAttendanceTable = pgTable(
   "event_attendance",
   {
-    id: uuid("id").primaryKey().defaultRandom(),
     userId: uuid("user_id")
       .notNull()
       .references(() => usersTable.id, { onDelete: "cascade" }),
@@ -142,108 +142,5 @@ export const eventAttendanceTable = pgTable(
       .references(() => eventsTable.id, { onDelete: "cascade" }),
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
-  (table) => [unique().on(table.userId, table.eventId)]
-);
-
-export const usersRelations = relations(usersTable, ({ many }) => ({
-  posts: many(postsTable),
-  marketplaceItems: many(marketplaceItemsTable),
-  events: many(eventsTable),
-  postLikes: many(postLikesTable),
-  eventLikes: many(eventLikesTable),
-  marketplaceApplications: many(marketplaceApplicationsTable),
-  eventAttendances: many(eventAttendanceTable),
-  friendshipsAsUser1: many(friendshipsTable),
-  friendshipsAsUser2: many(friendshipsTable),
-}));
-
-export const postsRelations = relations(postsTable, ({ one, many }) => ({
-  author: one(usersTable, {
-    fields: [postsTable.userId],
-    references: [usersTable.id],
-  }),
-  likes: many(postLikesTable),
-}));
-
-export const marketplaceItemsRelations = relations(
-  marketplaceItemsTable,
-  ({ one, many }) => ({
-    provider: one(usersTable, {
-      fields: [marketplaceItemsTable.userId],
-      references: [usersTable.id],
-    }),
-    applications: many(marketplaceApplicationsTable),
-  })
-);
-
-export const eventsRelations = relations(eventsTable, ({ one, many }) => ({
-  organizer: one(usersTable, {
-    fields: [eventsTable.userId],
-    references: [usersTable.id],
-  }),
-  likes: many(eventLikesTable),
-  attendances: many(eventAttendanceTable),
-}));
-
-export const friendshipsRelations = relations(friendshipsTable, ({ one }) => ({
-  user1: one(usersTable, {
-    fields: [friendshipsTable.userId1],
-    references: [usersTable.id],
-    relationName: "user1Friendships",
-  }),
-  user2: one(usersTable, {
-    fields: [friendshipsTable.userId2],
-    references: [usersTable.id],
-    relationName: "user2Friendships",
-  }),
-}));
-
-export const postLikesRelations = relations(postLikesTable, ({ one }) => ({
-  user: one(usersTable, {
-    fields: [postLikesTable.userId],
-    references: [usersTable.id],
-  }),
-  post: one(postsTable, {
-    fields: [postLikesTable.postId],
-    references: [postsTable.id],
-  }),
-}));
-
-export const eventLikesRelations = relations(eventLikesTable, ({ one }) => ({
-  user: one(usersTable, {
-    fields: [eventLikesTable.userId],
-    references: [usersTable.id],
-  }),
-  event: one(eventsTable, {
-    fields: [eventLikesTable.eventId],
-    references: [eventsTable.id],
-  }),
-}));
-
-export const marketplaceApplicationsRelations = relations(
-  marketplaceApplicationsTable,
-  ({ one }) => ({
-    user: one(usersTable, {
-      fields: [marketplaceApplicationsTable.userId],
-      references: [usersTable.id],
-    }),
-    marketplaceItem: one(marketplaceItemsTable, {
-      fields: [marketplaceApplicationsTable.marketplaceItemId],
-      references: [marketplaceItemsTable.id],
-    }),
-  })
-);
-
-export const eventAttendanceRelations = relations(
-  eventAttendanceTable,
-  ({ one }) => ({
-    user: one(usersTable, {
-      fields: [eventAttendanceTable.userId],
-      references: [usersTable.id],
-    }),
-    event: one(eventsTable, {
-      fields: [eventAttendanceTable.eventId],
-      references: [eventsTable.id],
-    }),
-  })
+  (table) => [primaryKey({ columns: [table.userId, table.eventId] })]
 );
