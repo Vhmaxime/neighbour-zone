@@ -2,30 +2,26 @@ import { z } from "zod/v4";
 
 const passwordSchema = z
   .string()
-  .min(8, "Too short")
-  .max(32, "Too long")
-  .regex(/[A-Z]/, "Needs uppercase")
-  .regex(/[a-z]/, "Needs lowercase")
-  .regex(/[0-9]/, "Needs number")
-  .regex(/[!@#$%^&*]/, "Needs special char");
+  .min(8)
+  .max(32)
+  .regex(/^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*])/);
 
 export const registerSchema = z
   .object({
-    name: z.string().min(2, "Name must be at least 2 characters"),
-    email: z.email("Invalid email address"),
+    name: z.string().min(2),
+    email: z.email(),
     password: passwordSchema,
-    confirmPassword: z.string().min(1, "Please confirm your password"),
+    confirmPassword: z.string().min(1),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords do not match",
-    path: ["confirmPassword"],
+    abort: true,
   });
 
 export type RegisterValues = z.infer<typeof registerSchema>;
 
 export const loginSchema = z.object({
-  email: z.email("Invalid email address"),
-  password: z.string().min(1, "Password is required"),
+  email: z.email(),
+  password: z.string().min(1),
 });
 
 export type LoginValues = z.infer<typeof loginSchema>;
