@@ -1,39 +1,219 @@
-/* Make the main container full height and use Flexbox */
-.dashboard-container {
-  display: flex;
-  height: 100vh; /* Takes up full screen height */
-  width: 100%;
+/* Container: Centered max-width for better readability */
+.dashboard-wrapper {
+  max-width: 1200px;
+  margin: 0 auto; /* Centers the container */
+  padding: 40px 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Sidebar stays fixed width on the left */
-.sidebar {
-  width: 250px;
-  background-color: #f4f4f4; /* Example color */
+/* Header: Spans the full width, pushing items to edges */
+.dashboard-header {
+  display: flex;
+  justify-content: space-between; /* This pushes Left to Left, Right to Right */
+  align-items: flex-end;
+  margin-bottom: 40px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #eee;
+  width: 100%; /* Ensure it takes full available width */
+}
+
+h1 {
+  margin: 0;
+  font-size: 2rem;
+  color: #1f2937;
+}
+
+.date-display {
+  color: #6b7280;
+  margin: 5px 0 0 0;
+  font-size: 0.95rem;
+}
+
+/* Ensure the left part (Title) centers its own text */
+.header-left {
   display: flex;
   flex-direction: column;
-  padding: 20px;
+  align-items: center;
 }
 
-.content {
-  flex: 1; /* Takes all remaining width */
+/* Ensure the right part (Profile) centers its own text */
+.header-right {
+  align-items: flex-end; /* Align profile to the right */
+  flex-direction: row;   /* Profile and Button side-by-side */
+  gap: 20px;
+}
+
+.header-left, .header-right {
   display: flex;
-  flex-direction: column; /* Stack header and other content vertically */
-  justify-content: flex-start;
-  align-items: center; /* Center horizontally */
-  background-color: #fff; 
-  padding-top: 50px;
+  flex-direction: column; /* Keep internal stacking (Title/Date) */
+  gap: 5px;
 }
 
-/* Ensure header text is centered too */
-header {
-  text-align: center;
-  margin-bottom: 2rem; /* Add space below header */
+/* Avatar & Profile */
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
-.bottom-nav {
-    margin-bottom: 20px;
+.avatar-circle {
+  width: 42px;
+  height: 42px;
+  background-color: #3b82f6;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 1.1rem;
 }
 
-nav a {
-    padding: 15px;
+.user-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.welcome-text {
+  font-size: 0.75rem;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.user-email {
+  font-weight: 600;
+  color: #374151;
+  font-size: 0.95rem;
+}
+
+/* Small Logout Button */
+.btn-logout-small {
+  padding: 8px 16px;
+  background-color: transparent;
+  border: 1px solid #ef4444;
+  border-radius: 6px;
+  color: #ef4444;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+}
+
+.btn-logout-small:hover {
+  background-color: #ef4444;
+  color: white; /* Red on hover */
+  box-shadow: 0 2px 4px rgba(239, 68, 68, 0.2);
+}
+
+/* Alerts: Constrain width and use Auto Margins */
+.alerts-section {
+  max-width: 500px;    /* Match the width of your card */
+  width: 100%;
+  margin: 0 auto 30px; /* '0 auto' centers it horizontally */
+}
+
+.alert-banner {
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.95rem;
+}
+
+.alert-banner.info {
+  background-color: #eff6ff; /* Light Blue */
+  color: #1e40af;
+  border: 1px solid #dbeafe;
+}
+
+.alert-banner.warning {
+  background-color: #fffbeb; /* Light Yellow */
+  color: #92400e;
+  border: 1px solid #fde68a;
+}
+
+/* Grid & Cards */
+.dashboard-grid {
+  display: flex;
+  justify-content: center; /* Centers the card horizontally */
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+
+.card {
+  background: white;
+  padding: 24px;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  
+  /* New sizing logic */
+  width: 100%;             
+  max-width: 500px;        /* Limits width so it looks elegant, not stretched */
+  flex: 1 1 300px;         /* Allows it to shrink/grow properly */
+}
+
+h3 {
+  margin-top: 0;
+  color: #111827;
+  font-size: 1.1rem;
+  margin-bottom: 20px;
+}
+
+/* Action Buttons */
+.action-buttons {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.btn-action {
+  padding: 12px 20px;
+  border: 1px solid #e5e7eb;
+  background: white;
+  border-radius: 8px;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-action:hover {
+  border-color: #d1d5db;
+  background-color: #f9fafb;
+  transform: translateY(-1px);
+}
+
+.btn-action.primary {
+  background-color: #2563eb;
+  color: white;
+  border: 1px solid #2563eb;
+}
+
+.btn-action.primary:hover {
+  background-color: #1d4ed8;
+}
+
+/* Activity Items */
+.activity-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.activity-item:last-child {
+  border-bottom: none;
+}
+
+.status-badge.active {
+  background-color: #dcfce7;
+  color: #15803d;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
 }
