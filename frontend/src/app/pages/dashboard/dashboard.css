@@ -1,0 +1,39 @@
+/* Make the main container full height and use Flexbox */
+.dashboard-container {
+  display: flex;
+  height: 100vh; /* Takes up full screen height */
+  width: 100%;
+}
+
+/* Sidebar stays fixed width on the left */
+.sidebar {
+  width: 250px;
+  background-color: #f4f4f4; /* Example color */
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.content {
+  flex: 1; /* Takes all remaining width */
+  display: flex;
+  flex-direction: column; /* Stack header and other content vertically */
+  justify-content: flex-start;
+  align-items: center; /* Center horizontally */
+  background-color: #fff; 
+  padding-top: 50px;
+}
+
+/* Ensure header text is centered too */
+header {
+  text-align: center;
+  margin-bottom: 2rem; /* Add space below header */
+}
+
+.bottom-nav {
+    margin-bottom: 20px;
+}
+
+nav a {
+    padding: 15px;
+}
