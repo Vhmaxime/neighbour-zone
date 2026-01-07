@@ -179,7 +179,25 @@ postRouter.patch(
         .where(eq(postsTable.id, postId))
         .returning();
 
-      return c.json({ post: updatedPost });
+      const [post] = await db
+        .select({
+          id: postsTable.id,
+          author: usersTable.name,
+          authorId: postsTable.authorId,
+          title: postsTable.title,
+          content: postsTable.content,
+          type: postsTable.type,
+          createdAt: postsTable.createdAt,
+          likes: count(postLikesTable.postId),
+        })
+        .from(postsTable)
+        .where(eq(postsTable.id, updatedPost.id))
+        .leftJoin(postLikesTable, eq(postsTable.id, postLikesTable.postId))
+        .leftJoin(usersTable, eq(postsTable.authorId, usersTable.id))
+        .groupBy(postsTable.id, usersTable.name)
+        .limit(1);
+
+      return c.json({ post });
     } catch (error) {
       if (error instanceof HTTPException) {
         throw error;
