@@ -10,6 +10,7 @@ import { logger } from "hono/logger";
 import { getBaseUrl } from "./utils/env.js";
 import userRouter from "./routes/user.js";
 import postRouter from "./routes/posts.js";
+import marketplaceRouter from "./routes/marketplace.js";
 
 const app = new Hono<{ Variables: Variables }>().basePath("/api");
 
@@ -29,10 +30,10 @@ app.get("/health", (c) => {
   });
 });
 
-// Mount Routers
 app.route("/auth", authRouter);
 app.route("/user", userRouter);
 app.route("/post", postRouter);
+app.route("/marketplace", marketplaceRouter);
 
 // Swagger UI and OpenAPI Document
 app.get("/doc", (c) => c.json(openApiDoc));

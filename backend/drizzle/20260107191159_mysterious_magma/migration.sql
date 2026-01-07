@@ -1,0 +1,1 @@
+ALTER TABLE "marketplace_items" ADD COLUMN "location" text NOT NULL;

@@ -7,6 +7,7 @@ import {
   pgEnum,
   unique,
   primaryKey,
+  real,
 } from "drizzle-orm/pg-core";
 
 export const userRoleEnum = pgEnum("user_role", ["user", "admin"]);
@@ -46,7 +47,8 @@ export const marketplaceItemsTable = pgTable("marketplace_items", {
     .references(() => usersTable.id, { onDelete: "cascade" }),
   title: text("title").notNull(),
   description: text("description").notNull(),
-  price: decimal("price", { precision: 10, scale: 2 }), // Optioneel
+  price: real("price"),
+  location: text("location").notNull(),
   category: marketplaceCategoryEnum("category").notNull().default("offered"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });

@@ -3,11 +3,12 @@ import { jwt } from "hono/jwt";
 import { Variables } from "../types/index.js";
 import { db } from "../database/index.js";
 import { postsTable, postLikesTable, usersTable } from "../database/schema.js";
-import { count, desc, eq } from "drizzle-orm";
+import { count, desc, eq, and } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
 import { zValidator } from "@hono/zod-validator";
-import { postIdSchema, postSchema } from "../schemas/post.js";
+import { postSchema } from "../schemas/post.js";
 import { constants } from "../config/index.js";
+import { idSchema } from "../schemas/index.js";
 
 const postRouter = new Hono<{ Variables: Variables }>();
 
@@ -93,7 +94,7 @@ postRouter.post(
 
 postRouter.get(
   "/:id",
-  zValidator("param", postIdSchema, (result) => {
+  zValidator("param", idSchema, (result) => {
     if (!result.success) {
       throw new HTTPException(400, {
         message: "Invalid request",
@@ -126,10 +127,11 @@ postRouter.get(
       }
       return c.json({ post });
     } catch (error) {
+      console.error("Error fetching post:", error);
+
       if (error instanceof HTTPException) {
         throw error;
       }
-      console.error("Error fetching post:", error);
       throw new HTTPException(500, { message: "Error fetching post" });
     }
   }
@@ -137,7 +139,7 @@ postRouter.get(
 
 postRouter.patch(
   "/:id",
-  zValidator("param", postIdSchema, (result) => {
+  zValidator("param", idSchema, (result) => {
     if (!result.success) {
       throw new HTTPException(400, {
         message: "Invalid request",
@@ -199,10 +201,10 @@ postRouter.patch(
 
       return c.json({ post });
     } catch (error) {
+      console.error("Error updating post:", error);
       if (error instanceof HTTPException) {
         throw error;
       }
-      console.error("Error updating post:", error);
       throw new HTTPException(500, { message: "Error updating post" });
     }
   }
@@ -210,7 +212,7 @@ postRouter.patch(
 
 postRouter.delete(
   "/:id",
-  zValidator("param", postIdSchema, (result) => {
+  zValidator("param", idSchema, (result) => {
     if (!result.success) {
       throw new HTTPException(400, {
         message: "Invalid request",
@@ -237,11 +239,71 @@ postRouter.delete(
       await db.delete(postsTable).where(eq(postsTable.id, postId));
       return c.json({ message: "Post deleted successfully" });
     } catch (error) {
+      console.error("Error deleting post:", error);
+
       if (error instanceof HTTPException) {
         throw error;
       }
-      console.error("Error deleting post:", error);
       throw new HTTPException(500, { message: "Error deleting post" });
+    }
+  }
+);
+
+postRouter.post(
+  "/:id/like",
+  zValidator("param", idSchema, (result) => {
+    if (!result.success) {
+      throw new HTTPException(400, {
+        message: "Invalid request",
+      });
+    }
+  }),
+  async (c) => {
+    try {
+      const { id: postId } = c.req.param();
+      const { sub: userId } = c.get("jwtPayload");
+
+      const [post] = await db
+        .select()
+        .from(postsTable)
+        .where(eq(postsTable.id, postId))
+        .limit(1);
+      if (!post) {
+        throw new HTTPException(404, { message: "Post not found" });
+      }
+
+      const existingLike = await db
+        .select()
+        .from(postLikesTable)
+        .where(
+          and(
+            eq(postLikesTable.userId, userId),
+            eq(postLikesTable.postId, postId)
+          )
+        )
+        .limit(1);
+
+      if (existingLike.length > 0) {
+        await db
+          .delete(postLikesTable)
+          .where(
+            and(
+              eq(postLikesTable.userId, userId),
+              eq(postLikesTable.postId, postId)
+            )
+          );
+        return c.text("ok", 200);
+      }
+
+      await db.insert(postLikesTable).values({
+        userId,
+        postId,
+      });
+
+      return c.text("ok", 200);
+    } catch (error) {
+      console.error("Error liking post:", error);
+      throw new HTTPException(500, { message: "Error liking post" });
     }
   }
 );
