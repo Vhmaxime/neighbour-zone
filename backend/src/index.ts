@@ -8,13 +8,17 @@ import { constants } from "./config.js";
 import { Variables } from "./types.js";
 import { logger } from "hono/logger";
 import { getBaseUrl } from "./utils/env.js";
+import userRouter from "./routes/user.js";
 
 const app = new Hono<{ Variables: Variables }>();
 
+// Logger Middleware
 app.use(logger());
 
+// CORS Middleware
 app.use(cors());
 
+// Health Check Endpoint
 app.get("/api/health", (c) => {
   return c.json({
     status: "ok",
@@ -24,14 +28,16 @@ app.get("/api/health", (c) => {
   });
 });
 
+// Mount Routers
 app.route("/api/auth", authRouter);
+app.route("/api/user", userRouter);
+
+// Swagger UI and OpenAPI Document
+app.get("/doc", (c) => c.json(openApiDoc));
+app.get("/ui", swaggerUI({ url: "/doc" }));
 
 app.notFound(() => {
   throw new HTTPException(404);
 });
-
-app.get("/doc", (c) => c.json(openApiDoc));
-
-app.get("/ui", swaggerUI({ url: "/doc" }));
 
 export default app;

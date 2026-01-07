@@ -10,6 +10,7 @@ import { hashPassword, verifyPassword } from "../utils/password.js";
 import { constants } from "../config.js";
 import { getCookie, setCookie } from "hono/cookie";
 import { getEnvironment } from "../utils/env.js";
+import { JwtPayload } from "../types.js";
 
 const authRouter = new Hono();
 
@@ -122,6 +123,7 @@ authRouter.post(
       const refreshToken = await sign(
         {
           sub: user.id,
+          role: user.role,
           exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7, // 7 days expiration
         },
         constants.jwtRefreshSecret
@@ -154,7 +156,10 @@ authRouter.post("/refresh", async (c) => {
   }
 
   try {
-    const payload = await verify(refreshToken, constants.jwtRefreshSecret);
+    const payload = (await verify(
+      refreshToken,
+      constants.jwtRefreshSecret
+    )) as JwtPayload;
 
     const newAccessToken = await sign(
       {
@@ -164,6 +169,22 @@ authRouter.post("/refresh", async (c) => {
       },
       constants.jwtSecret
     );
+
+    const newRefreshToken = await sign(
+      {
+        sub: payload.sub,
+        role: payload.role,
+        exp: payload.exp,
+      },
+      constants.jwtRefreshSecret
+    );
+
+    setCookie(c, "refresh_token", newRefreshToken, {
+      httpOnly: true,
+      secure: getEnvironment() != "development" ? true : false,
+      sameSite: "Strict",
+      maxAge: Math.floor(Date.now() / 1000) - payload.exp,
+    });
 
     return c.json({ accessToken: newAccessToken });
   } catch (err) {
