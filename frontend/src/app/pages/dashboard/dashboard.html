@@ -1,0 +1,32 @@
+<div class="dashboard-container">
+  <aside class="sidebar">
+    <h2>MyApp</h2>
+    <nav>
+      <a routerLink="/dashboard" class="active">Home</a>
+      <a routerLink="/profile">My Profile</a>
+      <a href="#">Settings</a>
+    </nav>
+    
+    <div class="bottom-nav">
+      <button (click)="logout()" class="logout-btn">Log Out</button>
+    </div>
+  </aside>
+
+  <main class="content">
+    <header>
+      <h1>Dashboard</h1>
+      <span class="user-badge">Welcome back!</span>
+    </header>
+
+    <div class="cards-grid">
+      <div class="card">
+        <h3>Account Status</h3>
+        <p class="status-active">Active</p>
+      </div>
+      <div class="card">
+        <h3>Recent Activity</h3>
+        <p>You logged in just now.</p>
+      </div>
+    </div>
+  </main>
+</div>

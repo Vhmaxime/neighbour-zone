@@ -25,6 +25,7 @@ body {
   line-height: 1.6;       /* Improves readability */
   -webkit-font-smoothing: antialiased; /* Crisp text on Mac/iPhone */
   -moz-osx-font-smoothing: grayscale;
+  margin: 16px;
 }
 
 /* HEADINGS */
@@ -46,4 +47,25 @@ button, .btn {
   padding: 0.75rem 1.5rem;
   border: none;
   cursor: pointer;
+  margin: 10px;
+}
+
+h1 {
+  font-size: 2.5rem;
+  margin-bottom: 24px;
+}
+
+.form-field {
+  margin-bottom: 16px;
+}
+
+form {
+  padding: 24px;
+  background-color: var(--bg-surface);
+  border-radius: 12px;
+}
+
+.form-field label {
+  color: var(--text-pri);
+  font-weight: 600;
 }

@@ -1,6 +1,16 @@
 import { bootstrapApplication } from '@angular/platform-browser';
-import { appConfig } from './app/app.config';
-import { App } from './app/app';
+import { AppComponent } from './app/app';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { provideRouter } from '@angular/router';
+import { authInterceptor } from './app/interceptors/auth-interceptor';
+import { routes } from './app/app.routes'; 
 
-bootstrapApplication(App, appConfig)
-  .catch((err) => console.error(err));
+bootstrapApplication(AppComponent, {
+  providers: [
+    provideHttpClient(withInterceptors([authInterceptor])),
+    // This uses the imported routes (which includes reset-password & dashboard)
+    provideRouter(routes) 
+  ]
+});
+
+
