@@ -1,9 +1,9 @@
 const constants = {
   jwtSecret: process.env.JWT_SECRET as string,
-  productionUrl: "https://neighbour-zone.vercel.app",
-  baseUrl: process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}`
-    : "http://localhost:8000",
+  jwtRefreshSecret: process.env.JWT_REFRESH_SECRET as string,
+  vercelProduction: process.env.VERCEL_PROJECT_PRODUCTION_URL,
+  vercelUrl: process.env.VERCEL_URL,
+  vercelEnv: process.env.VERCEL_ENV as "production" | "preview" | undefined,
 };
 
 export { constants };
