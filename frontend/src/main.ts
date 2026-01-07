@@ -8,7 +8,7 @@ import { routes } from './app/app.routes';
 bootstrapApplication(AppComponent, {
   providers: [
     provideHttpClient(withInterceptors([authInterceptor])),
-    // 3. This now uses the imported routes (which includes reset-password & dashboard)
+    // This uses the imported routes (which includes reset-password & dashboard)
     provideRouter(routes) 
   ]
 });
