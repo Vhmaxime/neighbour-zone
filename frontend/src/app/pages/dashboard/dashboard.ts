@@ -10,15 +10,20 @@ import { Auth } from '../../services/auth';
   templateUrl: './dashboard.html',
   styleUrls: ['./dashboard.css']
 })
+
 export class Dashboard {
   private auth = inject(Auth);
   private router = inject(Router);
+  userEmail: string = '';
+
+  constructor() {
+    this.userEmail = this.auth.currentUserEmail || 'Guest';
+  }
 
   logout() {
-    // 1. Clear the token from storage
+    // Clear the token from storage
     this.auth.logout();
-    
-    // 2. Redirect back to login
+    // Redirect back to login
     this.router.navigate(['/login']);
   }
 }
