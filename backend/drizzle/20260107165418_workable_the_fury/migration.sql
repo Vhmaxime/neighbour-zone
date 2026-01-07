@@ -1,0 +1,1 @@
+ALTER TABLE "posts" RENAME COLUMN "user_id" TO "author_id";

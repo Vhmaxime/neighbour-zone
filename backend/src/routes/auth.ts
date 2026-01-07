@@ -7,10 +7,10 @@ import { loginSchema, registerSchema } from "../schemas/auth.js";
 import { sign, verify } from "hono/jwt";
 import { HTTPException } from "hono/http-exception";
 import { hashPassword, verifyPassword } from "../utils/password.js";
-import { constants } from "../config.js";
+import { constants } from "../config/index.js";
 import { getCookie, setCookie } from "hono/cookie";
 import { getEnvironment } from "../utils/env.js";
-import { JwtPayload } from "../types.js";
+import { JwtPayload } from "../types/index.js";
 
 const authRouter = new Hono();
 
