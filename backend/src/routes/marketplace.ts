@@ -19,7 +19,7 @@ import { marketplaceItemSchema } from "../schemas/marketplace.js";
 const marketplaceRouter = new Hono<{ Variables: Variables }>();
 
 // JWT Middleware
-//marketplaceRouter.use(jwt({ secret: constants.jwtSecret }));
+marketplaceRouter.use(jwt({ secret: constants.jwtSecret }));
 
 marketplaceRouter.get("", async (c) => {
   const marketplaceItems = await db
@@ -38,7 +38,7 @@ marketplaceRouter.get("", async (c) => {
     .leftJoin(usersTable, eq(marketplaceItemsTable.userId, usersTable.id))
     .orderBy(desc(marketplaceItemsTable.createdAt));
 
-  return c.json({ marketplace: marketplaceItems });
+  return c.json({ marketplace: marketplaceItems }, 200);
 });
 
 marketplaceRouter.post(
@@ -123,7 +123,7 @@ marketplaceRouter.get(
       return c.json({ message: "Not found" }, 404);
     }
 
-    return c.json({ marketplace: marketplaceItem });
+    return c.json({ marketplace: marketplaceItem }, 200);
   }
 );
 
@@ -192,7 +192,7 @@ marketplaceRouter.patch(
       .orderBy(desc(marketplaceItemsTable.createdAt))
       .limit(1);
 
-    return c.json({ marketplace: updatedItem });
+    return c.json({ marketplace: updatedItem }, 200);
   }
 );
 
@@ -225,7 +225,7 @@ marketplaceRouter.delete(
       .delete(marketplaceItemsTable)
       .where(eq(marketplaceItemsTable.id, id));
 
-    return c.json({ message: "ok" });
+    return c.json({ message: "ok" }, 200);
   }
 );
 
@@ -256,7 +256,7 @@ marketplaceRouter.post(
       userId,
     });
 
-    return c.json({ message: "ok" });
+    return c.json({ message: "ok" }, 200);
   }
 );
 

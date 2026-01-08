@@ -70,7 +70,7 @@ authRouter.post(
       maxAge: 60 * 60 * 24 * 7,
     });
 
-    return c.json({ accessToken }, 201);
+    return c.json({ accessToken }, 200);
   }
 );
 
@@ -125,7 +125,7 @@ authRouter.post(
       maxAge: 60 * 60 * 24 * 7,
     });
 
-    return c.json({ accessToken });
+    return c.json({ accessToken }, 200);
   }
 );
 
@@ -166,7 +166,7 @@ authRouter.post("/refresh", async (c) => {
     maxAge: Math.floor(Date.now() / 1000) - payload.exp,
   });
 
-  return c.json({ accessToken: newAccessToken });
+  return c.json({ accessToken: newAccessToken }, 200);
 });
 
 export default authRouter;

@@ -33,7 +33,7 @@ postRouter.get("/", async (c) => {
     .groupBy(postsTable.id, usersTable.name)
     .orderBy(desc(postsTable.createdAt));
 
-  return c.json({ posts });
+  return c.json({ posts }, 200);
 });
 
 postRouter.post(
@@ -110,7 +110,7 @@ postRouter.get(
     if (!post) {
       return c.json({ message: "Not found" }, 404);
     }
-    return c.json({ post });
+    return c.json({ post }, 200);
   }
 );
 
