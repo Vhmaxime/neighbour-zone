@@ -13,10 +13,10 @@
 
     <div class="header-right">
       <div class="user-profile">
-        <div class="avatar-circle">{{ userInitial }}</div>
+        <div class="avatar-circle">{{ userInitial() }}</div>
         <div class="user-info">
           <span class="welcome-text">Welcome,</span>
-          <span class="user-email">{{ userEmail }}</span>
+          <span class="user-email">{{ userEmail() }}</span>
         </div>
       </div>
       <button (click)="logout()" class="btn-logout-small">Sign Out</button>
