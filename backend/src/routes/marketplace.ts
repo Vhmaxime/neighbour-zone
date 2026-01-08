@@ -229,24 +229,7 @@ marketplaceRouter.patch(
       })
       .where(eq(marketplaceItemsTable.id, id));
 
-    const marketplace = await db.query.marketplaceItemsTable.findFirst({
-      where: {
-        id: { eq: id },
-      },
-      columns: {
-        userId: false,
-      },
-      with: {
-        provider: {
-          columns: {
-            id: true,
-            name: true,
-          },
-        },
-      },
-    });
-
-    return c.json({ marketplace }, 200);
+    return c.json({ message: "ok" }, 200);
   }
 );
 

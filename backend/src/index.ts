@@ -8,8 +8,9 @@ import { constants } from "./config/index.js";
 import { Variables } from "./types/index.js";
 import { getBaseUrl } from "./utils/env.js";
 import userRouter from "./routes/user.js";
-import postRouter from "./routes/posts.js";
+import postRouter from "./routes/post.js";
 import marketplaceRouter from "./routes/marketplace.js";
+import eventRouter from "./routes/event.js";
 
 const app = new Hono<{ Variables: Variables }>().basePath("/api");
 
@@ -31,6 +32,7 @@ app.route("/auth", authRouter);
 app.route("/user", userRouter);
 app.route("/post", postRouter);
 app.route("/marketplace", marketplaceRouter);
+app.route("/event", eventRouter);
 
 // Swagger UI and OpenAPI Document
 app.get("/doc", (c) => c.json(openApiDoc));
