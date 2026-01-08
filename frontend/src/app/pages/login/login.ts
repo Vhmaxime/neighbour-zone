@@ -47,7 +47,7 @@ export class Login {
       // Await the Promise directly
       const response = await this.auth.login({ email, password });
 
-      const token = response?.token;
+      const token = response?.accessToken;
 
       if (token) {
         this.auth.saveToken(token, rememberMe);

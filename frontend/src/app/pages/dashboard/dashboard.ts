@@ -47,7 +47,7 @@ export class Dashboard implements OnInit { // Added OnInit interface
 
     try {
       // The "Protected" Fetch Call
-      const response = await fetch('https://neighbour-zone.vercel.app/api/auth/me', {
+      const response = await fetch('https://neighbour-zone.vercel.app/api/user/me', {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`, // Sends token to server. Without it, server would reject request with 401 error
