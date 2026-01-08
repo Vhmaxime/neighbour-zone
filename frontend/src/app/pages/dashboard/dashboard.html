@@ -1,63 +1,71 @@
 <div class="dashboard-wrapper">
   
-  <header class="dashboard-header">
-    <div class="header-left">
-      <h1>Dashboard</h1>
-      <p class="date-display">{{ today | date:'fullDate' }}</p>
-    </div>
-    
-    <div class="header-right">
-      <div class="user-profile">
-        <div class="avatar-circle">{{ userInitial }}</div>
-        <div class="user-info">
-          <span class="welcome-text">Welcome,</span>
-          <span class="user-email">{{ userEmail }}</span>
-        </div>
-      </div>
-      <button (click)="logout()" class="btn-logout-small">Sign Out</button>
-    </div>
-  </header>
-
-  <section class="alerts-section">
-    <div *ngFor="let alert of alerts" class="alert-banner" [class]="alert.type">
-      <span class="alert-icon" *ngIf="alert.type === 'info'">ℹ️</span>
-      <span class="alert-icon" *ngIf="alert.type === 'warning'">⚠️</span>
-      {{ alert.message }}
-    </div>
-  </section>
-
-  <div class="dashboard-grid">
-    
-    <div class="card activity-card">
-      <h3>Session Info</h3>
-      <div class="activity-item">
-        <span class="label">Status:</span>
-        <span class="status-badge active">Logged in</span>
-      </div>
-      <div class="activity-item">
-        <span class="label">Logged in at:</span>
-        <span class="value">{{ lastLogin | date:'shortTime' }}</span>
-      </div>
-    </div>
-
-    <div class="card completion-card">
-      <h3>Profile Status</h3>
-      
-      <div class="progress-container">
-        <div class="progress-info">
-          <span class="label">Completion</span>
-          <span class="percentage">{{ profileCompletion }}%</span>
-        </div>
-        
-        <div class="progress-bar-bg">
-          <div class="progress-bar-fill" [style.width.%]="profileCompletion"></div>
-        </div>
-      </div>
-
-      <p class="completion-hint">Add your phone number to reach 100%.</p>
-      
-      <a routerLink="/profile" class="btn">Complete your profile</a>
-    </div>
-
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="spinner"></div>
+    <p>Loading your dashboard...</p>
   </div>
-</div>
+
+  <div *ngIf="!isLoading">
+    
+    <header class="dashboard-header">
+      <div class="header-left">
+        <h1>Dashboard</h1>
+        <p class="date-display">{{ today | date:'fullDate' }}</p>
+      </div>
+      
+      <div class="header-right">
+        <div class="user-profile">
+          <div class="avatar-circle">{{ userInitial }}</div>
+          <div class="user-info">
+            <span class="welcome-text">Welcome,</span>
+            <span class="user-email">{{ userEmail }}</span>
+          </div>
+        </div>
+        <button (click)="logout()" class="btn-logout-small">Sign Out</button>
+      </div>
+    </header>
+
+    <section class="alerts-section">
+      <div *ngFor="let alert of alerts" class="alert-banner" [class]="alert.type">
+        <span class="alert-icon" *ngIf="alert.type === 'info'">ℹ️</span>
+        <span class="alert-icon" *ngIf="alert.type === 'warning'">⚠️</span>
+        {{ alert.message }}
+      </div>
+    </section>
+
+    <div class="dashboard-grid">
+      
+      <div class="card activity-card">
+        <h3>Session Info</h3>
+        <div class="activity-item">
+          <span class="label">Status:</span>
+          <span class="status-badge active">Logged in</span>
+        </div>
+        <div class="activity-item">
+          <span class="label">Logged in at:</span>
+          <span class="value">{{ lastLogin | date:'shortTime' }}</span>
+        </div>
+      </div>
+
+      <div class="card completion-card">
+        <h3>Profile Status</h3>
+        
+        <div class="progress-container">
+          <div class="progress-info">
+            <span class="label">Completion</span>
+            <span class="percentage">{{ profileCompletion }}%</span>
+          </div>
+          
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" [style.width.%]="profileCompletion"></div>
+          </div>
+        </div>
+
+        <p class="completion-hint">Add your phone number to reach 100%.</p>
+        
+        <a routerLink="/profile" class="btn">Complete your profile</a>
+      </div>
+
+    </div>
+  </div>
+ </div>
