@@ -14,6 +14,8 @@ postRouter.use(authMiddleware);
 
 // Get all posts
 postRouter.get("/", async (c) => {
+  const { sub: userId } = c.get("jwtPayload");
+
   const posts = await db.query.postsTable.findMany({
     columns: {
       authorId: false,
@@ -35,7 +37,21 @@ postRouter.get("/", async (c) => {
     },
   });
 
-  return c.json({ posts }, 200);
+  const likedPostIds = await db.query.postLikesTable.findMany({
+    where: { userId: { eq: userId } },
+    columns: {
+      postId: true,
+    },
+  });
+
+  const postIdSet = posts.map((post) => {
+    return {
+      ...post,
+      likedByUser: likedPostIds.some((like) => like.postId === post.id),
+    };
+  });
+
+  return c.json({ posts: postIdSet }, 200);
 });
 
 // Create a new post
@@ -97,6 +113,8 @@ postRouter.get(
   async (c) => {
     const { id: postId } = c.req.valid("param");
 
+    const { sub: userId } = c.get("jwtPayload");
+
     const post = await db.query.postsTable.findFirst({
       where: { id: { eq: postId } },
       columns: {
@@ -119,6 +137,24 @@ postRouter.get(
     if (!post) {
       return c.json({ message: "Not found" }, 404);
     }
+
+    if (post.author?.id === userId) {
+      const likedBy = await db.query.postLikesTable.findMany({
+        where: { postId: { eq: postId } },
+        columns: {},
+        with: {
+          user: {
+            columns: {
+              id: true,
+              name: true,
+            },
+          },
+        },
+      });
+
+      return c.json({ ...post, likedBy }, 200);
+    }
+
     return c.json({ post }, 200);
   }
 );

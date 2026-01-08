@@ -1,4 +1,4 @@
-import { getBaseUrl, getEnvironment } from "./utils/env.js";
+import { getBaseUrl, getEnvironment } from "../utils/env.js";
 
 export const openApiDoc = {
   openapi: "3.0.0",

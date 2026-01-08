@@ -3,7 +3,7 @@ import { cors } from "hono/cors";
 import { HTTPException } from "hono/http-exception";
 import authRouter from "./routes/auth.js";
 import { swaggerUI } from "@hono/swagger-ui";
-import { openApiDoc } from "./opeapi.js";
+import { openApiDoc } from "./config/opeapi.js";
 import { constants } from "./config/index.js";
 import { Variables } from "./types/index.js";
 import { getBaseUrl } from "./utils/env.js";

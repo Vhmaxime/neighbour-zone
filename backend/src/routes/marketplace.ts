@@ -103,6 +103,8 @@ marketplaceRouter.get(
   async (c) => {
     const { id } = c.req.valid("param");
 
+    const { sub: userId } = c.get("jwtPayload");
+
     const marketplace = await db.query.marketplaceItemsTable.findFirst({
       where: {
         id: { eq: id },
@@ -122,6 +124,29 @@ marketplaceRouter.get(
 
     if (!marketplace) {
       return c.json({ message: "Not found" }, 404);
+    }
+
+    if (marketplace.provider?.id === userId) {
+      const applications = await db.query.marketplaceApplicationsTable.findMany(
+        {
+          where: {
+            marketplaceItemId: { eq: marketplace.id },
+          },
+          columns: {
+            message: true,
+          },
+          with: {
+            user: {
+              columns: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        }
+      );
+
+      return c.json({ ...marketplace, applications }, 200);
     }
 
     return c.json({ marketplace }, 200);
