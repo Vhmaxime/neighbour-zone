@@ -2,8 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormControl, Validators, FormGroup } from '@angular/forms';
 import { Auth } from '../../services/auth';
-import { catchError, EMPTY } from 'rxjs';
-import { Router, RouterModule} from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -33,36 +32,42 @@ export class Login {
     });
 
     if (this.auth.getToken()) {
-    this.router.navigate(['/dashboard']);
+      this.router.navigate(['/dashboard']);
     }
   }
 
-  submit() {
+  async submit() {
     if (this.form.invalid) return;
 
-    // Destructure rememberMe separately
     const { email, password, rememberMe } = this.form.getRawValue();
 
-    // ADDED: only send email & password to login
-    this.auth.login({ email, password })
-      .pipe(
-        catchError(() => {
-          this.error.set('Invalid credentials');
-          return EMPTY;
-        })
-      )
-      .subscribe((response: any) => {
-        // Persist token based on Remember Me checkbox
-        const token = response?.token; // replace with your actual token property
-        if (token) {
-          this.auth.saveToken(token, rememberMe);
-          this.router.navigate(['/dashboard']);
-        }
+    try {
+      this.error.set(null); // Clear previous errors
+      
+      // Await the promise from the fetch API
+      const response = await this.auth.login({ email, password });
+      
+      // Success logic
+      const token = response?.token; 
+      
+      if (token) {
+        this.auth.saveToken(token, rememberMe);
+        this.router.navigate(['/dashboard']);
+      } else {
+        // Handle case where login worked but no token was returned
+        this.error.set('Login successful but no token received.');
+      }
+      
+      console.log('Logged in', response);
 
-        console.log('Logged in', response);
-        this.error.set(null);
-      });
+    } catch (err: any) {
+      // Error logic (catches the errors thrown by your Auth service)
+      console.error(err);
+      
+      // If the error is an object with a message, use it; otherwise default text
+      const errorMessage = err.message || 'Invalid credentials';
+      this.error.set(errorMessage);
+    }
   }
 }
-
 

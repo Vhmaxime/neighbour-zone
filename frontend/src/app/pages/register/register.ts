@@ -2,8 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators, FormGroup, FormControl, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Auth } from '../../services/auth';
-import { catchError, EMPTY } from 'rxjs';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -24,6 +23,7 @@ export class Register {
 
   private fb = inject(FormBuilder);
   private auth = inject(Auth);
+  private router = inject(Router);
 
   constructor() {
     this.form = this.fb.group(
@@ -50,21 +50,29 @@ export class Register {
     return password === confirm ? null : { passwordMismatch: true };
   }
 
-  submit(): void {
+  async submit() {
     if (this.form.invalid) return;
 
-    this.auth
-      .register(this.form.getRawValue())
-      .pipe(
-        catchError(() => {
-          this.error.set('Registration failed');
-          return EMPTY;
-        })
-      )
-      .subscribe(() => {
-        console.log('Registered');
-        this.error.set(null);
-      });
+    // Destructure to ensure we don't send 'confirmPassword' to the backend
+    const { name, email, password } = this.form.getRawValue();
+
+    try {
+      this.error.set(null); // Clear previous errors
+      
+      await this.auth.register({ name, email, password });
+      
+      console.log('Registered successfully');
+      
+      // Redirect user to login page after successful registration
+      this.router.navigate(['/login']);
+
+    } catch (err: any) {
+      console.error(err);
+      
+      // Use the error message from the Auth service
+      const errorMessage = err.message || 'Registration failed';
+      this.error.set(errorMessage);
+    }
   }
 }
 
