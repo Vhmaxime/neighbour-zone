@@ -5,9 +5,9 @@ import { Observable } from 'rxjs';
 @Injectable({ providedIn: 'root' })
 export class Auth {
   // URL is defined here
-  private baseUrl: string = 'https://example.com/api';
+  private baseUrl: string = 'https://neighbour-zone.vercel.app/api';
 
-  constructor(private http: HttpClient) {}
+  constructor() {}
 
   get currentUserEmail(): string | null {
     const token = this.getToken();
@@ -24,17 +24,37 @@ export class Auth {
     }
   }
 
-  register(payload: { name: string; email: string; password: string }): Observable<any> {
-    return this.http.post(`${this.baseUrl}/register`, payload);
+  async register(payload: { name: string; email: string; password: string }): Promise<any> {
+    return this.request('/register', payload);
   }
 
-  login(payload: { email: string; password: string }): Observable<any> {
-    return this.http.post(`${this.baseUrl}/login`, payload);
+  async login(payload: { email: string; password: string }): Promise<any> {
+    return this.request('/login', payload);
   }
 
-  resetPassword(email: string): Observable<any> {
-    return this.http.post(`${this.baseUrl}/reset-password`, { email });
+  async resetPassword(email: string): Promise<any> {
+    return this.request('/reset-password', { email });
   }
+
+  // --- Helper to keep the fetch logic DRY ---
+  private async request(endpoint: string, body: any): Promise<any> {
+    const response = await fetch(`${this.baseUrl}${endpoint}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({ message: 'Network error' }));
+      throw error;
+    }
+
+    return response.json();
+  }
+
+  // Token Logic
 
   getToken(): string | null {
     return localStorage.getItem('authToken')
