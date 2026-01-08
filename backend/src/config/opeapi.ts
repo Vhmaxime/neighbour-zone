@@ -67,6 +67,27 @@ export const openApiDoc = {
           createdAt: { type: "string", format: "date-time" },
         },
       },
+      Event: {
+        type: "object",
+        properties: {
+          id: { type: "string" },
+          title: { type: "string" },
+          description: { type: "string" },
+          location: { type: "string" },
+          dateTime: { type: "string", format: "date-time" },
+          endAt: { type: "string", format: "date-time", nullable: true },
+          organizer: {
+            type: "object",
+            properties: {
+              id: { type: "string" },
+              name: { type: "string" },
+            },
+          },
+          createdAt: { type: "string", format: "date-time" },
+          likes: { type: "number" },
+          liked: { type: "boolean" },
+        },
+      },
       Error: {
         type: "object",
         properties: {
@@ -1090,6 +1111,422 @@ export const openApiDoc = {
         },
       },
     },
+    "/event": {
+      get: {
+        summary: "Get all events",
+        tags: ["Events"],
+        security: [{ bearerAuth: [] }],
+        responses: {
+          200: {
+            description: "Events retrieved successfully",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    events: {
+                      type: "array",
+                      items: { $ref: "#/components/schemas/Event" },
+                    },
+                  },
+                },
+                example: {
+                  events: [
+                    {
+                      id: "550e8400-e29b-41d4-a716-446655440050",
+                      title: "Neighbourhood BBQ",
+                      description:
+                        "Join us for our annual summer BBQ in the park!",
+                      location: "Central Park",
+                      dateTime: "2026-06-15T18:00:00Z",
+                      endAt: "2026-06-15T22:00:00Z",
+                      organizer: {
+                        id: "550e8400-e29b-41d4-a716-446655440000",
+                        name: "John Doe",
+                      },
+                      createdAt: "2026-01-08T10:00:00Z",
+                      likes: 15,
+                      liked: false,
+                    },
+                    {
+                      id: "550e8400-e29b-41d4-a716-446655440051",
+                      title: "Book Club Meeting",
+                      description: "Monthly book club discussion",
+                      location: "Community Center",
+                      dateTime: "2026-01-20T19:00:00Z",
+                      endAt: null,
+                      organizer: {
+                        id: "550e8400-e29b-41d4-a716-446655440003",
+                        name: "Jane Smith",
+                      },
+                      createdAt: "2026-01-05T14:30:00Z",
+                      likes: 8,
+                      liked: true,
+                    },
+                  ],
+                },
+              },
+            },
+          },
+          401: {
+            description: "Unauthorized",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+        },
+      },
+      post: {
+        summary: "Create a new event",
+        tags: ["Events"],
+        security: [{ bearerAuth: [] }],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                required: ["title", "description", "location", "dateTime"],
+                properties: {
+                  title: { type: "string", minLength: 1 },
+                  description: { type: "string", minLength: 1 },
+                  location: { type: "string", minLength: 1 },
+                  dateTime: { type: "string", format: "date-time" },
+                  endAt: {
+                    type: "string",
+                    format: "date-time",
+                    nullable: true,
+                  },
+                },
+              },
+              example: {
+                title: "Yoga in the Park",
+                description: "Free outdoor yoga session for all levels",
+                location: "Riverside Park",
+                dateTime: "2026-02-10T09:00:00Z",
+                endAt: "2026-02-10T10:30:00Z",
+              },
+            },
+          },
+        },
+        responses: {
+          201: {
+            description: "Event created successfully",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    event: { $ref: "#/components/schemas/Event" },
+                  },
+                },
+                example: {
+                  event: {
+                    id: "550e8400-e29b-41d4-a716-446655440060",
+                    title: "Yoga in the Park",
+                    description: "Free outdoor yoga session for all levels",
+                    location: "Riverside Park",
+                    dateTime: "2026-02-10T09:00:00Z",
+                    endAt: "2026-02-10T10:30:00Z",
+                    organizer: {
+                      id: "550e8400-e29b-41d4-a716-446655440000",
+                      name: "John Doe",
+                    },
+                    createdAt: "2026-01-08T15:00:00Z",
+                    likes: 0,
+                    liked: false,
+                  },
+                },
+              },
+            },
+          },
+          400: {
+            description: "Bad request",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+          401: {
+            description: "Unauthorized",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+        },
+      },
+    },
+    "/event/{id}": {
+      get: {
+        summary: "Get an event by ID",
+        tags: ["Events"],
+        security: [{ bearerAuth: [] }],
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            required: true,
+            schema: { type: "string" },
+          },
+        ],
+        responses: {
+          200: {
+            description: "Event retrieved successfully",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    event: { $ref: "#/components/schemas/Event" },
+                    likedBy: {
+                      type: "array",
+                      items: {
+                        type: "object",
+                        properties: {
+                          user: {
+                            type: "object",
+                            properties: {
+                              id: { type: "string" },
+                              name: { type: "string" },
+                            },
+                          },
+                        },
+                      },
+                      description: "Only included if the user is the organizer",
+                    },
+                  },
+                },
+              },
+            },
+          },
+          400: {
+            description: "Bad request",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+          404: {
+            description: "Event not found",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+          401: {
+            description: "Unauthorized",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+        },
+      },
+      patch: {
+        summary: "Update an event",
+        tags: ["Events"],
+        security: [{ bearerAuth: [] }],
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            required: true,
+            schema: { type: "string" },
+          },
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                required: ["title", "description", "location", "dateTime"],
+                properties: {
+                  title: { type: "string", minLength: 1 },
+                  description: { type: "string", minLength: 1 },
+                  location: { type: "string", minLength: 1 },
+                  dateTime: { type: "string", format: "date-time" },
+                  endAt: {
+                    type: "string",
+                    format: "date-time",
+                    nullable: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          200: {
+            description: "Event updated successfully",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    message: { type: "string" },
+                  },
+                },
+              },
+            },
+          },
+          400: {
+            description: "Bad request",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+          403: {
+            description: "Forbidden - not the event organizer",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+          404: {
+            description: "Event not found",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+          401: {
+            description: "Unauthorized",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+        },
+      },
+      delete: {
+        summary: "Delete an event",
+        tags: ["Events"],
+        security: [{ bearerAuth: [] }],
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            required: true,
+            schema: { type: "string" },
+          },
+        ],
+        responses: {
+          200: {
+            description: "Event deleted successfully",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    message: { type: "string" },
+                  },
+                },
+              },
+            },
+          },
+          400: {
+            description: "Bad request",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+          403: {
+            description: "Forbidden - not the event organizer",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+          404: {
+            description: "Event not found",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+          401: {
+            description: "Unauthorized",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+        },
+      },
+    },
+    "/event/{id}/like": {
+      post: {
+        summary: "Like or unlike an event",
+        tags: ["Events"],
+        security: [{ bearerAuth: [] }],
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            required: true,
+            schema: { type: "string" },
+          },
+        ],
+        responses: {
+          200: {
+            description: "Like toggled successfully",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    message: { type: "string" },
+                  },
+                },
+              },
+            },
+          },
+          400: {
+            description: "Bad request",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+          404: {
+            description: "Event not found",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+          401: {
+            description: "Unauthorized",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+        },
+      },
+    },
   },
   tags: [
     { name: "System", description: "System endpoints" },
@@ -1097,5 +1534,6 @@ export const openApiDoc = {
     { name: "User", description: "User endpoints" },
     { name: "Posts", description: "Post management endpoints" },
     { name: "Marketplace", description: "Marketplace management endpoints" },
+    { name: "Events", description: "Event management endpoints" },
   ],
 };
