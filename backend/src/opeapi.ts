@@ -107,36 +107,29 @@ export const openApiDoc = {
         },
         responses: {
           "201": {
-            description: "User registered successfully",
+            description:
+              "User registered successfully. Sets HTTP-only refresh_token cookie.",
+            headers: {
+              "Set-Cookie": {
+                description:
+                  "HTTP-only cookie containing the refresh token (expires in 7 days)",
+                schema: {
+                  type: "string",
+                  example:
+                    "refresh_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...; HttpOnly; Secure; SameSite=Strict; Path=/",
+                },
+              },
+            },
             content: {
               "application/json": {
                 schema: {
                   type: "object",
                   properties: {
-                    token: {
+                    access_token: {
                       type: "string",
                       description:
-                        "JWT authentication token (expires in 1 minute)",
+                        "JWT access token for API authentication (expires in 15 minutes)",
                       example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-                    },
-                    user: {
-                      type: "object",
-                      properties: {
-                        id: {
-                          type: "string",
-                          format: "uuid",
-                          example: "123e4567-e89b-12d3-a456-426614174000",
-                        },
-                        name: {
-                          type: "string",
-                          example: "John Doe",
-                        },
-                        email: {
-                          type: "string",
-                          format: "email",
-                          example: "john.doe@example.com",
-                        },
-                      },
                     },
                   },
                 },
@@ -225,36 +218,29 @@ export const openApiDoc = {
         },
         responses: {
           "200": {
-            description: "Login successful",
+            description:
+              "Login successful. Sets HTTP-only refresh_token cookie.",
+            headers: {
+              "Set-Cookie": {
+                description:
+                  "HTTP-only cookie containing the refresh token (expires in 7 days)",
+                schema: {
+                  type: "string",
+                  example:
+                    "refresh_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...; HttpOnly; Secure; SameSite=Strict; Path=/",
+                },
+              },
+            },
             content: {
               "application/json": {
                 schema: {
                   type: "object",
                   properties: {
-                    token: {
+                    access_token: {
                       type: "string",
                       description:
-                        "JWT authentication token (expires in 1 hour)",
+                        "JWT access token for API authentication (expires in 15 minutes)",
                       example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-                    },
-                    user: {
-                      type: "object",
-                      properties: {
-                        id: {
-                          type: "string",
-                          format: "uuid",
-                          example: "123e4567-e89b-12d3-a456-426614174000",
-                        },
-                        name: {
-                          type: "string",
-                          example: "John Doe",
-                        },
-                        email: {
-                          type: "string",
-                          format: "email",
-                          example: "john.doe@example.com",
-                        },
-                      },
                     },
                   },
                 },
