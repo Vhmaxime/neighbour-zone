@@ -2,7 +2,6 @@ import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { Auth } from '../../services/auth';
-import { catchError, EMPTY } from 'rxjs';
 import { RouterModule } from '@angular/router';
 
 @Component({
@@ -27,19 +26,18 @@ export class ResetPassword {
     });
   }
 
-  submit() {
+ submit() {
     if (this.form.invalid) return;
 
     this.auth.resetPassword(this.form.value.email)
-      .pipe(
-        catchError(() => {
-          this.error.set('Failed to send reset email.');
-          return EMPTY;
-        })
-      )
-      .subscribe(() => {
+      .then(() => {
+        // Success case
         this.success.set('Check your email for reset instructions.');
         this.error.set(null);
+      })
+      .catch(() => {
+        // Error case
+        this.error.set('Failed to send reset email.');
       });
   }
 }

@@ -7,10 +7,10 @@ import { loginSchema, registerSchema } from "../schemas/auth.js";
 import { sign, verify } from "hono/jwt";
 import { HTTPException } from "hono/http-exception";
 import { hashPassword, verifyPassword } from "../utils/password.js";
-import { constants } from "../config.js";
+import { constants } from "../config/index.js";
 import { getCookie, setCookie } from "hono/cookie";
 import { getEnvironment } from "../utils/env.js";
-import { JwtPayload } from "../types.js";
+import { JwtPayload } from "../types/index.js";
 
 const authRouter = new Hono();
 
@@ -149,13 +149,13 @@ authRouter.post(
 );
 
 authRouter.post("/refresh", async (c) => {
-  const refreshToken = getCookie(c, "refresh_token");
-
-  if (!refreshToken) {
-    return c.json({ error: "No refresh token provided" }, 401);
-  }
-
   try {
+    const refreshToken = getCookie(c, "refresh_token");
+
+    if (!refreshToken) {
+      return c.json({ error: "No refresh token provided" }, 401);
+    }
+
     const payload = (await verify(
       refreshToken,
       constants.jwtRefreshSecret

@@ -1,4 +1,4 @@
-import { constants } from "../config.js";
+import { constants } from "../config/index.js";
 
 function getEnvironment() {
   return constants.vercelEnv || "development";
