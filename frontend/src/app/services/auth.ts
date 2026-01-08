@@ -48,16 +48,17 @@ export class Auth {
   }
 
   async register(payload: { name: string; email: string; password: string }): Promise<any> {
-    return this.request('/register', payload);
+    return this.request('/auth/register', payload);
   }
 
   async login(payload: { email: string; password: string }): Promise<any> {
-    return this.request('/login', payload);
+    return this.request('/auth/login', payload);
   }
 
-  async resetPassword(email: string): Promise<any> {
-    return this.request('/reset-password', { email });
-  }
+  // Commented out because we are not using a reset password page for now
+  // async resetPassword(email: string): Promise<any> {
+  //   return this.request('/auth/reset-password', { email });
+  // }
 
   // --- Helper to handle Fetch logic & Errors ---
   private async request(endpoint: string, body: any): Promise<any> {
