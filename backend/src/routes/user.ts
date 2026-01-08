@@ -21,7 +21,7 @@ userRouter.get("/me", async (c) => {
     .where(eq(usersTable.id, sub))
     .limit(1);
 
-  return c.json({ id, name, email, role });
+  return c.json({ id, name, email, role }, 200);
 });
 
 export default userRouter;
