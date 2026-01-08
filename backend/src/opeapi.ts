@@ -30,6 +30,12 @@ export const openApiDoc = {
           email: { type: "string", format: "email" },
           role: { type: "string", enum: ["user", "admin"] },
         },
+        example: {
+          id: "550e8400-e29b-41d4-a716-446655440000",
+          name: "John Doe",
+          email: "john.doe@example.com",
+          role: "user",
+        },
       },
       Post: {
         type: "object",
@@ -57,7 +63,7 @@ export const openApiDoc = {
           description: { type: "string" },
           price: { type: "number", nullable: true },
           location: { type: "string" },
-          category: { type: "string", enum: ["service", "product", "rental"] },
+          category: { type: "string", enum: ["wanted", "offered"] },
           createdAt: { type: "string", format: "date-time" },
         },
       },
@@ -260,12 +266,19 @@ export const openApiDoc = {
             description: "User information retrieved successfully",
             content: {
               "application/json": {
-                schema: { $ref: "#/components/schemas/User" },
+                schema: {
+                  type: "object",
+                  properties: {
+                    user: { $ref: "#/components/schemas/User" },
+                  },
+                },
                 example: {
-                  id: "550e8400-e29b-41d4-a716-446655440000",
-                  name: "John Doe",
-                  email: "john.doe@example.com",
-                  role: "user",
+                  user: {
+                    id: "550e8400-e29b-41d4-a716-446655440000",
+                    name: "John Doe",
+                    email: "john.doe@example.com",
+                    role: "user",
+                  },
                 },
               },
             },
@@ -690,7 +703,7 @@ export const openApiDoc = {
                         "Professional lawn mowing service available on weekends.",
                       price: 25.0,
                       location: "Downtown neighbourhood",
-                      category: "service",
+                      category: "offered",
                       createdAt: "2026-01-08T10:00:00Z",
                     },
                     {
@@ -701,7 +714,7 @@ export const openApiDoc = {
                       description: "Mountain bike available for daily rental.",
                       price: 15.0,
                       location: "Park area",
-                      category: "rental",
+                      category: "offered",
                       createdAt: "2026-01-07T16:00:00Z",
                     },
                   ],
@@ -737,7 +750,7 @@ export const openApiDoc = {
                   price: { type: "number", nullable: true },
                   category: {
                     type: "string",
-                    enum: ["service", "product", "rental"],
+                    enum: ["wanted", "offered"],
                   },
                 },
               },
@@ -747,7 +760,7 @@ export const openApiDoc = {
                   "Quick and reliable snow removal for driveways and walkways.",
                 location: "North neighbourhood",
                 price: 40.0,
-                category: "service",
+                category: "offered",
               },
             },
           },
@@ -775,7 +788,7 @@ export const openApiDoc = {
                       "Quick and reliable snow removal for driveways and walkways.",
                     price: 40.0,
                     location: "North neighbourhood",
-                    category: "service",
+                    category: "offered",
                     createdAt: "2026-01-08T14:45:00Z",
                   },
                 },
@@ -882,7 +895,7 @@ export const openApiDoc = {
                   price: { type: "number", nullable: true },
                   category: {
                     type: "string",
-                    enum: ["service", "product", "rental"],
+                    enum: ["wanted", "offered"],
                   },
                 },
               },
@@ -1013,6 +1026,29 @@ export const openApiDoc = {
             schema: { type: "string" },
           },
         ],
+        requestBody: {
+          required: false,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  message: {
+                    type: "string",
+                    minLength: 1,
+                    maxLength: 1000,
+                    description:
+                      "Optional message to send with the application",
+                  },
+                },
+              },
+              example: {
+                message:
+                  "Hi, I'm interested in this item. When can we arrange a meeting?",
+              },
+            },
+          },
+        },
         responses: {
           200: {
             description: "Application submitted successfully",
