@@ -39,8 +39,16 @@ app.route("/marketplace", marketplaceRouter);
 app.get("/doc", (c) => c.json(openApiDoc));
 app.get("/ui", swaggerUI({ url: "/api/doc" }));
 
-app.notFound(() => {
-  throw new HTTPException(404);
+app.notFound((c) => {
+  return c.json({ message: "Not Found" }, 404);
+});
+
+app.onError((err, c) => {
+  if (err instanceof HTTPException) {
+    return err.getResponse();
+  }
+  console.error("Unhandled Error:", err);
+  return c.json({ message: "Internal Server Error" }, 500);
 });
 
 export default app;
