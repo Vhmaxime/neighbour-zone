@@ -14,6 +14,10 @@ export const routes: Routes = [
     component: Dashboard,
     // canActivate: [authGuard] // commented this out so I don't need to worry about tokens for the moment
   },
-  { path: '', redirectTo: '/login', pathMatch: 'full' }
+  { path: '', redirectTo: '/login', pathMatch: 'full' },
+  {
+    path: '**',
+    redirectTo: 'login' // Catch all invalid URLs and sends user to login
+  }
 ];
 
