@@ -1,0 +1,1 @@
+ALTER TABLE "marketplace_items" ALTER COLUMN "price" SET DATA TYPE real USING "price"::real;
