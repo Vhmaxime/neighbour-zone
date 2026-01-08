@@ -6,16 +6,12 @@ import { swaggerUI } from "@hono/swagger-ui";
 import { openApiDoc } from "./opeapi.js";
 import { constants } from "./config/index.js";
 import { Variables } from "./types/index.js";
-import { logger } from "hono/logger";
 import { getBaseUrl } from "./utils/env.js";
 import userRouter from "./routes/user.js";
 import postRouter from "./routes/posts.js";
 import marketplaceRouter from "./routes/marketplace.js";
 
 const app = new Hono<{ Variables: Variables }>().basePath("/api");
-
-// Logger Middleware
-app.use(logger());
 
 // CORS Middleware
 app.use(cors());
@@ -30,6 +26,7 @@ app.get("/health", (c) => {
   });
 });
 
+//Routes
 app.route("/auth", authRouter);
 app.route("/user", userRouter);
 app.route("/post", postRouter);

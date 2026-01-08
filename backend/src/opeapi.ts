@@ -3,57 +3,89 @@ import { getBaseUrl, getEnvironment } from "./utils/env.js";
 export const openApiDoc = {
   openapi: "3.0.0",
   info: {
-    title: "Neighbour Zone API Documentation",
+    title: "Neighbour Zone API",
     version: "1.0.0",
-    description: "API documentation for the Neighbour Zone API",
+    description: "API for the Neighbour Zone platform",
   },
   servers: [
     {
-      url: getBaseUrl(),
+      url: getBaseUrl() + "/api",
       description: getEnvironment(),
     },
   ],
-  tags: [
-    {
-      name: "health",
-      description: "Health check endpoints",
+  components: {
+    securitySchemes: {
+      bearerAuth: {
+        type: "http",
+        scheme: "bearer",
+        bearerFormat: "JWT",
+      },
     },
-    {
-      name: "auth",
-      description: "Authentication endpoints",
+    schemas: {
+      User: {
+        type: "object",
+        properties: {
+          id: { type: "string" },
+          name: { type: "string" },
+          email: { type: "string", format: "email" },
+          role: { type: "string", enum: ["user", "admin"] },
+        },
+      },
+      Post: {
+        type: "object",
+        properties: {
+          id: { type: "string" },
+          author: { type: "string" },
+          authorId: { type: "string" },
+          title: { type: "string" },
+          content: { type: "string" },
+          type: {
+            type: "string",
+            enum: ["offer", "request", "event", "announcement"],
+          },
+          createdAt: { type: "string", format: "date-time" },
+          likes: { type: "number" },
+        },
+      },
+      MarketplaceItem: {
+        type: "object",
+        properties: {
+          id: { type: "string" },
+          title: { type: "string" },
+          userId: { type: "string" },
+          userName: { type: "string" },
+          description: { type: "string" },
+          price: { type: "number", nullable: true },
+          location: { type: "string" },
+          category: { type: "string", enum: ["service", "product", "rental"] },
+          createdAt: { type: "string", format: "date-time" },
+        },
+      },
+      Error: {
+        type: "object",
+        properties: {
+          message: { type: "string" },
+        },
+      },
     },
-    {
-      name: "user",
-      description: "User endpoints",
-    },
-    {
-      name: "posts",
-      description: "Post management endpoints",
-    },
-  ],
+  },
   paths: {
-    "/api/health": {
+    "/health": {
       get: {
-        tags: ["health"],
-        summary: "Health check",
-        description: "Check if the API is running and responding",
+        summary: "Health check endpoint",
+        tags: ["System"],
         responses: {
-          "200": {
-            description: "API is healthy",
+          200: {
+            description: "System is healthy",
             content: {
               "application/json": {
                 schema: {
                   type: "object",
                   properties: {
-                    status: {
-                      type: "string",
-                      example: "ok",
-                    },
-                    timestamp: {
-                      type: "string",
-                      format: "date-time",
-                      example: "2024-01-01T12:00:00.000Z",
-                    },
+                    status: { type: "string" },
+                    timestamp: { type: "string", format: "date-time" },
+                    env: { type: "string" },
+                    origin: { type: "string" },
                   },
                 },
               },
@@ -62,136 +94,72 @@ export const openApiDoc = {
         },
       },
     },
-    "/api/auth/register": {
+    "/auth/register": {
       post: {
-        tags: ["auth"],
         summary: "Register a new user",
-        description: "Create a new user account with name, email, and password",
+        tags: ["Authentication"],
         requestBody: {
           required: true,
           content: {
             "application/json": {
               schema: {
                 type: "object",
-                required: ["name", "email", "password", "confirmPassword"],
+                required: ["name", "email", "password"],
                 properties: {
-                  name: {
-                    type: "string",
-                    minLength: 2,
-                    example: "John Doe",
-                    description: "User's full name (minimum 2 characters)",
-                  },
-                  email: {
-                    type: "string",
-                    format: "email",
-                    example: "john.doe@example.com",
-                    description: "Valid email address",
-                  },
-                  password: {
-                    type: "string",
-                    minLength: 8,
-                    maxLength: 32,
-                    example: "SecurePass123!",
-                    description:
-                      "Password must contain: 8-32 characters, uppercase, lowercase, number, and special character (!@#$%^&*)",
-                  },
-                  confirmPassword: {
-                    type: "string",
-                    example: "SecurePass123!",
-                    description: "Must match the password field",
-                  },
+                  name: { type: "string", minLength: 3 },
+                  email: { type: "string", format: "email" },
+                  password: { type: "string", minLength: 8 },
                 },
+              },
+              example: {
+                name: "John Doe",
+                email: "john.doe@example.com",
+                password: "securePassword123",
               },
             },
           },
         },
         responses: {
-          "201": {
-            description:
-              "User registered successfully. Sets HTTP-only refresh_token cookie.",
-            headers: {
-              "Set-Cookie": {
-                description:
-                  "HTTP-only cookie containing the refresh token (expires in 7 days)",
-                schema: {
-                  type: "string",
-                  example:
-                    "refresh_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...; HttpOnly; Secure; SameSite=Strict; Path=/",
-                },
-              },
-            },
+          200: {
+            description: "User registered successfully",
             content: {
               "application/json": {
                 schema: {
                   type: "object",
                   properties: {
-                    access_token: {
-                      type: "string",
-                      description:
-                        "JWT access token for API authentication (expires in 15 minutes)",
-                      example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-                    },
+                    accessToken: { type: "string" },
                   },
+                },
+                example: {
+                  accessToken:
+                    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwicm9sZSI6InVzZXIiLCJpYXQiOjE1MTYyMzkwMjJ9.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
                 },
               },
             },
           },
-          "400": {
-            description: "Invalid request - validation errors",
+          400: {
+            description: "Bad request",
             content: {
               "application/json": {
-                schema: {
-                  type: "object",
-                  properties: {
-                    message: {
-                      type: "string",
-                      example: "Invalid request",
-                    },
-                  },
-                },
+                schema: { $ref: "#/components/schemas/Error" },
               },
             },
           },
-          "409": {
+          409: {
             description: "Email already in use",
             content: {
               "application/json": {
-                schema: {
-                  type: "object",
-                  properties: {
-                    message: {
-                      type: "string",
-                      example: "Email already in use",
-                    },
-                  },
-                },
-              },
-            },
-          },
-          "500": {
-            description: "Internal server error",
-            content: {
-              "application/json": {
-                schema: {
-                  type: "object",
-                  properties: {
-                    message: {
-                      type: "string",
-                      example: "Something went wrong",
-                    },
-                  },
-                },
+                schema: { $ref: "#/components/schemas/Error" },
               },
             },
           },
         },
       },
     },
-    "/api/auth/login": {
+    "/auth/login": {
       post: {
-        tags: ["auth"],
-        summary: "Login user",
-        description: "Authenticate a user with email and password",
+        summary: "Login a user",
+        tags: ["Authentication"],
         requestBody: {
           required: true,
           content: {
@@ -200,230 +168,126 @@ export const openApiDoc = {
                 type: "object",
                 required: ["email", "password"],
                 properties: {
-                  email: {
-                    type: "string",
-                    format: "email",
-                    example: "john.doe@example.com",
-                    description: "User's email address",
-                  },
-                  password: {
-                    type: "string",
-                    example: "SecurePass123!",
-                    description: "User's password",
-                  },
+                  email: { type: "string", format: "email" },
+                  password: { type: "string" },
                 },
+              },
+              example: {
+                email: "john.doe@example.com",
+                password: "securePassword123",
               },
             },
           },
         },
         responses: {
-          "200": {
-            description:
-              "Login successful. Sets HTTP-only refresh_token cookie.",
-            headers: {
-              "Set-Cookie": {
-                description:
-                  "HTTP-only cookie containing the refresh token (expires in 7 days)",
-                schema: {
-                  type: "string",
-                  example:
-                    "refresh_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...; HttpOnly; Secure; SameSite=Strict; Path=/",
-                },
-              },
-            },
+          200: {
+            description: "Login successful",
             content: {
               "application/json": {
                 schema: {
                   type: "object",
                   properties: {
-                    access_token: {
-                      type: "string",
-                      description:
-                        "JWT access token for API authentication (expires in 15 minutes)",
-                      example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-                    },
+                    accessToken: { type: "string" },
                   },
+                },
+                example: {
+                  accessToken:
+                    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwicm9sZSI6InVzZXIiLCJpYXQiOjE1MTYyMzkwMjJ9.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
                 },
               },
             },
           },
-          "400": {
-            description: "Invalid request - validation errors",
+          400: {
+            description: "Bad request",
             content: {
               "application/json": {
-                schema: {
-                  type: "object",
-                  properties: {
-                    message: {
-                      type: "string",
-                      example: "Invalid request",
-                    },
-                  },
-                },
+                schema: { $ref: "#/components/schemas/Error" },
               },
             },
           },
-          "401": {
+          401: {
             description: "Invalid credentials",
             content: {
               "application/json": {
-                schema: {
-                  type: "object",
-                  properties: {
-                    message: {
-                      type: "string",
-                      example: "Invalid credentials",
-                    },
-                  },
-                },
-              },
-            },
-          },
-          "500": {
-            description: "Internal server error",
-            content: {
-              "application/json": {
-                schema: {
-                  type: "object",
-                  properties: {
-                    message: {
-                      type: "string",
-                      example: "Something went wrong",
-                    },
-                  },
-                },
+                schema: { $ref: "#/components/schemas/Error" },
               },
             },
           },
         },
       },
     },
-    "/api/auth/refresh": {
+    "/auth/refresh": {
       post: {
-        tags: ["auth"],
         summary: "Refresh access token",
-        description:
-          "Get a new access token using a valid refresh token from cookies",
+        tags: ["Authentication"],
         responses: {
-          "200": {
+          200: {
             description: "Token refreshed successfully",
             content: {
               "application/json": {
                 schema: {
                   type: "object",
                   properties: {
-                    accessToken: {
-                      type: "string",
-                      description:
-                        "New JWT access token (expires in 15 minutes)",
-                      example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-                    },
+                    accessToken: { type: "string" },
                   },
                 },
               },
             },
           },
-          "401": {
-            description: "No refresh token provided or invalid refresh token",
+          401: {
+            description: "No refresh token provided",
             content: {
               "application/json": {
                 schema: {
                   type: "object",
                   properties: {
-                    error: {
-                      type: "string",
-                      example: "No refresh token provided",
-                    },
+                    error: { type: "string" },
                   },
                 },
               },
             },
           },
         },
-        security: [
-          {
-            cookieAuth: [],
-          },
-        ],
       },
     },
-    "/api/user/me": {
+    "/user/me": {
       get: {
-        tags: ["user"],
-        summary: "Get current user",
-        description: "Get the authenticated user's information",
-        security: [
-          {
-            bearerAuth: [],
-          },
-        ],
+        summary: "Get current user information",
+        tags: ["User"],
+        security: [{ bearerAuth: [] }],
         responses: {
-          "200": {
+          200: {
             description: "User information retrieved successfully",
             content: {
               "application/json": {
-                schema: {
-                  type: "object",
-                  properties: {
-                    id: {
-                      type: "string",
-                      format: "uuid",
-                      example: "123e4567-e89b-12d3-a456-426614174000",
-                    },
-                    name: {
-                      type: "string",
-                      example: "John Doe",
-                    },
-                    email: {
-                      type: "string",
-                      format: "email",
-                      example: "john.doe@example.com",
-                    },
-                    role: {
-                      type: "string",
-                      example: "user",
-                    },
-                  },
+                schema: { $ref: "#/components/schemas/User" },
+                example: {
+                  id: "550e8400-e29b-41d4-a716-446655440000",
+                  name: "John Doe",
+                  email: "john.doe@example.com",
+                  role: "user",
                 },
               },
             },
           },
-          "401": {
-            description: "Unauthorized - invalid or missing token",
+          401: {
+            description: "Unauthorized",
             content: {
               "application/json": {
-                schema: {
-                  $ref: "#/components/schemas/Error",
-                },
-              },
-            },
-          },
-          "500": {
-            description: "Internal server error",
-            content: {
-              "application/json": {
-                schema: {
-                  $ref: "#/components/schemas/Error",
-                },
+                schema: { $ref: "#/components/schemas/Error" },
               },
             },
           },
         },
       },
     },
-    "/api/post": {
+    "/post": {
       get: {
-        tags: ["posts"],
         summary: "Get all posts",
-        description:
-          "Retrieve a list of all posts with author information and like counts",
-        security: [
-          {
-            bearerAuth: [],
-          },
-        ],
+        tags: ["Posts"],
+        security: [{ bearerAuth: [] }],
         responses: {
-          "200": {
+          200: {
             description: "Posts retrieved successfully",
             content: {
               "application/json": {
@@ -432,85 +296,52 @@ export const openApiDoc = {
                   properties: {
                     posts: {
                       type: "array",
-                      items: {
-                        type: "object",
-                        properties: {
-                          id: {
-                            type: "string",
-                            format: "uuid",
-                            example: "123e4567-e89b-12d3-a456-426614174000",
-                          },
-                          author: {
-                            type: "string",
-                            example: "John Doe",
-                          },
-                          authorId: {
-                            type: "string",
-                            format: "uuid",
-                            example: "123e4567-e89b-12d3-a456-426614174000",
-                          },
-                          title: {
-                            type: "string",
-                            example: "Community Event This Weekend",
-                          },
-                          content: {
-                            type: "string",
-                            example:
-                              "Join us for a neighborhood cleanup event...",
-                          },
-                          type: {
-                            type: "string",
-                            enum: ["news", "tip"],
-                            example: "news",
-                          },
-                          createdAt: {
-                            type: "string",
-                            format: "date-time",
-                            example: "2024-01-01T12:00:00.000Z",
-                          },
-                          likes: {
-                            type: "integer",
-                            example: 5,
-                          },
-                        },
-                      },
+                      items: { $ref: "#/components/schemas/Post" },
                     },
                   },
                 },
-              },
-            },
-          },
-          "401": {
-            description: "Unauthorized - invalid or missing token",
-            content: {
-              "application/json": {
-                schema: {
-                  $ref: "#/components/schemas/Error",
+                example: {
+                  posts: [
+                    {
+                      id: "550e8400-e29b-41d4-a716-446655440001",
+                      author: "John Doe",
+                      authorId: "550e8400-e29b-41d4-a716-446655440000",
+                      title: "Looking for a gardener",
+                      content:
+                        "I need someone to help with my garden this weekend. Any takers?",
+                      type: "request",
+                      createdAt: "2026-01-08T12:00:00Z",
+                      likes: 5,
+                    },
+                    {
+                      id: "550e8400-e29b-41d4-a716-446655440002",
+                      author: "Jane Smith",
+                      authorId: "550e8400-e29b-41d4-a716-446655440003",
+                      title: "Community BBQ this Saturday",
+                      content: "Join us for a neighbourhood BBQ at the park!",
+                      type: "event",
+                      createdAt: "2026-01-07T15:30:00Z",
+                      likes: 12,
+                    },
+                  ],
                 },
               },
             },
           },
-          "500": {
-            description: "Internal server error",
+          401: {
+            description: "Unauthorized",
             content: {
               "application/json": {
-                schema: {
-                  $ref: "#/components/schemas/Error",
-                },
+                schema: { $ref: "#/components/schemas/Error" },
               },
             },
           },
         },
       },
       post: {
-        tags: ["posts"],
         summary: "Create a new post",
-        description: "Create a new post (news or tip)",
-        security: [
-          {
-            bearerAuth: [],
-          },
-        ],
+        tags: ["Posts"],
+        security: [{ bearerAuth: [] }],
         requestBody: {
           required: true,
           content: {
@@ -519,178 +350,132 @@ export const openApiDoc = {
                 type: "object",
                 required: ["title", "content", "type"],
                 properties: {
-                  title: {
-                    type: "string",
-                    minLength: 1,
-                    maxLength: 255,
-                    example: "Community Event This Weekend",
-                    description: "Post title (1-255 characters)",
-                  },
-                  content: {
-                    type: "string",
-                    minLength: 1,
-                    example: "Join us for a neighborhood cleanup event...",
-                    description: "Post content",
-                  },
+                  title: { type: "string", minLength: 1 },
+                  content: { type: "string", minLength: 1 },
                   type: {
                     type: "string",
-                    enum: ["news", "tip"],
-                    example: "news",
-                    description: "Type of post",
+                    enum: ["offer", "request", "event", "announcement"],
                   },
                 },
+              },
+              example: {
+                title: "Free piano lessons",
+                content:
+                  "I'm offering free piano lessons for beginners every Tuesday evening.",
+                type: "offer",
               },
             },
           },
         },
         responses: {
-          "201": {
+          201: {
             description: "Post created successfully",
             content: {
               "application/json": {
                 schema: {
                   type: "object",
                   properties: {
-                    post: {
-                      $ref: "#/components/schemas/Post",
-                    },
+                    post: { $ref: "#/components/schemas/Post" },
+                  },
+                },
+                example: {
+                  post: {
+                    id: "550e8400-e29b-41d4-a716-446655440010",
+                    author: "John Doe",
+                    authorId: "550e8400-e29b-41d4-a716-446655440000",
+                    title: "Free piano lessons",
+                    content:
+                      "I'm offering free piano lessons for beginners every Tuesday evening.",
+                    type: "offer",
+                    createdAt: "2026-01-08T14:30:00Z",
+                    likes: 0,
                   },
                 },
               },
             },
           },
-          "400": {
-            description: "Invalid request - validation errors",
+          400: {
+            description: "Bad request",
             content: {
               "application/json": {
-                schema: {
-                  $ref: "#/components/schemas/Error",
-                },
+                schema: { $ref: "#/components/schemas/Error" },
               },
             },
           },
-          "401": {
-            description: "Unauthorized - invalid or missing token",
+          401: {
+            description: "Unauthorized",
             content: {
               "application/json": {
-                schema: {
-                  $ref: "#/components/schemas/Error",
-                },
-              },
-            },
-          },
-          "500": {
-            description: "Internal server error",
-            content: {
-              "application/json": {
-                schema: {
-                  $ref: "#/components/schemas/Error",
-                },
+                schema: { $ref: "#/components/schemas/Error" },
               },
             },
           },
         },
       },
     },
-    "/api/post/{id}": {
+    "/post/{id}": {
       get: {
-        tags: ["posts"],
-        summary: "Get a single post",
-        description: "Retrieve a specific post by ID",
-        security: [
-          {
-            bearerAuth: [],
-          },
-        ],
+        summary: "Get a post by ID",
+        tags: ["Posts"],
+        security: [{ bearerAuth: [] }],
         parameters: [
           {
             name: "id",
             in: "path",
             required: true,
-            schema: {
-              type: "string",
-              format: "uuid",
-            },
-            description: "Post ID",
+            schema: { type: "string" },
           },
         ],
         responses: {
-          "200": {
+          200: {
             description: "Post retrieved successfully",
             content: {
               "application/json": {
                 schema: {
                   type: "object",
                   properties: {
-                    post: {
-                      $ref: "#/components/schemas/Post",
-                    },
+                    post: { $ref: "#/components/schemas/Post" },
                   },
                 },
               },
             },
           },
-          "400": {
-            description: "Invalid request - invalid ID format",
+          400: {
+            description: "Bad request",
             content: {
               "application/json": {
-                schema: {
-                  $ref: "#/components/schemas/Error",
-                },
+                schema: { $ref: "#/components/schemas/Error" },
               },
             },
           },
-          "401": {
-            description: "Unauthorized - invalid or missing token",
-            content: {
-              "application/json": {
-                schema: {
-                  $ref: "#/components/schemas/Error",
-                },
-              },
-            },
-          },
-          "404": {
+          404: {
             description: "Post not found",
             content: {
               "application/json": {
-                schema: {
-                  $ref: "#/components/schemas/Error",
-                },
+                schema: { $ref: "#/components/schemas/Error" },
               },
             },
           },
-          "500": {
-            description: "Internal server error",
+          401: {
+            description: "Unauthorized",
             content: {
               "application/json": {
-                schema: {
-                  $ref: "#/components/schemas/Error",
-                },
+                schema: { $ref: "#/components/schemas/Error" },
               },
             },
           },
         },
       },
       patch: {
-        tags: ["posts"],
         summary: "Update a post",
-        description: "Update an existing post (only by the author)",
-        security: [
-          {
-            bearerAuth: [],
-          },
-        ],
+        tags: ["Posts"],
+        security: [{ bearerAuth: [] }],
         parameters: [
           {
             name: "id",
             in: "path",
             required: true,
-            schema: {
-              type: "string",
-              format: "uuid",
-            },
-            description: "Post ID",
+            schema: { type: "string" },
           },
         ],
         requestBody: {
@@ -701,21 +486,11 @@ export const openApiDoc = {
                 type: "object",
                 required: ["title", "content", "type"],
                 properties: {
-                  title: {
-                    type: "string",
-                    minLength: 1,
-                    maxLength: 255,
-                    example: "Updated Post Title",
-                  },
-                  content: {
-                    type: "string",
-                    minLength: 1,
-                    example: "Updated post content...",
-                  },
+                  title: { type: "string", minLength: 1 },
+                  content: { type: "string", minLength: 1 },
                   type: {
                     type: "string",
-                    enum: ["news", "tip"],
-                    example: "news",
+                    enum: ["offer", "request", "event", "announcement"],
                   },
                 },
               },
@@ -723,273 +498,568 @@ export const openApiDoc = {
           },
         },
         responses: {
-          "200": {
+          200: {
             description: "Post updated successfully",
             content: {
               "application/json": {
                 schema: {
                   type: "object",
                   properties: {
-                    post: {
-                      $ref: "#/components/schemas/Post",
-                    },
+                    post: { $ref: "#/components/schemas/Post" },
                   },
                 },
               },
             },
           },
-          "400": {
-            description: "Invalid request - validation errors",
+          400: {
+            description: "Bad request",
             content: {
               "application/json": {
-                schema: {
-                  $ref: "#/components/schemas/Error",
-                },
+                schema: { $ref: "#/components/schemas/Error" },
               },
             },
           },
-          "401": {
-            description: "Unauthorized - invalid or missing token",
-            content: {
-              "application/json": {
-                schema: {
-                  $ref: "#/components/schemas/Error",
-                },
-              },
-            },
-          },
-          "403": {
+          403: {
             description: "Forbidden - not the post author",
             content: {
               "application/json": {
-                schema: {
-                  type: "object",
-                  properties: {
-                    message: {
-                      type: "string",
-                      example: "Unauthorized to update this post",
-                    },
-                  },
-                },
+                schema: { $ref: "#/components/schemas/Error" },
               },
             },
           },
-          "404": {
+          404: {
             description: "Post not found",
             content: {
               "application/json": {
-                schema: {
-                  $ref: "#/components/schemas/Error",
-                },
+                schema: { $ref: "#/components/schemas/Error" },
               },
             },
           },
-          "500": {
-            description: "Internal server error",
+          401: {
+            description: "Unauthorized",
             content: {
               "application/json": {
-                schema: {
-                  $ref: "#/components/schemas/Error",
-                },
+                schema: { $ref: "#/components/schemas/Error" },
               },
             },
           },
         },
       },
       delete: {
-        tags: ["posts"],
         summary: "Delete a post",
-        description: "Delete a post (only by the author)",
-        security: [
-          {
-            bearerAuth: [],
-          },
-        ],
+        tags: ["Posts"],
+        security: [{ bearerAuth: [] }],
         parameters: [
           {
             name: "id",
             in: "path",
             required: true,
-            schema: {
-              type: "string",
-              format: "uuid",
-            },
-            description: "Post ID",
+            schema: { type: "string" },
           },
         ],
         responses: {
-          "200": {
+          200: {
             description: "Post deleted successfully",
             content: {
               "application/json": {
                 schema: {
                   type: "object",
                   properties: {
-                    message: {
-                      type: "string",
-                      example: "Post deleted successfully",
-                    },
+                    message: { type: "string" },
                   },
                 },
               },
             },
           },
-          "400": {
-            description: "Invalid request - invalid ID format",
+          400: {
+            description: "Bad request",
             content: {
               "application/json": {
-                schema: {
-                  $ref: "#/components/schemas/Error",
-                },
+                schema: { $ref: "#/components/schemas/Error" },
               },
             },
           },
-          "401": {
-            description: "Unauthorized - invalid or missing token",
-            content: {
-              "application/json": {
-                schema: {
-                  $ref: "#/components/schemas/Error",
-                },
-              },
-            },
-          },
-          "403": {
+          403: {
             description: "Forbidden - not the post author",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+          404: {
+            description: "Post not found",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+          401: {
+            description: "Unauthorized",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+        },
+      },
+    },
+    "/post/{id}/like": {
+      post: {
+        summary: "Like or unlike a post",
+        tags: ["Posts"],
+        security: [{ bearerAuth: [] }],
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            required: true,
+            schema: { type: "string" },
+          },
+        ],
+        responses: {
+          200: {
+            description: "Like toggled successfully",
             content: {
               "application/json": {
                 schema: {
                   type: "object",
                   properties: {
-                    message: {
-                      type: "string",
-                      example: "Unauthorized to delete this post",
+                    message: { type: "string" },
+                  },
+                },
+              },
+            },
+          },
+          400: {
+            description: "Bad request",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+          404: {
+            description: "Post not found",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+          401: {
+            description: "Unauthorized",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+        },
+      },
+    },
+    "/marketplace": {
+      get: {
+        summary: "Get all marketplace items",
+        tags: ["Marketplace"],
+        security: [{ bearerAuth: [] }],
+        responses: {
+          200: {
+            description: "Marketplace items retrieved successfully",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    marketplace: {
+                      type: "array",
+                      items: { $ref: "#/components/schemas/MarketplaceItem" },
+                    },
+                  },
+                },
+                example: {
+                  marketplace: [
+                    {
+                      id: "550e8400-e29b-41d4-a716-446655440020",
+                      title: "Lawn mowing service",
+                      userId: "550e8400-e29b-41d4-a716-446655440000",
+                      userName: "John Doe",
+                      description:
+                        "Professional lawn mowing service available on weekends.",
+                      price: 25.0,
+                      location: "Downtown neighbourhood",
+                      category: "service",
+                      createdAt: "2026-01-08T10:00:00Z",
+                    },
+                    {
+                      id: "550e8400-e29b-41d4-a716-446655440021",
+                      title: "Bicycle for rent",
+                      userId: "550e8400-e29b-41d4-a716-446655440003",
+                      userName: "Jane Smith",
+                      description: "Mountain bike available for daily rental.",
+                      price: 15.0,
+                      location: "Park area",
+                      category: "rental",
+                      createdAt: "2026-01-07T16:00:00Z",
+                    },
+                  ],
+                },
+              },
+            },
+          },
+          401: {
+            description: "Unauthorized",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+        },
+      },
+      post: {
+        summary: "Create a new marketplace item",
+        tags: ["Marketplace"],
+        security: [{ bearerAuth: [] }],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                required: ["title", "description", "location", "category"],
+                properties: {
+                  title: { type: "string", minLength: 1 },
+                  description: { type: "string", minLength: 1 },
+                  location: { type: "string", minLength: 1 },
+                  price: { type: "number", nullable: true },
+                  category: {
+                    type: "string",
+                    enum: ["service", "product", "rental"],
+                  },
+                },
+              },
+              example: {
+                title: "Snow removal service",
+                description:
+                  "Quick and reliable snow removal for driveways and walkways.",
+                location: "North neighbourhood",
+                price: 40.0,
+                category: "service",
+              },
+            },
+          },
+        },
+        responses: {
+          201: {
+            description: "Marketplace item created successfully",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    marketplace: {
+                      $ref: "#/components/schemas/MarketplaceItem",
+                    },
+                  },
+                },
+                example: {
+                  marketplace: {
+                    id: "550e8400-e29b-41d4-a716-446655440030",
+                    title: "Snow removal service",
+                    userId: "550e8400-e29b-41d4-a716-446655440000",
+                    userName: "John Doe",
+                    description:
+                      "Quick and reliable snow removal for driveways and walkways.",
+                    price: 40.0,
+                    location: "North neighbourhood",
+                    category: "service",
+                    createdAt: "2026-01-08T14:45:00Z",
+                  },
+                },
+              },
+            },
+          },
+          400: {
+            description: "Bad request",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+          401: {
+            description: "Unauthorized",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+        },
+      },
+    },
+    "/marketplace/{id}": {
+      get: {
+        summary: "Get a marketplace item by ID",
+        tags: ["Marketplace"],
+        security: [{ bearerAuth: [] }],
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            required: true,
+            schema: { type: "string" },
+          },
+        ],
+        responses: {
+          200: {
+            description: "Marketplace item retrieved successfully",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    marketplace: {
+                      $ref: "#/components/schemas/MarketplaceItem",
                     },
                   },
                 },
               },
             },
           },
-          "404": {
-            description: "Post not found",
+          400: {
+            description: "Bad request",
             content: {
               "application/json": {
-                schema: {
-                  $ref: "#/components/schemas/Error",
-                },
+                schema: { $ref: "#/components/schemas/Error" },
               },
             },
           },
-          "500": {
-            description: "Internal server error",
+          404: {
+            description: "Marketplace item not found",
             content: {
               "application/json": {
-                schema: {
-                  $ref: "#/components/schemas/Error",
-                },
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+          401: {
+            description: "Unauthorized",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
               },
             },
           },
         },
       },
-    },
-  },
-  components: {
-    schemas: {
-      User: {
-        type: "object",
-        properties: {
-          id: {
-            type: "string",
-            format: "uuid",
-            description: "Unique user identifier",
+      patch: {
+        summary: "Update a marketplace item",
+        tags: ["Marketplace"],
+        security: [{ bearerAuth: [] }],
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            required: true,
+            schema: { type: "string" },
           },
-          name: {
-            type: "string",
-            description: "User's full name",
-          },
-          email: {
-            type: "string",
-            format: "email",
-            description: "User's email address",
-          },
-          createdAt: {
-            type: "string",
-            format: "date-time",
-            description: "Account creation timestamp",
-          },
-          updatedAt: {
-            type: "string",
-            format: "date-time",
-            description: "Last account update timestamp",
-          },
-        },
-      },
-      Post: {
-        type: "object",
-        properties: {
-          id: {
-            type: "string",
-            format: "uuid",
-            description: "Unique post identifier",
-          },
-          authorId: {
-            type: "string",
-            format: "uuid",
-            description: "ID of the post author",
-          },
-          author: {
-            type: "string",
-            description: "Name of the post author",
-          },
-          title: {
-            type: "string",
-            description: "Post title",
-          },
+        ],
+        requestBody: {
+          required: true,
           content: {
-            type: "string",
-            description: "Post content",
+            "application/json": {
+              schema: {
+                type: "object",
+                required: ["title", "description", "location", "category"],
+                properties: {
+                  title: { type: "string", minLength: 1 },
+                  description: { type: "string", minLength: 1 },
+                  location: { type: "string", minLength: 1 },
+                  price: { type: "number", nullable: true },
+                  category: {
+                    type: "string",
+                    enum: ["service", "product", "rental"],
+                  },
+                },
+              },
+            },
           },
-          type: {
-            type: "string",
-            enum: ["news", "tip"],
-            description: "Type of post",
+        },
+        responses: {
+          200: {
+            description: "Marketplace item updated successfully",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    marketplace: {
+                      $ref: "#/components/schemas/MarketplaceItem",
+                    },
+                  },
+                },
+              },
+            },
           },
-          createdAt: {
-            type: "string",
-            format: "date-time",
-            description: "Post creation timestamp",
+          400: {
+            description: "Bad request",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
           },
-          likes: {
-            type: "integer",
-            description: "Number of likes",
+          403: {
+            description: "Forbidden - not the item owner",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+          404: {
+            description: "Marketplace item not found",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+          401: {
+            description: "Unauthorized",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
           },
         },
       },
-      Error: {
-        type: "object",
-        properties: {
-          message: {
-            type: "string",
-            description: "Error message",
+      delete: {
+        summary: "Delete a marketplace item",
+        tags: ["Marketplace"],
+        security: [{ bearerAuth: [] }],
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            required: true,
+            schema: { type: "string" },
+          },
+        ],
+        responses: {
+          200: {
+            description: "Marketplace item deleted successfully",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    message: { type: "string" },
+                  },
+                },
+              },
+            },
+          },
+          400: {
+            description: "Bad request",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+          403: {
+            description: "Forbidden - not the item owner",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+          404: {
+            description: "Marketplace item not found",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+          401: {
+            description: "Unauthorized",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
           },
         },
       },
     },
-    securitySchemes: {
-      bearerAuth: {
-        type: "http",
-        scheme: "bearer",
-        bearerFormat: "JWT",
-        description: "JWT token obtained from login or registration",
-      },
-      cookieAuth: {
-        type: "apiKey",
-        in: "cookie",
-        name: "refresh_token",
-        description:
-          "Refresh token stored in httpOnly cookie (expires in 7 days)",
+    "/marketplace/{id}/apply": {
+      post: {
+        summary: "Apply to a marketplace item",
+        tags: ["Marketplace"],
+        security: [{ bearerAuth: [] }],
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            required: true,
+            schema: { type: "string" },
+          },
+        ],
+        responses: {
+          200: {
+            description: "Application submitted successfully",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    message: { type: "string" },
+                  },
+                },
+              },
+            },
+          },
+          400: {
+            description: "Bad request",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+          404: {
+            description: "Marketplace item not found",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+          401: {
+            description: "Unauthorized",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+        },
       },
     },
   },
+  tags: [
+    { name: "System", description: "System endpoints" },
+    { name: "Authentication", description: "Authentication endpoints" },
+    { name: "User", description: "User endpoints" },
+    { name: "Posts", description: "Post management endpoints" },
+    { name: "Marketplace", description: "Marketplace management endpoints" },
+  ],
 };
