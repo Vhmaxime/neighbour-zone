@@ -11,11 +11,13 @@ import userRouter from "./routes/user.js";
 import postRouter from "./routes/post.js";
 import marketplaceRouter from "./routes/marketplace.js";
 import eventRouter from "./routes/event.js";
+import { timeout } from "hono/timeout";
 
 const app = new Hono<{ Variables: Variables }>().basePath("/api");
 
-// CORS Middleware
+// Middleware
 app.use(cors());
+app.use(timeout(5000));
 
 // Health Check Endpoint
 app.get("/health", (c) => {
