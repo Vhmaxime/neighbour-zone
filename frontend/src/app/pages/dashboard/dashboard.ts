@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { Auth } from '../../services/auth';
@@ -11,17 +11,20 @@ import { Auth } from '../../services/auth';
   styleUrls: ['./dashboard.css'],
 })
 export class Dashboard implements OnInit {
-  // Added OnInit interface
   private auth = inject(Auth);
   private router = inject(Router);
 
-  userEmail: string = '';
-  userInitial: string = '';
+  // We initialize it with the token value (which might be the ID), 
+  // but because it's a signal, when we update it later, the UI will snap to the new value instantly
+  userEmail = signal<string>(this.auth.currentUserEmail || 'Guest');
+
+  // Computed Signal for the initial
+  // This automatically updates whenever userEmail changes! No manual calculation needed
+  userInitial = computed(() => this.userEmail().charAt(0).toUpperCase());
+
   lastLogin: Date = new Date();
   today: Date = new Date();
-
-  // State for loading data
-  isLoading = signal<boolean>(true);
+  isLoading = signal<boolean>(true); // State for loading data
 
   // We can make alerts reactive if we plan to fetch them
   alerts: any[] = [
@@ -32,8 +35,6 @@ export class Dashboard implements OnInit {
   profileCompletion: number = 75;
 
   constructor() {
-    this.userEmail = this.auth.currentUserEmail || 'Guest';
-    this.userInitial = this.userEmail.charAt(0).toUpperCase();
   }
 
   // ngOnInit to fetch data when the component loads
@@ -58,13 +59,14 @@ export class Dashboard implements OnInit {
 
       if (response.ok) {
         const data = await response.json();
-        console.log('Dashboard data loaded:', data);
+        console.log('Dashboard data loaded:', data); // CHECK THIS LOG IN BROWSER CONSOLE
 
-        // Example: If the API returned real alerts, you would update them here:
-        // this.alerts = data.alerts;
+        if (data.email) {
+        this.userEmail.set(data.email);
+        } else if (data.user && data.user.email) {
+            this.userEmail.set(data.user.email);
+        }
 
-        // Example: If API returned real profile status
-        // this.profileCompletion = data.completionPercentage;
       } else {
         console.warn('Failed to load dashboard data', response.status);
       }
