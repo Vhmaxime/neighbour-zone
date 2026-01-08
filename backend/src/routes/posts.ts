@@ -11,8 +11,7 @@ import { idSchema } from "../schemas/index.js";
 
 const postRouter = new Hono<{ Variables: Variables }>();
 
-// JWT Middleware
-postRouter.use(jwt({ secret: constants.jwtSecret }));
+postRouter.use(authMiddleware);
 
 postRouter.get("/", async (c) => {
   const posts = await db

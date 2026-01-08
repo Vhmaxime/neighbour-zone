@@ -15,8 +15,7 @@ import { marketplaceItemSchema } from "../schemas/marketplace.js";
 
 const marketplaceRouter = new Hono<{ Variables: Variables }>();
 
-// JWT Middleware
-marketplaceRouter.use(jwt({ secret: constants.jwtSecret }));
+marketplaceRouter.use(authMiddleware);
 
 marketplaceRouter.get("", async (c) => {
   const marketplaceItems = await db

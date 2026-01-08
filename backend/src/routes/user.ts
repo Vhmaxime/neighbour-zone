@@ -8,8 +8,7 @@ import { eq } from "drizzle-orm";
 
 const userRouter = new Hono<{ Variables: Variables }>();
 
-// JWT Middleware
-userRouter.use(jwt({ secret: constants.jwtSecret }));
+userRouter.use(authMiddleware);
 
 // Get current user info
 userRouter.get("/me", async (c) => {
