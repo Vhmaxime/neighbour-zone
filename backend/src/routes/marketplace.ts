@@ -3,14 +3,11 @@ import { jwt } from "hono/jwt";
 import { Variables } from "../types/index.js";
 import { db } from "../database/index.js";
 import {
-  postsTable,
-  postLikesTable,
   usersTable,
   marketplaceItemsTable,
   marketplaceApplicationsTable,
 } from "../database/schema.js";
-import { count, desc, eq } from "drizzle-orm";
-import { HTTPException } from "hono/http-exception";
+import { desc, eq } from "drizzle-orm";
 import { zValidator } from "@hono/zod-validator";
 import { constants } from "../config/index.js";
 import { idSchema } from "../schemas/index.js";
@@ -206,6 +203,7 @@ marketplaceRouter.delete(
   }),
   async (c) => {
     const { id } = c.req.valid("param");
+
     const { sub: userId } = c.get("jwtPayload");
 
     const [existingItem] = await db

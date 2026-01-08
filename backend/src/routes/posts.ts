@@ -4,7 +4,6 @@ import { Variables } from "../types/index.js";
 import { db } from "../database/index.js";
 import { postsTable, postLikesTable, usersTable } from "../database/schema.js";
 import { count, desc, eq, and } from "drizzle-orm";
-import { HTTPException } from "hono/http-exception";
 import { zValidator } from "@hono/zod-validator";
 import { postSchema } from "../schemas/post.js";
 import { constants } from "../config/index.js";
