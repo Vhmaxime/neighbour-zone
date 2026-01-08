@@ -20,6 +20,8 @@ marketplaceRouter.use(authMiddleware);
 
 // Get all marketplace items
 marketplaceRouter.get("", async (c) => {
+  const { sub: userId } = c.get("jwtPayload");
+
   const marketplace = await db.query.marketplaceItemsTable.findMany({
     columns: {
       userId: false,
@@ -37,7 +39,24 @@ marketplaceRouter.get("", async (c) => {
     },
   });
 
-  return c.json({ marketplace }, 200);
+  const appliedItemIds = await db.query.marketplaceApplicationsTable.findMany({
+    where: { userId: { eq: userId } },
+    columns: {
+      marketplaceItemId: true,
+    },
+  });
+
+  const marketplaceSet = marketplace.map((item) => {
+    const applied = appliedItemIds.some(
+      (application) => application.marketplaceItemId === item.id
+    );
+    return {
+      ...item,
+      applied,
+    };
+  });
+
+  return c.json({ marketplace: marketplaceSet }, 200);
 });
 
 // Create a new marketplace item
@@ -101,13 +120,13 @@ marketplaceRouter.get(
   }),
 
   async (c) => {
-    const { id } = c.req.valid("param");
+    const { id: marketplaceItemId } = c.req.valid("param");
 
     const { sub: userId } = c.get("jwtPayload");
 
     const marketplace = await db.query.marketplaceItemsTable.findFirst({
       where: {
-        id: { eq: id },
+        id: { eq: marketplaceItemId },
       },
       columns: {
         userId: false,
@@ -125,6 +144,15 @@ marketplaceRouter.get(
     if (!marketplace) {
       return c.json({ message: "Not found" }, 404);
     }
+
+    const applied = !!(await db.query.marketplaceApplicationsTable.findFirst({
+      where: {
+        AND: [
+          { marketplaceItemId: { eq: marketplaceItemId } },
+          { userId: { eq: userId } },
+        ],
+      },
+    }));
 
     if (marketplace.provider?.id === userId) {
       const applications = await db.query.marketplaceApplicationsTable.findMany(
@@ -146,10 +174,10 @@ marketplaceRouter.get(
         }
       );
 
-      return c.json({ ...marketplace, applications }, 200);
+      return c.json({ ...marketplace, applied, applications }, 200);
     }
 
-    return c.json({ marketplace }, 200);
+    return c.json({ marketplace, applied }, 200);
   }
 );
 

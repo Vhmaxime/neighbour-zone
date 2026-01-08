@@ -44,14 +44,15 @@ postRouter.get("/", async (c) => {
     },
   });
 
-  const postIdSet = posts.map((post) => {
+  const postSet = posts.map((post) => {
+    const liked = likedPostIds.some((like) => like.postId === post.id);
     return {
       ...post,
-      likedByUser: likedPostIds.some((like) => like.postId === post.id),
+      liked,
     };
   });
 
-  return c.json({ posts: postIdSet }, 200);
+  return c.json({ posts: postSet }, 200);
 });
 
 // Create a new post
@@ -90,10 +91,6 @@ postRouter.post(
             name: true,
           },
         },
-      },
-      extras: {
-        likes: (table) =>
-          db.$count(postLikesTable, eq(table.id, postLikesTable.postId)),
       },
     });
 
@@ -138,6 +135,12 @@ postRouter.get(
       return c.json({ message: "Not found" }, 404);
     }
 
+    const liked = !!(await db.query.postLikesTable.findFirst({
+      where: {
+        AND: [{ postId: { eq: postId } }, { userId: { eq: userId } }],
+      },
+    }));
+
     if (post.author?.id === userId) {
       const likedBy = await db.query.postLikesTable.findMany({
         where: { postId: { eq: postId } },
@@ -152,10 +155,10 @@ postRouter.get(
         },
       });
 
-      return c.json({ ...post, likedBy }, 200);
+      return c.json({ ...post, liked, likedBy }, 200);
     }
 
-    return c.json({ post }, 200);
+    return c.json({ ...post, liked }, 200);
   }
 );
 
