@@ -1,39 +1,44 @@
 import { Hono } from "hono";
-import { jwt } from "hono/jwt";
 import { Variables } from "../types/index.js";
 import { db } from "../database/index.js";
-import { postsTable, postLikesTable, usersTable } from "../database/schema.js";
-import { count, desc, eq, and } from "drizzle-orm";
+import { postsTable, postLikesTable } from "../database/schema.js";
+import { eq, and } from "drizzle-orm";
 import { zValidator } from "@hono/zod-validator";
 import { postSchema } from "../schemas/post.js";
-import { constants } from "../config/index.js";
 import { idSchema } from "../schemas/index.js";
+import authMiddleware from "../middleware/auth.js";
 
 const postRouter = new Hono<{ Variables: Variables }>();
 
 postRouter.use(authMiddleware);
 
+// Get all posts
 postRouter.get("/", async (c) => {
-  const posts = await db
-    .select({
-      id: postsTable.id,
-      author: usersTable.name,
-      authorId: postsTable.authorId,
-      title: postsTable.title,
-      content: postsTable.content,
-      type: postsTable.type,
-      createdAt: postsTable.createdAt,
-      likes: count(postLikesTable.postId),
-    })
-    .from(postsTable)
-    .leftJoin(postLikesTable, eq(postsTable.id, postLikesTable.postId))
-    .leftJoin(usersTable, eq(postsTable.authorId, usersTable.id))
-    .groupBy(postsTable.id, usersTable.name)
-    .orderBy(desc(postsTable.createdAt));
+  const posts = await db.query.postsTable.findMany({
+    columns: {
+      authorId: false,
+    },
+    with: {
+      author: {
+        columns: {
+          id: true,
+          name: true,
+        },
+      },
+    },
+    extras: {
+      likes: (table) =>
+        db.$count(postLikesTable, eq(table.id, postLikesTable.postId)),
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
 
   return c.json({ posts }, 200);
 });
 
+// Create a new post
 postRouter.post(
   "/",
   zValidator("json", postSchema, (result, c) => {
@@ -44,7 +49,9 @@ postRouter.post(
   }),
   async (c) => {
     const { title, content, type } = c.req.valid("json");
+
     const { sub: authorId } = c.get("jwtPayload");
+
     const [newPost] = await db
       .insert(postsTable)
       .values({
@@ -55,55 +62,59 @@ postRouter.post(
       })
       .returning();
 
-    const [post] = await db
-      .select({
-        id: postsTable.id,
-        author: usersTable.name,
-        authorId: postsTable.authorId,
-        title: postsTable.title,
-        content: postsTable.content,
-        type: postsTable.type,
-        createdAt: postsTable.createdAt,
-        likes: count(postLikesTable.postId),
-      })
-      .from(postsTable)
-      .where(eq(postsTable.id, newPost.id))
-      .leftJoin(postLikesTable, eq(postsTable.id, postLikesTable.postId))
-      .leftJoin(usersTable, eq(postsTable.authorId, usersTable.id))
-      .groupBy(postsTable.id, usersTable.name)
-      .limit(1);
+    const post = await db.query.postsTable.findFirst({
+      where: { id: { eq: newPost.id } },
+      columns: {
+        authorId: false,
+      },
+      with: {
+        author: {
+          columns: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+      extras: {
+        likes: (table) =>
+          db.$count(postLikesTable, eq(table.id, postLikesTable.postId)),
+      },
+    });
 
     return c.json({ post }, 201);
   }
 );
 
+// Get a single post by ID
 postRouter.get(
   "/:id",
   zValidator("param", idSchema, (result, c) => {
     if (!result.success) {
+      console.error("Validation error:", result.error);
       return c.json({ message: "Bad request" }, 400);
     }
   }),
   async (c) => {
     const { id: postId } = c.req.valid("param");
 
-    const [post] = await db
-      .select({
-        id: postsTable.id,
-        author: usersTable.name,
-        authorId: postsTable.authorId,
-        title: postsTable.title,
-        content: postsTable.content,
-        type: postsTable.type,
-        createdAt: postsTable.createdAt,
-        likes: count(postLikesTable.postId),
-      })
-      .from(postsTable)
-      .where(eq(postsTable.id, postId))
-      .leftJoin(postLikesTable, eq(postsTable.id, postLikesTable.postId))
-      .leftJoin(usersTable, eq(postsTable.authorId, usersTable.id))
-      .groupBy(postsTable.id, usersTable.name)
-      .limit(1);
+    const post = await db.query.postsTable.findFirst({
+      where: { id: { eq: postId } },
+      columns: {
+        authorId: false,
+      },
+      with: {
+        author: {
+          columns: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+      extras: {
+        likes: (table) =>
+          db.$count(postLikesTable, eq(table.id, postLikesTable.postId)),
+      },
+    });
 
     if (!post) {
       return c.json({ message: "Not found" }, 404);
@@ -112,15 +123,18 @@ postRouter.get(
   }
 );
 
+// Update a post by ID
 postRouter.patch(
   "/:id",
   zValidator("param", idSchema, (result, c) => {
     if (!result.success) {
+      console.error("Validation error:", result.error);
       return c.json({ message: "Bad request" }, 400);
     }
   }),
   zValidator("json", postSchema, (result, c) => {
     if (!result.success) {
+      console.error("Validation error:", result.error);
       return c.json({ message: "Bad request" }, 400);
     }
   }),
@@ -131,17 +145,15 @@ postRouter.patch(
 
     const updates = c.req.valid("json");
 
-    const [existingPost] = await db
-      .select()
-      .from(postsTable)
-      .where(eq(postsTable.id, postId))
-      .limit(1);
+    const existing = await db.query.postsTable.findFirst({
+      where: { id: { eq: postId } },
+    });
 
-    if (!existingPost) {
+    if (!existing) {
       return c.json({ message: "Not found" }, 404);
     }
 
-    if (existingPost.authorId !== authorId) {
+    if (existing.authorId !== authorId) {
       return c.json({ message: "Forbidden" }, 403);
     }
 
@@ -151,32 +163,35 @@ postRouter.patch(
       .where(eq(postsTable.id, postId))
       .returning();
 
-    const [post] = await db
-      .select({
-        id: postsTable.id,
-        author: usersTable.name,
-        authorId: postsTable.authorId,
-        title: postsTable.title,
-        content: postsTable.content,
-        type: postsTable.type,
-        createdAt: postsTable.createdAt,
-        likes: count(postLikesTable.postId),
-      })
-      .from(postsTable)
-      .where(eq(postsTable.id, updatedPost.id))
-      .leftJoin(postLikesTable, eq(postsTable.id, postLikesTable.postId))
-      .leftJoin(usersTable, eq(postsTable.authorId, usersTable.id))
-      .groupBy(postsTable.id, usersTable.name)
-      .limit(1);
+    const post = await db.query.postsTable.findFirst({
+      where: { id: { eq: updatedPost.id } },
+      columns: {
+        authorId: false,
+      },
+      with: {
+        author: {
+          columns: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+      extras: {
+        likes: (table) =>
+          db.$count(postLikesTable, eq(table.id, postLikesTable.postId)),
+      },
+    });
 
     return c.json({ post });
   }
 );
 
+// Delete a post by ID
 postRouter.delete(
   "/:id",
   zValidator("param", idSchema, (result, c) => {
     if (!result.success) {
+      console.error("Validation error:", result.error);
       return c.json({ message: "Bad request" }, 400);
     }
   }),
@@ -185,17 +200,15 @@ postRouter.delete(
 
     const { sub: authorId } = c.get("jwtPayload");
 
-    const [existingPost] = await db
-      .select()
-      .from(postsTable)
-      .where(eq(postsTable.id, postId))
-      .limit(1);
+    const existing = await db.query.postsTable.findFirst({
+      where: { id: { eq: postId } },
+    });
 
-    if (!existingPost) {
+    if (!existing) {
       return c.json({ message: "Not found" }, 404);
     }
 
-    if (existingPost.authorId !== authorId) {
+    if (existing.authorId !== authorId) {
       return c.json({ message: "Forbidden" }, 403);
     }
 
@@ -205,10 +218,12 @@ postRouter.delete(
   }
 );
 
+// Like or unlike a post
 postRouter.post(
   "/:id/like",
   zValidator("param", idSchema, (result, c) => {
     if (!result.success) {
+      console.error("Validation error:", result.error);
       return c.json({ message: "Bad request" }, 400);
     }
   }),
@@ -217,28 +232,21 @@ postRouter.post(
 
     const { sub: userId } = c.get("jwtPayload");
 
-    const [post] = await db
-      .select()
-      .from(postsTable)
-      .where(eq(postsTable.id, postId))
-      .limit(1);
+    const post = await db.query.postsTable.findFirst({
+      where: { id: { eq: postId } },
+    });
 
     if (!post) {
       return c.json({ message: "Not found" }, 404);
     }
 
-    const existingLike = await db
-      .select()
-      .from(postLikesTable)
-      .where(
-        and(
-          eq(postLikesTable.userId, userId),
-          eq(postLikesTable.postId, postId)
-        )
-      )
-      .limit(1);
+    const existing = await db.query.postLikesTable.findFirst({
+      where: {
+        AND: [{ postId: { eq: postId } }, { userId: { eq: userId } }],
+      },
+    });
 
-    if (existingLike.length > 0) {
+    if (existing) {
       await db
         .delete(postLikesTable)
         .where(

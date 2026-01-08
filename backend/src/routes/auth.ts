@@ -1,6 +1,5 @@
 import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
-import { eq } from "drizzle-orm";
 import { db } from "../database/index.js";
 import { usersTable } from "../database/schema.js";
 import { loginSchema, registerSchema } from "../schemas/auth.js";
@@ -13,23 +12,23 @@ import { JwtPayload } from "../types/index.js";
 
 const authRouter = new Hono();
 
+// Register a new user
 authRouter.post(
   "/register",
   zValidator("json", registerSchema, (result, c) => {
     if (!result.success) {
+      console.error("Validation error:", result.error);
       return c.json({ message: "Bad Request" }, 400);
     }
   }),
   async (c) => {
     const { name, email, password } = c.req.valid("json");
 
-    const existingUser = await db
-      .select()
-      .from(usersTable)
-      .where(eq(usersTable.email, email))
-      .limit(1);
+    const existingUser = await db.query.usersTable.findFirst({
+      where: { email: { eq: email } },
+    });
 
-    if (existingUser.length > 0) {
+    if (existingUser) {
       return c.json({ message: "Email already in use" }, 409);
     }
 
@@ -73,21 +72,21 @@ authRouter.post(
   }
 );
 
+// Login an existing user
 authRouter.post(
   "/login",
   zValidator("json", loginSchema, (result, c) => {
     if (!result.success) {
+      console.error("Validation error:", result.error);
       return c.json({ message: "Bad request" }, 400);
     }
   }),
   async (c) => {
     const { email, password } = c.req.valid("json");
 
-    const [user] = await db
-      .select()
-      .from(usersTable)
-      .where(eq(usersTable.email, email))
-      .limit(1);
+    const user = await db.query.usersTable.findFirst({
+      where: { email: { eq: email } },
+    });
 
     if (!user) {
       return c.json({ message: "Invalid credentials" }, 401);
@@ -128,6 +127,7 @@ authRouter.post(
   }
 );
 
+// Refresh access token
 authRouter.post("/refresh", async (c) => {
   const refreshToken = getCookie(c, "refresh_token");
 
