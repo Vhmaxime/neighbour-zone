@@ -141,7 +141,7 @@ export const openApiDoc = {
               example: {
                 name: "John Doe",
                 email: "john.doe@example.com",
-                password: "securePassword123",
+                password: "securePassword123%",
               },
             },
           },
@@ -201,7 +201,7 @@ export const openApiDoc = {
               },
               example: {
                 email: "john.doe@example.com",
-                password: "securePassword123",
+                password: "securePassword123%",
               },
             },
           },

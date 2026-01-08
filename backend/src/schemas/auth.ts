@@ -6,16 +6,11 @@ const passwordSchema = z
   .max(32)
   .regex(/^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*])/);
 
-export const registerSchema = z
-  .object({
-    name: z.string().min(2),
-    email: z.email(),
-    password: passwordSchema,
-    confirmPassword: z.string().min(1),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    abort: true,
-  });
+export const registerSchema = z.object({
+  name: z.string().min(2),
+  email: z.email(),
+  password: passwordSchema,
+});
 
 export type RegisterValues = z.infer<typeof registerSchema>;
 
