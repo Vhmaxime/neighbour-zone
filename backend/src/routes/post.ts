@@ -196,13 +196,28 @@ postRouter.patch(
       return c.json({ message: "Forbidden" }, 403);
     }
 
-    await db
+    const [updatedPost] = await db
       .update(postsTable)
       .set(updates)
       .where(eq(postsTable.id, postId))
       .returning();
 
-    return c.json({ message: "ok" }, 200);
+    const post = await db.query.postsTable.findFirst({
+      where: { id: { eq: updatedPost.id } },
+      columns: {
+        authorId: false,
+      },
+      with: {
+        author: {
+          columns: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    });
+
+    return c.json({ post }, 200);
   }
 );
 

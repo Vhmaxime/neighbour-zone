@@ -1,15 +1,9 @@
 import { Hono } from "hono";
 import { Variables } from "../types/index.js";
 import { db } from "../database/index.js";
-import {
-  postsTable,
-  postLikesTable,
-  eventLikesTable,
-  eventsTable,
-} from "../database/schema.js";
+import { eventLikesTable, eventsTable } from "../database/schema.js";
 import { eq, and } from "drizzle-orm";
 import { zValidator } from "@hono/zod-validator";
-import { postSchema } from "../schemas/post.js";
 import { idSchema } from "../schemas/index.js";
 import authMiddleware from "../middleware/auth.js";
 import { eventSchema } from "../schemas/event.js";
@@ -18,7 +12,7 @@ const eventRouter = new Hono<{ Variables: Variables }>();
 
 eventRouter.use(authMiddleware);
 
-// Get all posts
+// Get all events
 eventRouter.get("/", async (c) => {
   const { sub: userId } = c.get("jwtPayload");
 
@@ -58,7 +52,7 @@ eventRouter.get("/", async (c) => {
   return c.json({ events: eventSet }, 200);
 });
 
-// Create a new post
+// Create a new event
 eventRouter.post(
   "/",
   zValidator("json", eventSchema, (result, c) => {
@@ -104,7 +98,7 @@ eventRouter.post(
   }
 );
 
-// Get a single post by ID
+// Get a single event by ID
 eventRouter.get(
   "/:id",
   zValidator("param", idSchema, (result, c) => {
@@ -168,7 +162,7 @@ eventRouter.get(
   }
 );
 
-// Update a post by ID
+// Update an event by ID
 eventRouter.patch(
   "/:id",
   zValidator("param", idSchema, (result, c) => {
@@ -202,17 +196,32 @@ eventRouter.patch(
       return c.json({ message: "Forbidden" }, 403);
     }
 
-    await db
+    const [updatedEvent] = await db
       .update(eventsTable)
       .set(updates)
       .where(eq(eventsTable.id, eventId))
       .returning();
 
-    return c.json({ message: "ok" }, 200);
+    const event = await db.query.eventsTable.findFirst({
+      where: { id: { eq: updatedEvent.id } },
+      columns: {
+        userId: false,
+      },
+      with: {
+        organizer: {
+          columns: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    });
+
+    return c.json({ event }, 200);
   }
 );
 
-// Delete a post by ID
+// Delete an event by ID
 eventRouter.delete(
   "/:id",
   zValidator("param", idSchema, (result, c) => {
@@ -244,7 +253,7 @@ eventRouter.delete(
   }
 );
 
-// Like or unlike a post
+// Like or unlike an event
 eventRouter.post(
   "/:id/like",
   zValidator("param", idSchema, (result, c) => {

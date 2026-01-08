@@ -218,7 +218,7 @@ marketplaceRouter.patch(
       return c.json({ message: "Forbidden" }, 403);
     }
 
-    await db
+    const [updatedMarketplaceItem] = await db
       .update(marketplaceItemsTable)
       .set({
         title,
@@ -227,9 +227,29 @@ marketplaceRouter.patch(
         price: price ?? null,
         category,
       })
-      .where(eq(marketplaceItemsTable.id, id));
+      .where(eq(marketplaceItemsTable.id, id))
+      .returning();
 
-    return c.json({ message: "ok" }, 200);
+    const marketplace = await db.query.marketplaceItemsTable.findFirst({
+      where: {
+        id: {
+          eq: updatedMarketplaceItem.id,
+        },
+      },
+      columns: {
+        userId: false,
+      },
+      with: {
+        provider: {
+          columns: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    });
+
+    return c.json({ marketplace }, 200);
   }
 );
 
