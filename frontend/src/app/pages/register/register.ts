@@ -72,7 +72,7 @@ export class Register {
     try {
       this.error.set(null);
 
-      await this.auth.register(name, email, password);
+      await this.auth.register({ name, email, password });
 
       this.router.navigate(['/dashboard']);
     } catch (err: any) {

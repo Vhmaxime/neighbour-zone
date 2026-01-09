@@ -49,7 +49,7 @@ export class Login {
     try {
       this.error.set(null);
 
-      await this.auth.login(email, password, rememberMe);
+      await this.auth.login({ email, password }, rememberMe);
 
       this.router.navigate(['/dashboard']);
     } catch (err: any) {

@@ -7,7 +7,7 @@ export const authGuard: CanActivateFn = () => {
   const router = inject(Router);
 
   // Checks if token exists AND is valid/not expired
-  if (auth.isLoggedIn()) {
+  if (auth.isAuthenticated()) {
     return true;
   }
   // Redirect to login if token is missing or expired
