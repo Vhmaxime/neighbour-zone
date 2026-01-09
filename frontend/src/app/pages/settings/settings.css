@@ -106,3 +106,18 @@ input:checked + .slider:before { transform: translateX(20px); }
   font-size: 0.85rem;
   color: #B91C1C;
 }
+
+.btn-danger {
+  background: #DC2626;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-danger:hover {
+  background: #B91C1C;
+}
