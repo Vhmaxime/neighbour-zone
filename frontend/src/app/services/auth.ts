@@ -29,6 +29,10 @@ export class Auth {
     }
   }
 
+  public getUser(): JwtPayload | null {
+    return this.user();
+  }
+
   private setUser(token: string): void {
     try {
       const user = jwtDecode<JwtPayload>(token);
