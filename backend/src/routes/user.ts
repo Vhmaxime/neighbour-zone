@@ -37,7 +37,7 @@ userRouter.get("/me", async (c) => {
 
 userRouter.patch(
   "/me",
-  zValidator("json", userSchema, (result, c) => {
+  zValidator("json", userSchema.partial(), (result, c) => {
     if (!result.success) {
       console.error(result.error);
       return c.json({ message: "Bad request" }, 400);

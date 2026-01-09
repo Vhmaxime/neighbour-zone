@@ -190,7 +190,7 @@ marketplaceRouter.patch(
       return c.json({ message: "Bad request" }, 400);
     }
   }),
-  zValidator("json", marketplaceItemSchema, (result, c) => {
+  zValidator("json", marketplaceItemSchema.partial(), (result, c) => {
     if (!result.success) {
       console.error("Validation error:", result.error);
       return c.json({ message: "Bad request" }, 400);

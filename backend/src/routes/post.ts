@@ -171,7 +171,7 @@ postRouter.patch(
       return c.json({ message: "Bad request" }, 400);
     }
   }),
-  zValidator("json", postSchema, (result, c) => {
+  zValidator("json", postSchema.partial(), (result, c) => {
     if (!result.success) {
       console.error("Validation error:", result.error);
       return c.json({ message: "Bad request" }, 400);

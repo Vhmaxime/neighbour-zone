@@ -171,7 +171,7 @@ eventRouter.patch(
       return c.json({ message: "Bad request" }, 400);
     }
   }),
-  zValidator("json", eventSchema, (result, c) => {
+  zValidator("json", eventSchema.partial(), (result, c) => {
     if (!result.success) {
       console.error("Validation error:", result.error);
       return c.json({ message: "Bad request" }, 400);
