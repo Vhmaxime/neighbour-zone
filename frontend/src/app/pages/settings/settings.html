@@ -1,18 +1,20 @@
+<!-- Settings page wrapper -->
 <div class="settings-page">
     <div class="settings content">
-
+         <!-- Page header -->
         <header class="settings-header">
             <h1 class="page-title">Settingq</h1>
             <p class = "page-subtitle">Manage your account preferences and security settings</p>
         </header>
-
+        <!-- Notifications settings card -->
         <section class="settings-card">
             <div class="card-header">
                 <h2 class=" card title">Notifications</h2>
                 <p class="card description">Notification preferences for your neighbourhood</p>
             </div>
-
+            <!-- Notification toggles list -->
             <div class="settings list">
+                 <!-- New neighbor notification toggle -->
                 <div class="settings row">
                     <div class="settings info">
                         <span class="settings label">New neighbour alerts</span>
@@ -24,7 +26,7 @@
                         <span class="slider"></span>
                     </label>
                 </div>
-
+                <!-- Direct messages notification toggle -->
                 <div class="settings row">
                     <div class="settings info">
                         <span class="settings label">Direct Messages</span>
@@ -40,34 +42,39 @@
             </div>        
 
         </section>
-        
+         <!-- Security settings card -->
         <section class="settings card">
             <div class="card header">
                 <h2 class="card title">Security</h2>
                 <p class="card-description">Update your password to keep your account secure</p>
             </div>
-
+            <!-- Password update form -->
             <div class="form-grid">
+                 <!-- Current password -->
                  <div class="field full">
                      <label class="input-label">Current Password</label>
                      <input type="password" class="input-field" placeholder="••••••••">
                  </div>
 
             </div>
+            <!-- New password -->
             <div class="field">
                 <label class="input-label">New Password</label>
                 <input type="password" class="input-field" placeholder="New password">
             </div>
+            <!-- Confirm new password -->
             <div class="field">
                 <label class="input-label">Confirm New Password</label>
                 <input type="password" class="input-field" placeholder="Confirm password">
             </div>
+            <!-- Update password -->
             <div class="card-footer">
                 <button type="button" class="primary">Update Password</button>
             </div>
         </section>
-
+        <!-- Danger zone -->
         <section class="danger-area">
+            <!-- Delete account action -->
             <div class="danger-card">
                 <div class="danger text">
                     <span class="danger title">Delete Account</span>
