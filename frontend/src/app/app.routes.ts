@@ -5,8 +5,10 @@ import { Dashboard } from './pages/dashboard/dashboard';
 import { ProfilePage } from './pages/profile-page/profile-page';
 import { Settings } from './pages/settings/settings';
 import { Friends } from './pages/friends/friends';
+import { Home } from './pages/home/home';
 
 export const routes: Routes = [
+  { path: 'home', component: Home },
   { path: 'login', component: Login },
   { path: 'register', component: Register },
   
