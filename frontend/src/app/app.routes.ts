@@ -6,22 +6,17 @@ import { ProfilePage } from './pages/profile-page/profile-page';
 import { Settings } from './pages/settings/settings';
 import { Friends } from './pages/friends/friends';
 import { authGuard } from './guards/auth-guard';
+import { guestGuard } from './guards/guest-guard';
 
 export const routes: Routes = [
-  { path: 'login', component: Login },
-  { path: 'register', component: Register },
-
+  { path: 'login', component: Login, canActivate: [guestGuard] },
+  { path: 'register', component: Register, canActivate: [guestGuard] },
   {
-    path: 'dashboard',
+    path: '',
     component: Dashboard,
     canActivate: [authGuard],
   },
-  { path: 'profile', component: ProfilePage },
-  { path: 'settings', component: Settings },
-  { path: 'friends', component: Friends },
-  { path: '', redirectTo: '/login', pathMatch: 'full' },
-  {
-    path: '**',
-    redirectTo: '/login',
-  },
+  { path: 'profile', component: ProfilePage, canActivate: [authGuard] },
+  { path: 'settings', component: Settings, canActivate: [authGuard] },
+  { path: 'friends', component: Friends, canActivate: [authGuard] },
 ];
