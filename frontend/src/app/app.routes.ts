@@ -10,9 +10,11 @@ import { guestGuard } from './guards/guest-guard';
 import { Home } from './pages/home/home';
 
 export const routes: Routes = [
+  // Guest Routes
   { path: 'login', component: Login, canActivate: [guestGuard] },
   { path: 'register', component: Register, canActivate: [guestGuard] },
-  { path: 'home', component: Home, canActivate: [guestGuard] },
+  // Authenticated Routes
+  { path: '', component: Home, canActivate: [authGuard] },
   {
     path: 'dashboard',
     component: Dashboard,
