@@ -14,9 +14,9 @@ export class Dashboard implements OnInit {
   private auth = inject(Auth);
   private router = inject(Router);
 
-  // We initialize it with the token value (which might be the ID), 
+  // We initialize it with the token value (which might be the ID),
   // but because it's a signal, when we update it later, the UI will snap to the new value instantly
-  userEmail = signal<string>(this.auth.currentUserEmail || 'Guest');
+  userEmail = signal<string>('Guest');
 
   // Computed Signal for the initial
   // This automatically updates whenever userEmail changes! No manual calculation needed
@@ -34,8 +34,7 @@ export class Dashboard implements OnInit {
 
   profileCompletion: number = 75;
 
-  constructor() {
-  }
+  constructor() {}
 
   // ngOnInit to fetch data when the component loads
   async ngOnInit() {
@@ -62,11 +61,10 @@ export class Dashboard implements OnInit {
         console.log('Dashboard data loaded:', data); // CHECK THIS LOG IN BROWSER CONSOLE
 
         if (data.email) {
-        this.userEmail.set(data.email);
+          this.userEmail.set(data.email);
         } else if (data.user && data.user.email) {
-            this.userEmail.set(data.user.email);
+          this.userEmail.set(data.user.email);
         }
-
       } else {
         console.warn('Failed to load dashboard data', response.status);
       }
