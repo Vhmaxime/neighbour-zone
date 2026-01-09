@@ -17,7 +17,7 @@ export interface JwtPayload {
 export class Auth {
   private router = inject(Router);
 
-  private readonly apiUrl = 'http://localhost:3000/api';
+  private readonly apiUrl = 'https://neighbour-zone.vercel.app/api';
   private readonly accessToken = 'accessToken';
 
   private readonly user = signal<JwtPayload | null>(null);
