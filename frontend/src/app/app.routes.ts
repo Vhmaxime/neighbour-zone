@@ -12,11 +12,12 @@ export const routes: Routes = [
   { path: 'login', component: Login, canActivate: [guestGuard] },
   { path: 'register', component: Register, canActivate: [guestGuard] },
   {
-    path: '',
+    path: 'dashboard',
     component: Dashboard,
     canActivate: [authGuard],
   },
   { path: 'profile', component: ProfilePage, canActivate: [authGuard] },
   { path: 'settings', component: Settings, canActivate: [authGuard] },
   { path: 'friends', component: Friends, canActivate: [authGuard] },
+  { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
 ];

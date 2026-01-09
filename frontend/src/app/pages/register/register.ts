@@ -74,7 +74,7 @@ export class Register {
 
       await this.auth.register({ name, email, password });
 
-      this.router.navigate(['/dashboard']);
+      this.router.navigate(['/']);
     } catch (err: any) {
       console.error(err);
       this.error.set(err.message || 'Something went wrong. Please try again.');
