@@ -1,6 +1,15 @@
 import { inject, Injectable, signal } from '@angular/core';
 import type { RegisterRequest, LoginRequest, AuthResponse } from '../types/api.types';
 import { Router } from '@angular/router';
+import { jwtDecode } from 'jwt-decode';
+
+export interface JwtPayload {
+  sub: string;
+  name: string;
+  email: string;
+  roles: string;
+  exp: number;
+}
 
 @Injectable({
   providedIn: 'root',
@@ -11,14 +20,26 @@ export class Auth {
   private readonly apiUrl = 'http://localhost:3000/api';
   private readonly accessToken = 'accessToken';
 
-  isAuthenticated = signal<boolean>(this.hasToken());
+  private readonly user = signal<JwtPayload | null>(null);
+  isAuthenticated = signal<boolean>(!!this.getToken());
+
+  constructor() {
+    if (this.isAuthenticated()) {
+      this.setUser(this.getToken() as string);
+    }
+  }
+
+  private setUser(token: string): void {
+    try {
+      const user = jwtDecode<JwtPayload>(token);
+      this.user.set(user);
+    } catch (e) {
+      this.logout();
+    }
+  }
 
   public getToken(): string | null {
     return localStorage.getItem(this.accessToken) || sessionStorage.getItem(this.accessToken);
-  }
-
-  private hasToken(): boolean {
-    return !!this.getToken();
   }
 
   private setToken(token: string, rememberMe: boolean): void {
@@ -28,12 +49,14 @@ export class Auth {
       sessionStorage.setItem(this.accessToken, token);
     }
     this.isAuthenticated.set(true);
+    this.setUser(token);
   }
 
   private removeToken(): void {
     localStorage.removeItem(this.accessToken);
     sessionStorage.removeItem(this.accessToken);
     this.isAuthenticated.set(false);
+    this.user.set(null);
   }
 
   async register(data: RegisterRequest): Promise<void> {
