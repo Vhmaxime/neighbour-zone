@@ -28,3 +28,9 @@
   padding: 32px;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 }
+
+.page-title { font-size: 2rem; font-weight: 850; color: #1F2937; margin-bottom: 8px; }
+.page-subtitle { color: #6B7280; font-size: 1.05rem; margin-bottom: 24px; }
+
+.card-title { font-size: 1.25rem; font-weight: 700; color: #1F2937; margin-bottom: 4px; }
+.card-description { font-size: 0.9rem; color: #6B7280; margin-bottom: 24px; }
