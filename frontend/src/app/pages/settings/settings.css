@@ -70,3 +70,18 @@ input:checked + .slider:before { transform: translateX(20px); }
 
 .card-footer { margin-top: 32px; display: flex; justify-content: flex-end;
 }
+
+.btn-primary {
+  background: #D97757;
+  color: white;
+  border: none;
+  padding: 12px 28px;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-primary:hover {
+  background: #BF6448;
+}
