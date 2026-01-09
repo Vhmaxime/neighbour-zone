@@ -5,3 +5,18 @@
   width: calc(100% - 240px);
   background-color: #FAFAF9;
 }
+
+.settings-page {
+  display: flex;
+  justify-content: center;
+  padding: 80px 40px;
+  box-sizing: border-box;
+}
+
+.settings-content {
+  width: 100%;
+  max-width: 800px; 
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
