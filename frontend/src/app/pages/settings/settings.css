@@ -47,3 +47,5 @@
 .setting-row:last-child {
   border-bottom: none;
 }
+.setting-label { display: block; font-weight: 600; color: #1F2937; }
+.setting-hint { display: block; font-size: 0.85rem; color: #6B7280; }
