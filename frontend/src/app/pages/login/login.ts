@@ -19,6 +19,7 @@ import { Router, RouterLink } from '@angular/router';
 })
 export class Login {
   error = signal<string | null>(null);
+  isSubmitting = signal(false);
 
   form: FormGroup<{
     email: FormControl<string>;
@@ -42,6 +43,7 @@ export class Login {
   }
 
   async submit() {
+    this.isSubmitting.set(true);
     if (this.form.invalid) return;
 
     const { email, password, rememberMe } = this.form.getRawValue();
@@ -55,6 +57,8 @@ export class Login {
     } catch (err: any) {
       console.error(err);
       this.error.set(err.message || 'Something went wrong. Please try again.');
+    } finally {
+      this.isSubmitting.set(false);
     }
   }
 }

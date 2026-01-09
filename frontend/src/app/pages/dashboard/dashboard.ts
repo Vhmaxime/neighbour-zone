@@ -1,9 +1,9 @@
 import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { Auth } from '../../services/auth';
 import { Api } from '../../services/api';
-import { User, UserResponse } from '../../types/api.types';
+import { User } from '../../types/api.types';
 
 @Component({
   selector: 'app-dashboard',
@@ -14,7 +14,6 @@ import { User, UserResponse } from '../../types/api.types';
 })
 export class Dashboard implements OnInit {
   private auth = inject(Auth);
-  private router = inject(Router);
   private api = inject(Api);
 
   // We initialize it with the token value (which might be the ID),
@@ -55,6 +54,5 @@ export class Dashboard implements OnInit {
 
   logout() {
     this.auth.logout();
-    this.router.navigate(['/login']);
   }
 }
