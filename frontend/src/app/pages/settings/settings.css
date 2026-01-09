@@ -57,3 +57,7 @@
 
 input:checked + .slider { background: #D97757; }
 input:checked + .slider:before { transform: translateX(20px); }
+
+
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.field.full { grid-column: span 2; }
