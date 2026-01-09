@@ -61,3 +61,6 @@ input:checked + .slider:before { transform: translateX(20px); }
 
 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 .field.full { grid-column: span 2; }
+
+
+.input-label { display: block; font-size: 0.85rem; font-weight: 600; color: #374151; margin-bottom: 6px; }
