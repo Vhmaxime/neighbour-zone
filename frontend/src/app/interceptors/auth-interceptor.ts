@@ -1,25 +1,12 @@
-import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
-import { inject } from '@angular/core';
-import { Auth } from '../services/auth';
-import { catchError, switchMap, throwError } from 'rxjs';
+import { HttpRequest, HttpHandlerFn } from '@angular/common/http';
 
-export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  const auth = inject(Auth);
-  const accessToken = auth.getToken();
+export const authInterceptor = (req: HttpRequest<unknown>, next: HttpHandlerFn) => {
+  // Read directly from storage
+  const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
 
-  // Clone request met authorization header als token beschikbaar is
-  const clonedReq = accessToken
-    ? req.clone({
-        setHeaders: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      })
+  const authReq = token
+    ? req.clone({ headers: req.headers.set('Authorization', `Bearer ${token}`) })
     : req;
 
-  return next(clonedReq).pipe(
-    catchError((error: HttpErrorResponse) => {
-      auth.logout();
-      return throwError(() => error);
-    })
-  );
+  return next(authReq);
 };
