@@ -1,56 +1,51 @@
 
-# Neighbourzone
-
-## 🚀 Introduction
-## ✨ Key Features
-## 🧱 Tech Stack
-## 🏗 Architecture Overview
-## 🔐 Security & Auth
-## 🛠 Setup (Quick Start)
+![NgIneers2](https://github.com/user-attachments/assets/4eed4e75-2e3e-470e-b58d-190829b99e6d)
 
 
-🚀 Introduction
+<h1> Neighbour Zone </h1> <br>
 
-Neighbour-zone is a web app designed by three Full Stack Developers with it's purpose to encourage "neighbours" to ask and recieve help for duties.
+## 🚀 Introduction ##
 
+Neighbour Zone, built by three Full Stack **NgIneers**, aims to bring neighbours together—helping them connect, share items, discover local events, and much more.
 
-The platform enables local communities to offer services, share tools or materials, and coordinate help within their neighborhood.  
-By focusing on local interaction and mutual support, the goal is to strengthen social cohesion and bring communities closer together.
+The focus is on clean architecture, security, and long-term scalability. <br><br><br>
 
-It combines an Angular frontend with a secure backend API and a PostgreSQL database, using an ORM for structured and maintainable data access.  
-The focus is on clean architecture, security, and long-term scalability.
+## ✨ Pages ##
 
+- **Explore page**: Overview of existing listings in the surrounding area, with the ability to swap between people, events and goods.
+  
+- **Register & login**: Create an account and login.
+  
+- **Dashboard**: Check notifications, the date and time and your login status.
+  
+- **Profile**: Manage what other people see when they visit your profile.
+  
+- **Friends**: Dedicated to finding other people and making friends.
+  
+- **Settings**: Manage your password, notifications and privacy settings. <br><br><br>
+ 
 
+## 🛠 Tech Stack & Architecture ##
 
+The application is built using a modern, performance-oriented stack that clearly separates concerns while maintaining strong type guarantees across layers.
 
+**Frontend**
 
-✨ Key Features
+- **Angular**
+  
+- **Tailwind CSS**
 
-- Home page with an overview of all the exisiting duties nearby.
-- Profile page
-- Friends list
+**Backend**
 
+- **PostgreSQL**
+  
+- **Hono.js**
 
+- **Zod**
 
-🧱 Tech Stack
+- **Drizzle ORM**<br><br><br>
 
-(Frontend)
-- Angular
-- Tailwind CSS
+## 🔐 Security & Auth ##
 
-(Backend)
-- Supabase
+- **JWT**
 
-
-
-🏗 Architecture Overview
-
-
-
-
-🔐 Security & Auth
-
-
-
-
-🛠 Setup (Quick Start)

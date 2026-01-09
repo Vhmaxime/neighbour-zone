@@ -7,8 +7,10 @@ import { Settings } from './pages/settings/settings';
 import { Friends } from './pages/friends/friends';
 import { authGuard } from './guards/auth-guard';
 import { guestGuard } from './guards/guest-guard';
+import { Home } from './pages/home/home'
 
 export const routes: Routes = [
+  { path: 'home', component: Home },
   { path: 'login', component: Login, canActivate: [guestGuard] },
   { path: 'register', component: Register, canActivate: [guestGuard] },
   {
