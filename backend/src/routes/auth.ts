@@ -46,8 +46,10 @@ authRouter.post(
     const accessToken = await sign(
       {
         sub: newUser.id,
+        name: newUser.name,
+        email: newUser.email,
         role: newUser.role,
-        exp: Math.floor(Date.now() / 1000) + 60 * 15, // 15 minutes expiration
+        exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7, // 7 days expiration
       },
       constants.jwtSecret
     );
@@ -55,7 +57,7 @@ authRouter.post(
     const refreshToken = await sign(
       {
         sub: newUser.id,
-        exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7, // 7 dagen
+        exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7, // 7 dagen expiration
       },
       constants.jwtRefreshSecret
     );
@@ -100,8 +102,10 @@ authRouter.post(
     const accessToken = await sign(
       {
         sub: user.id,
+        name: user.name,
+        email: user.email,
         role: user.role,
-        exp: Math.floor(Date.now() / 1000) + 60 * 15, // 15 minutes expiration
+        exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7, // 7 days expiration
       },
       constants.jwtSecret
     );
@@ -109,7 +113,6 @@ authRouter.post(
     const refreshToken = await sign(
       {
         sub: user.id,
-        role: user.role,
         exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7, // 7 days expiration
       },
       constants.jwtRefreshSecret
@@ -143,6 +146,8 @@ authRouter.post("/refresh", async (c) => {
   const newAccessToken = await sign(
     {
       sub: payload.sub,
+      name: payload.name,
+      email: payload.email,
       role: payload.role,
       exp: Math.floor(Date.now() / 1000) + 60 * 15,
     },
@@ -152,7 +157,6 @@ authRouter.post("/refresh", async (c) => {
   const newRefreshToken = await sign(
     {
       sub: payload.sub,
-      role: payload.role,
       exp: payload.exp,
     },
     constants.jwtRefreshSecret
