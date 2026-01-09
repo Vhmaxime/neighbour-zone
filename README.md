@@ -1,56 +1,51 @@
+<h1> Neighbourzone </h1> <br>
 
-# Neighbourzone
+## 🚀 Introduction ##
 
-## 🚀 Introduction
-## ✨ Key Features
-## 🧱 Tech Stack
-## 🏗 Architecture Overview
-## 🔐 Security & Auth
-## 🛠 Setup (Quick Start)
+Neighbour-zone is a web app designed by three Full Stack Developers with the purpose to encourage "neighbours" to ask and recieve help for duties.
 
-
-🚀 Introduction
-
-Neighbour-zone is a web app designed by three Full Stack Developers with it's purpose to encourage "neighbours" to ask and recieve help for duties.
-
-
-The platform enables local communities to offer services, share tools or materials, and coordinate help within their neighborhood.  
-By focusing on local interaction and mutual support, the goal is to strengthen social cohesion and bring communities closer together.
+By focusing on local interaction and mutual support, the platform enables people to form communities, offer services, share tools or materials, organize events and so much more in their surrounding area.
 
 It combines an Angular frontend with a secure backend API and a PostgreSQL database, using an ORM for structured and maintainable data access.  
-The focus is on clean architecture, security, and long-term scalability.
 
+The focus is on clean architecture, security, and long-term scalability. <br><br><br>
 
+## ✨ Pages ##
 
+- **Explore page**: Overview of existing duties in the surrounding area, with the ability to swap between people, events and things.
+  
+- **Register & login**: Create an account and login.
+  
+- **Dashboard**: Check notifications, the date and time and your login status.
+  
+- **Profile**: Manage what other people see when their visit your profile.
+  
+- **Friends**: Dedicated to finding other people and making friends.
+  
+- **Settings**: Manage your password, notifications and privacy settings. <br><br><br>
+ 
 
+## 🛠 Tech Stack & Architecture ##
 
-✨ Key Features
+The application is built using a modern, performance-oriented stack that clearly separates concerns while maintaining strong type guarantees across layers.
 
-- Home page with an overview of all the exisiting duties nearby.
-- Profile page
-- Friends list
+**Frontend**
 
+- **Angular**
+  
+- **Tailwind CSS**
 
+**Backend**
 
-🧱 Tech Stack
+- **PostgreSQL**
+  
+- **Hono.js**
 
-(Frontend)
-- Angular
-- Tailwind CSS
+- **Zod**
 
-(Backend)
-- Supabase
+- **Drizzle ORM**<br><br><br>
 
+## 🔐 Security & Auth ##
 
+- **JWT**
 
-🏗 Architecture Overview
-
-
-
-
-🔐 Security & Auth
-
-
-
-
-🛠 Setup (Quick Start)
