@@ -20,3 +20,11 @@
   flex-direction: column;
   gap: 32px;
 }
+
+.settings-card {
+  background: #ffffff;
+  border: 1px solid #F3F4F6;
+  border-radius: 20px;
+  padding: 32px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
