@@ -26,7 +26,9 @@
     }
   </div>
 
-  <button type="submit" [disabled]="form.invalid" id="registerBtn">Register</button>
+  <button type="submit" [disabled]="form.invalid || isSubmitting()" id="registerBtn">
+    Register
+  </button>
 
   @if (error()) {
   <ng-container>

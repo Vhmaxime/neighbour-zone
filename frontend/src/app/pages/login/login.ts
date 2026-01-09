@@ -43,12 +43,12 @@ export class Login {
   }
 
   async submit() {
-    this.isSubmitting.set(true);
     if (this.form.invalid) return;
 
     const { email, password, rememberMe } = this.form.getRawValue();
 
     try {
+      this.isSubmitting.set(true);
       this.error.set(null);
 
       await this.auth.login({ email, password }, rememberMe);

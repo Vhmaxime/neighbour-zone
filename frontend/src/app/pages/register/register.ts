@@ -32,6 +32,7 @@ export class Register {
   private fb = inject(FormBuilder);
   private auth = inject(Auth);
   private router = inject(Router);
+  isSubmitting = signal(false);
 
   constructor() {
     this.form = this.fb.group(
@@ -70,6 +71,7 @@ export class Register {
     const { name, email, password } = this.form.getRawValue();
 
     try {
+      this.isSubmitting.set(true);
       this.error.set(null);
 
       await this.auth.register({ name, email, password });
@@ -78,6 +80,8 @@ export class Register {
     } catch (err: any) {
       console.error(err);
       this.error.set(err.message || 'Something went wrong. Please try again.');
+    } finally {
+      this.isSubmitting.set(false);
     }
   }
 }
