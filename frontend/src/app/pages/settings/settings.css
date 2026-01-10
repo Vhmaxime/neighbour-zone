@@ -27,6 +27,28 @@
   border-radius: 20px;
   padding: 32px;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  
+}
+
+.settings-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-width: 85%;
+}
+
+.settings-label {
+  font-weight: 700;       
+  font-size: 0.95rem;
+  color: #1F2937;
+}
+
+.settings-hint {
+  font-size: 0.85rem;
+  color: #6B7280;
+  line-height: 1.35;
 }
 
 .page-title { font-size: 2rem; font-weight: 850; color: #1F2937; margin-bottom: 8px; }
@@ -36,19 +58,18 @@
 .card-description { font-size: 0.9rem; color: #6B7280; margin-bottom: 24px; }
 
 
-
-.setting-row {
+.settings-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 16px 0;
   border-bottom: 1px solid #F9FAFB;
 }
-.setting-row:last-child {
+.settings-row:last-child {
   border-bottom: none;
 }
-.setting-label { display: block; font-weight: 600; color: #1F2937; }
-.setting-hint { display: block; font-size: 0.85rem; color: #6B7280; }
+.settings-label { display: block; font-weight: 600; color: #1F2937; }
+.settings-hint { display: block; font-size: 0.85rem; color: #6B7280; }
 
 .switch { position: relative; width: 44px; height: 24px; flex-shrink: 0; display: inline-block; }
 .switch input { opacity: 0; width: 0; height: 0; }
