@@ -96,11 +96,6 @@ input:checked + .slider:before { transform: translateX(20px); }
   align-items: center;
 }
 
-.danger-title {
-  display: block;
-  font-weight: 700;
-  color: #991B1B;
-}
 
 .danger-desc {
   font-size: 0.85rem;
