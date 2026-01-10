@@ -23,7 +23,8 @@ export const routes: Routes = [
     path: '',
     canActivate: [authGuard],
     children: [
-      { path: '', component: Home }, // The actual homepage (/)
+      { path: '', redirectTo: 'home', pathMatch: 'full' }, // Redirects root URL to /home
+      { path: 'home', component: Home },
       { path: 'dashboard', component: Dashboard },
       { path: 'profile', component: ProfilePage },
       { path: 'settings', component: Settings },
