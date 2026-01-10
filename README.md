@@ -1,7 +1,6 @@
-
-![NgIneers2](https://github.com/user-attachments/assets/4eed4e75-2e3e-470e-b58d-190829b99e6d)
-
-
+<div align="center">
+<img src="https://github.com/user-attachments/assets/4eed4e75-2e3e-470e-b58d-190829b99e6d" width="700" height="700">
+</div>
 <h1> Neighbour Zone </h1> <br>
 
 ## 🚀 Introduction ##
@@ -48,4 +47,3 @@ The application is built using a modern, performance-oriented stack that clearly
 ## 🔐 Security & Auth ##
 
 - **JWT**
-
