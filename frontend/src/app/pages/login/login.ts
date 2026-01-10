@@ -53,7 +53,7 @@ export class Login {
 
       await this.auth.login({ email, password }, rememberMe);
 
-      this.router.navigate(['/']);
+      this.router.navigate(['/dashboard']);
     } catch (err: any) {
       console.error(err);
       this.error.set(err.message || 'Something went wrong. Please try again.');
