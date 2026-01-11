@@ -14,6 +14,8 @@ postRouter.use(authMiddleware);
 
 // Get all posts
 postRouter.get("/", async (c) => {
+  const { sub: userId } = c.get("jwtPayload");
+
   const posts = await db.query.postsTable.findMany({
     columns: {
       authorId: false,
@@ -35,7 +37,22 @@ postRouter.get("/", async (c) => {
     },
   });
 
-  return c.json({ posts }, 200);
+  const likedPostIds = await db.query.postLikesTable.findMany({
+    where: { userId: { eq: userId } },
+    columns: {
+      postId: true,
+    },
+  });
+
+  const postSet = posts.map((post) => {
+    const liked = likedPostIds.some((like) => like.postId === post.id);
+    return {
+      ...post,
+      liked,
+    };
+  });
+
+  return c.json({ posts: postSet }, 200);
 });
 
 // Create a new post
@@ -75,10 +92,6 @@ postRouter.post(
           },
         },
       },
-      extras: {
-        likes: (table) =>
-          db.$count(postLikesTable, eq(table.id, postLikesTable.postId)),
-      },
     });
 
     return c.json({ post }, 201);
@@ -96,6 +109,8 @@ postRouter.get(
   }),
   async (c) => {
     const { id: postId } = c.req.valid("param");
+
+    const { sub: userId } = c.get("jwtPayload");
 
     const post = await db.query.postsTable.findFirst({
       where: { id: { eq: postId } },
@@ -119,7 +134,31 @@ postRouter.get(
     if (!post) {
       return c.json({ message: "Not found" }, 404);
     }
-    return c.json({ post }, 200);
+
+    const liked = !!(await db.query.postLikesTable.findFirst({
+      where: {
+        AND: [{ postId: { eq: postId } }, { userId: { eq: userId } }],
+      },
+    }));
+
+    if (post.author?.id === userId) {
+      const likedBy = await db.query.postLikesTable.findMany({
+        where: { postId: { eq: postId } },
+        columns: {},
+        with: {
+          user: {
+            columns: {
+              id: true,
+              name: true,
+            },
+          },
+        },
+      });
+
+      return c.json({ ...post, liked, likedBy }, 200);
+    }
+
+    return c.json({ ...post, liked }, 200);
   }
 );
 
@@ -176,13 +215,9 @@ postRouter.patch(
           },
         },
       },
-      extras: {
-        likes: (table) =>
-          db.$count(postLikesTable, eq(table.id, postLikesTable.postId)),
-      },
     });
 
-    return c.json({ post });
+    return c.json({ post }, 200);
   }
 );
 

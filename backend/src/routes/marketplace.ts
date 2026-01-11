@@ -20,6 +20,8 @@ marketplaceRouter.use(authMiddleware);
 
 // Get all marketplace items
 marketplaceRouter.get("", async (c) => {
+  const { sub: userId } = c.get("jwtPayload");
+
   const marketplace = await db.query.marketplaceItemsTable.findMany({
     columns: {
       userId: false,
@@ -37,7 +39,24 @@ marketplaceRouter.get("", async (c) => {
     },
   });
 
-  return c.json({ marketplace }, 200);
+  const appliedItemIds = await db.query.marketplaceApplicationsTable.findMany({
+    where: { userId: { eq: userId } },
+    columns: {
+      marketplaceItemId: true,
+    },
+  });
+
+  const marketplaceSet = marketplace.map((item) => {
+    const applied = appliedItemIds.some(
+      (application) => application.marketplaceItemId === item.id
+    );
+    return {
+      ...item,
+      applied,
+    };
+  });
+
+  return c.json({ marketplace: marketplaceSet }, 200);
 });
 
 // Create a new marketplace item
@@ -101,11 +120,13 @@ marketplaceRouter.get(
   }),
 
   async (c) => {
-    const { id } = c.req.valid("param");
+    const { id: marketplaceItemId } = c.req.valid("param");
+
+    const { sub: userId } = c.get("jwtPayload");
 
     const marketplace = await db.query.marketplaceItemsTable.findFirst({
       where: {
-        id: { eq: id },
+        id: { eq: marketplaceItemId },
       },
       columns: {
         userId: false,
@@ -124,7 +145,39 @@ marketplaceRouter.get(
       return c.json({ message: "Not found" }, 404);
     }
 
-    return c.json({ marketplace }, 200);
+    const applied = !!(await db.query.marketplaceApplicationsTable.findFirst({
+      where: {
+        AND: [
+          { marketplaceItemId: { eq: marketplaceItemId } },
+          { userId: { eq: userId } },
+        ],
+      },
+    }));
+
+    if (marketplace.provider?.id === userId) {
+      const applications = await db.query.marketplaceApplicationsTable.findMany(
+        {
+          where: {
+            marketplaceItemId: { eq: marketplace.id },
+          },
+          columns: {
+            message: true,
+          },
+          with: {
+            user: {
+              columns: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        }
+      );
+
+      return c.json({ ...marketplace, applied, applications }, 200);
+    }
+
+    return c.json({ marketplace, applied }, 200);
   }
 );
 
@@ -165,7 +218,7 @@ marketplaceRouter.patch(
       return c.json({ message: "Forbidden" }, 403);
     }
 
-    await db
+    const [updatedMarketplaceItem] = await db
       .update(marketplaceItemsTable)
       .set({
         title,
@@ -174,11 +227,14 @@ marketplaceRouter.patch(
         price: price ?? null,
         category,
       })
-      .where(eq(marketplaceItemsTable.id, id));
+      .where(eq(marketplaceItemsTable.id, id))
+      .returning();
 
     const marketplace = await db.query.marketplaceItemsTable.findFirst({
       where: {
-        id: { eq: id },
+        id: {
+          eq: updatedMarketplaceItem.id,
+        },
       },
       columns: {
         userId: false,

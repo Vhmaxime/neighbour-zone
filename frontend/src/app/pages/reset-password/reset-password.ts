@@ -28,17 +28,18 @@ export class ResetPassword {
 
  submit() {
     if (this.form.invalid) return;
-
-    this.auth.resetPassword(this.form.value.email)
-      .then(() => {
-        // Success case
-        this.success.set('Check your email for reset instructions.');
-        this.error.set(null);
-      })
-      .catch(() => {
-        // Error case
-        this.error.set('Failed to send reset email.');
-      });
+    
+    // Commented this out because we don't use it for now
+    // this.auth.resetPassword(this.form.value.email)
+    //   .then(() => {
+    //     // Success case
+    //     this.success.set('Check your email for reset instructions.');
+    //     this.error.set(null);
+    //   })
+    //   .catch(() => {
+    //     // Error case
+    //     this.error.set('Failed to send reset email.');
+    //   });
   }
 }
 
