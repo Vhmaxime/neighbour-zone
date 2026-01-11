@@ -9,4 +9,8 @@ export const marketplaceItemSchema = z.object({
   category: z.enum(marketplaceCategoryEnum.enumValues).default("offered"),
 });
 
+export const marketplaceApplicationSchema = z.object({
+  message: z.string().min(1).max(1000).optional(),
+});
+
 export type MarketplaceItem = z.infer<typeof marketplaceItemSchema>;

@@ -2,12 +2,12 @@ import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormControl, Validators, FormGroup } from '@angular/forms';
 import { Auth } from '../../services/auth';
-import { Router, RouterModule } from '@angular/router';
+import { Router, RouterLink } from '@angular/router'; 
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './login.html',
   styleUrls: ['./login.css']
 })
@@ -42,31 +42,27 @@ export class Login {
     const { email, password, rememberMe } = this.form.getRawValue();
 
     try {
-      this.error.set(null); // Clear previous errors
-      
-      // Await the promise from the fetch API
+      this.error.set(null); // Clear old errors
+
+      // Await the Promise directly
       const response = await this.auth.login({ email, password });
-      
-      // Success logic
-      const token = response?.token; 
-      
+
+      const token = response?.accessToken;
+
       if (token) {
         this.auth.saveToken(token, rememberMe);
         this.router.navigate(['/dashboard']);
       } else {
-        // Handle case where login worked but no token was returned
-        this.error.set('Login successful but no token received.');
+        // Fallback if the login worked but no token came back
+        console.log('Login response:', response);
+        this.error.set('Login successful, but no token received.');
       }
-      
-      console.log('Logged in', response);
 
     } catch (err: any) {
-      // Error logic (catches the errors thrown by your Auth service)
       console.error(err);
-      
-      // If the error is an object with a message, use it; otherwise default text
-      const errorMessage = err.message || 'Invalid credentials';
-      this.error.set(errorMessage);
+      // Auth service throws nice errors
+      // We can display those directly, or fall back to a generic message
+      this.error.set(err.message || 'Invalid credentials');
     }
   }
 }
