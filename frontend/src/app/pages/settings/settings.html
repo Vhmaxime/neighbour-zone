@@ -1,48 +1,154 @@
 <!-- Settings page wrapper -->
 <div class="settings-page">
     <div class="settings-content">
-         <!-- Page header -->
+        <!-- Page header -->
         <header class="settings-header">
             <h1 class="page-title">Settings</h1>
-            <p class = "page-subtitle">Manage your account preferences and security settings</p>
+            <p class="page-subtitle">Manage your account preferences and security settings</p>
         </header>
         <!-- Notifications settings card -->
         <section class="settings-card">
             <div class="card-header">
                 <h2 class=" card-title">Notifications</h2>
-                <p class="card-description">Notification preferences for your neighbourhood</p>
             </div>
-            <!-- Notification toggles list -->
             <div class="settings-list">
-                 <!-- New neighbor notification toggle -->
+                <!-- Notifications Friends -->
                 <div class="settings-row">
                     <div class="settings-info">
-                        <span class="settings-label">New neighbour alerts</span>
-                        <span class="settings-hint">Recieve a notification when someone new joins your street</span>
-                    </div>
+                        <span class="settings-label">Friends</span>
 
-                    <label class="switch">
-                        <input type="checkbox" checked>
-                        <span class="slider"></span>
-                    </label>
+                        <div class="settings-row">
+                            <span class="settings-hint">Friend request recieved</span>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="settings-row">
+                            <span class="settings-hint">Friend request accepted</span>
+                            <label class="switch">
+                                <input type="checkbox">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="settings-row">
+                            <span class="settings-hint">Direct message</span>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                         <div class="settings-row">
+                            <span class="settings-hint">Help request from a friend</span>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        
+                         <div class="settings-row">
+                            <span class="settings-hint">Friend activity nearby</span>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        
+                    </div>
                 </div>
-                <!-- Direct messages notification toggle -->
+                <!-- Notifications Items -->
                 <div class="settings-row">
                     <div class="settings-info">
-                        <span class="settings-label">Direct Messages</span>
-                        <span class="settings-hint">Notifications for chat messages from your neighbours </span>
+                        <span class="settings-label">Items</span>
+
+                        <div class="settings-row">
+                            <span class="settings-hint">Incoming item request</span>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="settings-row">
+                            <span class="settings-hint">Outgoing item request: ACCEPTED</span>
+                            <label class="switch">
+                                <input type="checkbox">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                         <div class="settings-row">
+                            <span class="settings-hint">Outgoing item request: DECLINED</span>
+                            <label class="switch">
+                                <input type="checkbox">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                         <div class="settings-row">
+                            <span class="settings-hint">Return reminder</span>
+                            <label class="switch">
+                                <input type="checkbox">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="settings-row">
+                            <span class="settings-hint">Item available alert</span>
+                            <label class="switch">
+                                <input type="checkbox">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
                     </div>
-
-                    <label class="switch">
-                        <input type="checkbox" checked>
-                        <span class="slider"></span>
-                    </label>
                 </div>
-                
-            </div>        
+                <!-- Notifications Events -->
+                <div class="settings-row">
+                    <div class="settings-info">
+                        <span class="settings-label">Events</span>
 
+                        <div class="settings-row">
+                            <span class="settings-hint">New event</span>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="settings-row">
+                            <span class="settings-hint">Event reminder</span>
+                            <label class="switch">
+                                <input type="checkbox">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="settings-row">
+                            <span class="settings-hint">Event update</span>
+                            <label class="switch">
+                                <input type="checkbox">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="settings-row">
+                            <span class="settings-hint">Event cancelled</span>
+                            <label class="switch">
+                                <input type="checkbox">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="settings-row">
+                            <span class="settings-hint">New comment/message on event</span>
+                            <label class="switch">
+                                <input type="checkbox">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
         </section>
-         <!-- Security settings card -->
+        <!-- Security settings card -->
         <section class="settings-card">
             <div class="card-header">
                 <h2 class="card-title">Security</h2>
@@ -50,23 +156,24 @@
             </div>
             <!-- Password update form -->
             <div class="form-grid">
-                 <!-- Current password -->
-                 <div class="field-full">
-                     <label class="input-label">Current Password</label>
-                     <input type="password" class="input-field" placeholder="••••••••">
-                 </div>
-
-            </div>
-            <!-- New password -->
+                <!-- Current password -->
+                <div class="field">
+                    <label class="input-label">Current Password</label>
+                    <input type="password" class="input-field" placeholder="••••••••">
+                </div>
+                 <!-- New password -->
             <div class="field">
                 <label class="input-label">New Password</label>
-                <input type="password" class="input-field" placeholder="New password">
+                <input type="password" class="input-field" placeholder="••••••••">
             </div>
             <!-- Confirm new password -->
             <div class="field">
                 <label class="input-label">Confirm New Password</label>
-                <input type="password" class="input-field" placeholder="Confirm password">
+                <input type="password" class="input-field" placeholder="••••••••">
             </div>
+
+            </div>
+           
             <!-- Update password -->
             <div class="card-footer">
                 <button type="button" class="primary">Update Password</button>
@@ -81,7 +188,7 @@
                     <span class="danger-desc"> Once you delete your account, all data will be permanently removed</span>
                 </div>
             </div>
-    
+
         </section>
     </div>
 </div>
