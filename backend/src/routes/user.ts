@@ -94,8 +94,6 @@ userRouter.delete("/me", async (c) => {
   return c.json({ message: "ok" }, 200);
 });
 
-export default userRouter;
-
 userRouter.patch(
   "/me/password",
   zValidator("json", passwordSchema),
@@ -113,3 +111,5 @@ userRouter.patch(
     return c.json({ message: "ok" }, 200);
   }
 );
+
+export default userRouter;
