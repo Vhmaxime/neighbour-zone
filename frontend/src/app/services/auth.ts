@@ -49,7 +49,7 @@ export class Auth {
     return localStorage.getItem(this.accessToken) || sessionStorage.getItem(this.accessToken);
   }
 
-  private authenticate(token: string, rememberMe: boolean): void {
+  private authenticate(token: string, rememberMe: boolean = false): void {
     if (rememberMe) {
       localStorage.setItem(this.accessToken, token);
     } else {
@@ -68,16 +68,20 @@ export class Auth {
 
   public register(data: RegisterRequest) {
     return this.http.post<AuthResponse>(`${this.apiUrl}/auth/register`, data).pipe(
-      tap((response) => {
-        this.authenticate(response.accessToken, false);
+      tap({
+        next: (response) => {
+          this.authenticate(response.accessToken);
+        },
       })
     );
   }
 
   public login(data: LoginRequest) {
     return this.http.post<AuthResponse>(`${this.apiUrl}/auth/login`, data).pipe(
-      tap((response) => {
-        this.authenticate(response.accessToken, data.rememberMe ?? false);
+      tap({
+        next: (response) => {
+          this.authenticate(response.accessToken, data.rememberMe);
+        },
       })
     );
   }
