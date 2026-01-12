@@ -42,23 +42,26 @@ export class Login {
     });
   }
 
-  submit() {
-    if (this.form.invalid) return;
+  async submit() {
+  if (this.form.invalid) return;
 
-    const { email, password, rememberMe } = this.form.getRawValue();
+  const { email, password, rememberMe } = this.form.getRawValue();
 
-    this.isSubmitting.set(true);
-    this.error.set(null);
+  this.isSubmitting.set(true);
+  this.error.set(null);
 
-    this.auth.login({ email, password, rememberMe }).subscribe({
-      next: () => {
-        this.isSubmitting.set(false);
-        this.router.navigate(['/dashboard']);
-      },
-      error: (err) => {
-        this.isSubmitting.set(false);
-        this.error.set(err.error.message || 'An error occurred. Please try again.');
-      },
-    });
+  try {
+    // Await the promise from your Auth service
+    await this.auth.login({ email, password, rememberMe });
+    
+    // Success: stop loading and redirect
+    this.isSubmitting.set(false);
+    this.router.navigate(['/dashboard']);
+  } catch (err: any) {
+    // Error: catch the error object
+    this.isSubmitting.set(false);
+    // Safe access to error message
+    this.error.set(err.error?.message || 'An error occurred. Please try again.');
   }
+}
 }
