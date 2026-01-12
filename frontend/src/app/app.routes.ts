@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { Login } from './pages/login/login';
 import { Register } from './pages/register/register';
+import { ResetPassword } from './pages/reset-password/reset-password';
 import { Dashboard } from './pages/dashboard/dashboard';
 import { ProfilePage } from './pages/profile-page/profile-page';
 import { Settings } from './pages/settings/settings';
@@ -15,6 +16,7 @@ export const routes: Routes = [
   // =========================================================
       { path: 'login', component: Login, canActivate: [guestGuard] },
       { path: 'register', component: Register, canActivate: [guestGuard] },
+      { path: 'reset-password', component: ResetPassword, canActivate: [guestGuard]},
   
   // =========================================================
   // AUTHENTICATED ROUTES (Accessible only when logged in)

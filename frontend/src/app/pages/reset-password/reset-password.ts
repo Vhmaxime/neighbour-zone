@@ -26,20 +26,19 @@ export class ResetPassword {
     });
   }
 
- submit() {
+ async submit() {
     if (this.form.invalid) return;
     
-    // Commented this out because we don't use it for now
-    // this.auth.resetPassword(this.form.value.email)
-    //   .then(() => {
-    //     // Success case
-    //     this.success.set('Check your email for reset instructions.');
-    //     this.error.set(null);
-    //   })
-    //   .catch(() => {
-    //     // Error case
-    //     this.error.set('Failed to send reset email.');
-    //   });
+    // Clear previous states
+    this.error.set(null);
+    this.success.set(null);
+
+    try {
+      await this.auth.resetPassword(this.form.value.email);
+      this.success.set('Check your email for reset instructions.');
+    } catch (err) {
+      this.error.set('Failed to send reset email.');
+    }
   }
 }
 

@@ -3,7 +3,7 @@ import type { RegisterRequest, LoginRequest, AuthResponse } from '../types/api.t
 import { Router } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
 import { HttpClient } from '@angular/common/http';
-import { tap } from 'rxjs/operators';
+import { lastValueFrom } from 'rxjs';
 
 export interface JwtPayload {
   sub: string;
@@ -20,6 +20,7 @@ export class Auth {
   private router = inject(Router);
   private http = inject(HttpClient);
 
+  // Ensure this API URL matches your backend configuration
   private readonly apiUrl = 'https://neighbour-zone.vercel.app/api';
   private readonly accessToken = 'accessToken';
 
@@ -66,23 +67,38 @@ export class Auth {
     this.user.set(null);
   }
 
-  public register(data: RegisterRequest) {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/auth/register`, data).pipe(
-      tap({
-        next: (response) => {
-          this.authenticate(response.accessToken);
-        },
-      })
+  // =================================================================
+  // PUBLIC API METHODS
+  // =================================================================
+
+  public async register(data: RegisterRequest): Promise<AuthResponse> {
+    // 1. Await the HTTP request
+    const response = await lastValueFrom(
+      this.http.post<AuthResponse>(`${this.apiUrl}/auth/register`, data)
     );
+    
+    // 2. Handle side effects (setting token)
+    this.authenticate(response.accessToken);
+    
+    // 3. Return the data
+    return response;
   }
 
-  public login(data: LoginRequest) {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/auth/login`, data).pipe(
-      tap({
-        next: (response) => {
-          this.authenticate(response.accessToken, data.rememberMe);
-        },
-      })
+  public async login(data: LoginRequest): Promise<AuthResponse> {
+    const response = await lastValueFrom(
+      this.http.post<AuthResponse>(`${this.apiUrl}/auth/login`, data)
+    );
+    
+    this.authenticate(response.accessToken, data.rememberMe);
+    
+    return response;
+  }
+
+  public async resetPassword(email: string): Promise<void> {
+    // We expect the backend to return 200 OK (and maybe a message),
+    // but we don't necessarily need the response body here.
+    await lastValueFrom(
+      this.http.post(`${this.apiUrl}/auth/reset-password`, { email })
     );
   }
 
