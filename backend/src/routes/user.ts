@@ -27,6 +27,7 @@ userRouter.get("/me", async (c) => {
       lastname: true,
       bio: true,
       email: true,
+      phoneNumber: true,
       role: true,
     },
   });
@@ -75,6 +76,7 @@ userRouter.patch(
         lastname: true,
         bio: true,
         email: true,
+        phoneNumber: true,
         role: true,
       },
     });

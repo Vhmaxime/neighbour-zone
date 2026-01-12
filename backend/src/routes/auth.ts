@@ -22,7 +22,7 @@ authRouter.post(
     }
   }),
   async (c) => {
-    const { firstname, lastname, email, password, username } =
+    const { firstname, lastname, email, password, username, phoneNumber } =
       c.req.valid("json");
 
     const existingUser = await db.query.usersTable.findFirst({
@@ -42,6 +42,7 @@ authRouter.post(
         lastname,
         username,
         email,
+        phoneNumber,
         password: hashedPassword,
       })
       .returning();
