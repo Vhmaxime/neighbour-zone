@@ -24,7 +24,7 @@ postRouter.get("/", async (c) => {
       author: {
         columns: {
           id: true,
-          name: true,
+          username: true,
         },
       },
     },
@@ -88,7 +88,7 @@ postRouter.post(
         author: {
           columns: {
             id: true,
-            name: true,
+            username: true,
           },
         },
       },
@@ -121,7 +121,7 @@ postRouter.get(
         author: {
           columns: {
             id: true,
-            name: true,
+            username: true,
           },
         },
       },
@@ -149,7 +149,7 @@ postRouter.get(
           user: {
             columns: {
               id: true,
-              name: true,
+              username: true,
             },
           },
         },
@@ -211,7 +211,7 @@ postRouter.patch(
         author: {
           columns: {
             id: true,
-            name: true,
+            username: true,
           },
         },
       },

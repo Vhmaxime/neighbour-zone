@@ -10,17 +10,28 @@ import { guestGuard } from './guards/guest-guard';
 import { Home } from './pages/home/home';
 
 export const routes: Routes = [
-  // Guest Routes
-  { path: 'login', component: Login, canActivate: [guestGuard] },
-  { path: 'register', component: Register, canActivate: [guestGuard] },
-  // Authenticated Routes
-  { path: '', component: Home, canActivate: [authGuard] },
+  // =========================================================
+  // GUEST ROUTES (Accessible only when logged out)
+  // =========================================================
+      { path: 'login', component: Login, canActivate: [guestGuard] },
+      { path: 'register', component: Register, canActivate: [guestGuard] },
+  
+  // =========================================================
+  // AUTHENTICATED ROUTES (Accessible only when logged in)
+  // =========================================================
   {
-    path: 'dashboard',
-    component: Dashboard,
+    path: '',
     canActivate: [authGuard],
+    children: [
+      { path: '', redirectTo: 'home', pathMatch: 'full' }, // Redirects root URL to /home
+      { path: 'home', component: Home },
+      { path: 'dashboard', component: Dashboard },
+      { path: 'profile', component: ProfilePage },
+      { path: 'settings', component: Settings },
+      { path: 'friends', component: Friends },
+    ],
   },
-  { path: 'profile', component: ProfilePage, canActivate: [authGuard] },
-  { path: 'settings', component: Settings, canActivate: [authGuard] },
-  { path: 'friends', component: Friends, canActivate: [authGuard] },
+  
+  // Fallback for unknown routes (404)
+  { path: '**', redirectTo: '' }
 ];

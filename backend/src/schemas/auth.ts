@@ -7,8 +7,11 @@ const passwordSchema = z
   .regex(/^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*])/);
 
 export const registerSchema = z.object({
-  name: z.string().min(2),
+  firstname: z.string().min(2),
+  lastname: z.string().min(2),
+  username: z.string().min(3).max(20),
   email: z.email(),
+  phoneNumber: z.string().min(10).max(15),
   password: passwordSchema,
 });
 

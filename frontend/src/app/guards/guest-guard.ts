@@ -2,9 +2,20 @@ import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { Auth } from '../services/auth';
 
-export const guestGuard: CanActivateFn = (route, state) => {
+export const guestGuard: CanActivateFn = async () => {
   const auth = inject(Auth);
   const router = inject(Router);
 
-  return auth.isAuthenticated() ? router.navigate(['/']) : true;
+  // If NOT authenticated, allow access to login page
+  if (!auth.isAuthenticated()) {
+    return true;
+  }
+
+  if (router.navigated) {
+    return false; // (Cancels navigation)
+  }
+
+  // If authenticated, redirect to home and block login page
+  await router.navigate(['/dashboard']);
+  return false;
 };

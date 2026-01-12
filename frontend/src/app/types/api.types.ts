@@ -7,16 +7,20 @@ export type FriendshipStatus = 'pending' | 'accepted';
 // Models
 export interface User {
   id: string;
-  name: string;
+  firstname: string;
+  lastname: string;
+  username: string;
   email: string;
   role: UserRole;
+  bio: string | null;
+  phoneNumber: string;
   createdAt: string;
   updatedAt: string;
 }
 
 export interface UserPublic {
   id: string;
-  name: string;
+  username: string;
 }
 
 export interface Post {
@@ -75,14 +79,18 @@ export interface Friendship {
 
 // Request
 export interface RegisterRequest {
-  name: string;
+  username: string;
+  firstname: string;
+  lastname: string;
   email: string;
+  phoneNumber: string;
   password: string;
 }
 
 export interface LoginRequest {
   email: string;
   password: string;
+  rememberMe?: boolean;
 }
 
 export interface CreatePostRequest {

@@ -30,7 +30,7 @@ marketplaceRouter.get("", async (c) => {
       provider: {
         columns: {
           id: true,
-          name: true,
+          username: true,
         },
       },
     },
@@ -99,7 +99,7 @@ marketplaceRouter.post(
         provider: {
           columns: {
             id: true,
-            name: true,
+            username: true,
           },
         },
       },
@@ -135,7 +135,7 @@ marketplaceRouter.get(
         provider: {
           columns: {
             id: true,
-            name: true,
+            username: true,
           },
         },
       },
@@ -167,7 +167,7 @@ marketplaceRouter.get(
             user: {
               columns: {
                 id: true,
-                name: true,
+                username: true,
               },
             },
           },
@@ -243,7 +243,7 @@ marketplaceRouter.patch(
         provider: {
           columns: {
             id: true,
-            name: true,
+            username: true,
           },
         },
       },
