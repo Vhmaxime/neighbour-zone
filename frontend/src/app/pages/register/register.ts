@@ -23,10 +23,13 @@ export class Register {
   error = signal<string | null>(null);
 
   form: FormGroup<{
-    name: FormControl<string>;
-    email: FormControl<string>;
-    password: FormControl<string>;
-    confirmPassword: FormControl<string>;
+    username: FormControl<string>
+    firstname: FormControl<string>
+    lastname: FormControl<string>
+    email: FormControl<string>
+    phoneNumber: FormControl<string>
+    password: FormControl<string>
+    confirmPassword: FormControl<string>
   }>;
 
   private fb = inject(FormBuilder);
@@ -37,11 +40,14 @@ export class Register {
   constructor() {
     this.form = this.fb.group(
       {
-        name: this.fb.control('', { validators: Validators.required, nonNullable: true }),
+        username: this.fb.control('', { validators: Validators.required, nonNullable: true }),
+        firstname: this.fb.control('', { validators: Validators.required, nonNullable: true }),
+        lastname: this.fb.control('', { validators: Validators.required, nonNullable: true }),
         email: this.fb.control('', {
           validators: [Validators.required, Validators.email],
           nonNullable: true,
         }),
+        phoneNumber: this.fb.control('', { validators: Validators.required, nonNullable: true }),
         password: this.fb.control('', { validators: Validators.required, nonNullable: true }),
         confirmPassword: this.fb.control('', {
           validators: Validators.required,
@@ -52,8 +58,11 @@ export class Register {
         validators: this.passwordsMatch,
       }
     ) as FormGroup<{
-      name: FormControl<string>;
+      username: FormControl<string>;
+      firstname: FormControl<string>;
+      lastname: FormControl<string>;
       email: FormControl<string>;
+      phoneNumber: FormControl<string>;
       password: FormControl<string>;
       confirmPassword: FormControl<string>;
     }>;
@@ -68,12 +77,12 @@ export class Register {
   submit() {
     if (this.form.invalid) return;
 
-    const { name, email, password } = this.form.getRawValue();
+    const { username, firstname, lastname, email, phoneNumber, password } = this.form.getRawValue();
 
     this.isSubmitting.set(true);
     this.error.set(null);
 
-    this.auth.register({ name, email, password }).subscribe({
+    this.auth.register({ username, firstname, lastname, email, phoneNumber, password }).subscribe({
       next: () => {
         this.isSubmitting.set(false);
         this.router.navigate(['/dashboard']);
