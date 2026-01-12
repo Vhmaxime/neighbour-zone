@@ -5,7 +5,6 @@ import { db } from "../database/index.js";
 import { zValidator } from "@hono/zod-validator";
 import { idSchema } from "../schemas/index.js";
 import { friendshipsTable } from "../database/schema.js";
-import { cp } from "node:fs";
 import { eq } from "drizzle-orm";
 
 const friendRouter = new Hono<{ Variables: Variables }>();
@@ -54,8 +53,10 @@ friendRouter.get("/list", async (c) => {
   return c.json({ friends: friendList });
 });
 
-friendRouter.get("/requests ", async (c) => {
+friendRouter.get("/requests", async (c) => {
   const { sub: userId } = c.get("jwtPayload");
+
+  console.log("tzst");
 
   const requests = await db.query.friendshipsTable.findMany({
     where: {
@@ -73,10 +74,11 @@ friendRouter.get("/requests ", async (c) => {
   });
 
   const requestList = requests.map((friendship) => friendship.user1);
-  return c.json({ requests: requestList });
+
+  return c.json({ requests: requestList }, 200);
 });
 
-friendRouter.get("/sent ", async (c) => {
+friendRouter.get("/sent", async (c) => {
   const { sub: userId } = c.get("jwtPayload");
   const sentRequests = await db.query.friendshipsTable.findMany({
     where: {
@@ -137,7 +139,7 @@ friendRouter.post(
 );
 
 friendRouter.patch(
-  "/accept/:id ",
+  "/accept/:id",
   zValidator("param", idSchema, (result, c) => {
     if (!result.success) {
       console.log(result.error);
@@ -171,7 +173,7 @@ friendRouter.patch(
 );
 
 friendRouter.delete(
-  "/reject/:id ",
+  "/reject/:id",
   zValidator("param", idSchema, (result, c) => {
     if (!result.success) {
       console.log(result.error);
@@ -205,7 +207,7 @@ friendRouter.delete(
 );
 
 friendRouter.delete(
-  "/remove/:id ",
+  "/remove/:id",
   zValidator("param", idSchema, (result, c) => {
     if (!result.success) {
       console.log(result.error);
