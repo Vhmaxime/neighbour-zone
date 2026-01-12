@@ -22,7 +22,10 @@ userRouter.get("/me", async (c) => {
     },
     columns: {
       id: true,
-      name: true,
+      username: true,
+      firstname: true,
+      lastname: true,
+      bio: true,
       email: true,
       role: true,
     },
@@ -45,14 +48,18 @@ userRouter.patch(
   }),
   async (c) => {
     const { sub: id } = c.get("jwtPayload");
-    const { name, email, password } = await c.req.valid("json");
+    const { username, firstname, lastname, bio, email } = await c.req.valid(
+      "json"
+    );
 
     const [updatedUser] = await db
       .update(usersTable)
       .set({
-        name,
+        username,
+        firstname,
+        lastname,
+        bio,
         email,
-        password: password ? await hashPassword(password) : undefined,
       })
       .where(eq(usersTable.id, id))
       .returning();
@@ -63,7 +70,10 @@ userRouter.patch(
       },
       columns: {
         id: true,
-        name: true,
+        username: true,
+        firstname: true,
+        lastname: true,
+        bio: true,
         email: true,
         role: true,
       },

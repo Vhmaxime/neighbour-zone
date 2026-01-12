@@ -3,7 +3,6 @@ import {
   text,
   uuid,
   timestamp,
-  decimal,
   pgEnum,
   unique,
   primaryKey,
@@ -14,7 +13,10 @@ export const userRoleEnum = pgEnum("user_role", ["user", "admin"]);
 
 export const usersTable = pgTable("users", {
   id: uuid("id").primaryKey().defaultRandom(),
-  name: text("name").notNull(),
+  firstname: text("firstname").notNull(),
+  lastname: text("lastname").notNull(),
+  username: text("username").notNull().unique(),
+  bio: text("bio"),
   email: text("email").notNull().unique(),
   password: text("password").notNull(),
   role: userRoleEnum("role").notNull().default("user"),

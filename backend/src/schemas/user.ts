@@ -1,7 +1,9 @@
 import { z } from "zod/v4";
 
 export const userSchema = z.object({
-  name: z.string().min(2).optional(),
+  firstname: z.string().min(2).optional(),
+  lastname: z.string().min(2).optional(),
+  username: z.string().min(2).optional(),
   email: z.email().optional(),
-  password: z.string().min(8).optional(),
+  bio: z.string().max(160).optional(),
 });
