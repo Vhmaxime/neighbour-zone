@@ -38,18 +38,19 @@ export class Dashboard implements OnInit {
   constructor() {}
 
   // ngOnInit to fetch data when the component loads
-  async ngOnInit() {
-    try {
-      const data = await this.api.getUserMe();
+  ngOnInit() {
+    this.isLoading.set(true);
 
-      this.user.set(data.user);
-
-      this.userInitial.set(data.user.name.charAt(0).toUpperCase());
-    } catch (error) {
-      console.error('Network error loading dashboard', error);
-    } finally {
-      this.isLoading.set(false); // Stop loading spinner (if you had one)
-    }
+    this.api.getUserMe().subscribe({
+      next: (response) => {
+        this.user.set(response.user);
+        this.userInitial.set(response.user.name.charAt(0).toUpperCase());
+        this.isLoading.set(false);
+      },
+      complete: () => {
+        this.isLoading.set(false);
+      },
+    });
   }
 
   logout() {
