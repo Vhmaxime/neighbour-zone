@@ -1,6 +1,14 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, Validators, FormGroup, FormControl, AbstractControl, ValidationErrors } from '@angular/forms';
+import {
+  ReactiveFormsModule,
+  FormBuilder,
+  Validators,
+  FormGroup,
+  FormControl,
+  AbstractControl,
+  ValidationErrors,
+} from '@angular/forms';
 import { Auth } from '../../services/auth';
 import { Router, RouterLink } from '@angular/router';
 
@@ -9,7 +17,7 @@ import { Router, RouterLink } from '@angular/router';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './register.html',
-  styleUrls: ['./register.css']
+  styleUrls: ['./register.css'],
 })
 export class Register {
   error = signal<string | null>(null);
@@ -24,17 +32,24 @@ export class Register {
   private fb = inject(FormBuilder);
   private auth = inject(Auth);
   private router = inject(Router);
+  isSubmitting = signal(false);
 
   constructor() {
     this.form = this.fb.group(
       {
         name: this.fb.control('', { validators: Validators.required, nonNullable: true }),
-        email: this.fb.control('', { validators: [Validators.required, Validators.email], nonNullable: true }),
+        email: this.fb.control('', {
+          validators: [Validators.required, Validators.email],
+          nonNullable: true,
+        }),
         password: this.fb.control('', { validators: Validators.required, nonNullable: true }),
-        confirmPassword: this.fb.control('', { validators: Validators.required, nonNullable: true })
+        confirmPassword: this.fb.control('', {
+          validators: Validators.required,
+          nonNullable: true,
+        }),
       },
       {
-        validators: this.passwordsMatch
+        validators: this.passwordsMatch,
       }
     ) as FormGroup<{
       name: FormControl<string>;
@@ -50,30 +65,23 @@ export class Register {
     return password === confirm ? null : { passwordMismatch: true };
   }
 
-  async submit() {
+  submit() {
     if (this.form.invalid) return;
 
-    // Destructure to ensure we don't send 'confirmPassword' to the backend
     const { name, email, password } = this.form.getRawValue();
 
-    try {
-      this.error.set(null); // Clear previous errors
-      
-      await this.auth.register({ name, email, password });
-      
-      console.log('Registered successfully');
-      
-      // Redirect user to login page after successful registration
-      this.router.navigate(['/login']);
+    this.isSubmitting.set(true);
+    this.error.set(null);
 
-    } catch (err: any) {
-      console.error(err);
-      
-      // Use the error message from the Auth service
-      const errorMessage = err.message || 'Registration failed';
-      this.error.set(errorMessage);
-    }
+    this.auth.register({ name, email, password }).subscribe({
+      next: () => {
+        this.isSubmitting.set(false);
+        this.router.navigate(['/dashboard']);
+      },
+      error: (err) => {
+        this.isSubmitting.set(false);
+        this.error.set(err.error.message || 'An error occurred. Please try again.');
+      },
+    });
   }
 }
-
-
