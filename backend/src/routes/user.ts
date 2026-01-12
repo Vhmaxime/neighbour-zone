@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { JwtPayload, Variables } from "../types/index.js";
+import { Variables } from "../types/index.js";
 import { db } from "../database/index.js";
 import authMiddleware from "../middleware/auth.js";
 import { zValidator } from "@hono/zod-validator";
@@ -7,6 +7,7 @@ import { userSchema } from "../schemas/user.js";
 import { usersTable } from "../database/schema.js";
 import { hashPassword } from "../utils/password.js";
 import { eq } from "drizzle-orm";
+import { passwordSchema } from "../schemas/index.js";
 
 const userRouter = new Hono<{ Variables: Variables }>();
 
@@ -92,5 +93,23 @@ userRouter.delete("/me", async (c) => {
 
   return c.json({ message: "ok" }, 200);
 });
+
+userRouter.patch(
+  "/me/password",
+  zValidator("json", passwordSchema),
+  async (c) => {
+    const { sub: id } = c.get("jwtPayload");
+    const newPassword = await c.req.valid("json");
+
+    const hashedPassword = await hashPassword(newPassword);
+
+    await db
+      .update(usersTable)
+      .set({ password: hashedPassword })
+      .where(eq(usersTable.id, id));
+
+    return c.json({ message: "ok" }, 200);
+  }
+);
 
 export default userRouter;
