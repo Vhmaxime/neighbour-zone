@@ -1,9 +1,10 @@
-import { Component, inject, OnInit, signal, computed } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Auth } from '../../services/auth';
 import { Api } from '../../services/api';
 import { User } from '../../types/api.types';
+import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
@@ -38,18 +39,26 @@ export class Dashboard implements OnInit {
   constructor() {}
 
   // ngOnInit to fetch data when the component loads
-  ngOnInit() {
+  async ngOnInit() {
     this.isLoading.set(true);
 
-    this.api.getUserMe().subscribe({
-      next: (response) => {
-        this.user.set(response.user);
+    try {
+      // We "consume" the observable as a promise right here.
+      // This is safe, standard, and doesn't affect api.ts
+      const response = await lastValueFrom(this.api.getUserMe());
+      
+      this.user.set(response.user);
+      // specific check to avoid error if username is missing
+      if (response.user?.username) {
         this.userInitial.set(response.user.username.charAt(0).toUpperCase());
-      },
-      complete: () => {
-        this.isLoading.set(false);
-      },
-    });
+      }
+    } catch (error) {
+      console.error('Failed to load user data', error);
+      // Optional: Add logic here to handle error (e.g., redirect to login)
+    } finally {
+      // CHANGE: This runs whether the request succeeds OR fails
+      this.isLoading.set(false);
+    }
   }
 
   logout() {
