@@ -45,7 +45,6 @@ export class Dashboard implements OnInit {
       next: (response) => {
         this.user.set(response.user);
         this.userInitial.set(response.user.name.charAt(0).toUpperCase());
-        this.isLoading.set(false);
       },
       complete: () => {
         this.isLoading.set(false);
