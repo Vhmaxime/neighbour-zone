@@ -22,7 +22,8 @@ authRouter.post(
     }
   }),
   async (c) => {
-    const { name, email, password } = c.req.valid("json");
+    const { firstname, lastname, email, password, username } =
+      c.req.valid("json");
 
     const existingUser = await db.query.usersTable.findFirst({
       where: { email: { eq: email } },
@@ -37,7 +38,9 @@ authRouter.post(
     const [newUser] = await db
       .insert(usersTable)
       .values({
-        name,
+        firstname,
+        lastname,
+        username,
         email,
         password: hashedPassword,
       })
@@ -46,7 +49,7 @@ authRouter.post(
     const accessToken = await sign(
       {
         sub: newUser.id,
-        name: newUser.name,
+        username: newUser.username,
         email: newUser.email,
         role: newUser.role,
         exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7, // 7 days expiration
@@ -102,7 +105,7 @@ authRouter.post(
     const accessToken = await sign(
       {
         sub: user.id,
-        name: user.name,
+        username: user.username,
         email: user.email,
         role: user.role,
         exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7, // 7 days expiration
@@ -146,7 +149,7 @@ authRouter.post("/refresh", async (c) => {
   const newAccessToken = await sign(
     {
       sub: payload.sub,
-      name: payload.name,
+      username: payload.username,
       email: payload.email,
       role: payload.role,
       exp: Math.floor(Date.now() / 1000) + 60 * 15,

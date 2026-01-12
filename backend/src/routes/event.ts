@@ -24,7 +24,7 @@ eventRouter.get("/", async (c) => {
       organizer: {
         columns: {
           id: true,
-          name: true,
+          username: true,
         },
       },
     },
@@ -88,7 +88,7 @@ eventRouter.post(
         organizer: {
           columns: {
             id: true,
-            name: true,
+            username: true,
           },
         },
       },
@@ -121,7 +121,7 @@ eventRouter.get(
         organizer: {
           columns: {
             id: true,
-            name: true,
+            username: true,
           },
         },
       },
@@ -149,7 +149,7 @@ eventRouter.get(
           user: {
             columns: {
               id: true,
-              name: true,
+              username: true,
             },
           },
         },
@@ -211,7 +211,7 @@ eventRouter.patch(
         organizer: {
           columns: {
             id: true,
-            name: true,
+            username: true,
           },
         },
       },
