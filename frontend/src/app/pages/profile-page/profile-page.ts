@@ -23,15 +23,12 @@ export class ProfilePage {
     email: new FormControl('', { nonNullable: true }),
   });
 
-  /* VERANDERING: Variabelen voor de bio-tekst en de limiet van 250 tekens */
   bioText: string = '';
   maxChars: number = 250;
 
-  /* VERANDERING: Status-variabelen voor de interactieve Save-knop */
   isSaving: boolean = false;
   saveStatus: string = 'SAVE CHANGES';
 
-  /* VERANDERING: Berekent realtime de lengte van de tekst voor de teller onder de bio */
   get charCount(): number {
     return this.bioText ? this.bioText.length : 0;
   }
@@ -40,7 +37,7 @@ export class ProfilePage {
     this.api.getUserMe().subscribe({
       next: (response) => {
         this.profileForm.setValue({
-          name: response.user.name,
+          name: response.user.username,
           email: response.user.email,
         });
       },
@@ -50,6 +47,5 @@ export class ProfilePage {
     });
   }
 
-  /* VERANDERING: De functie die zorgt voor de 'Saving...' en 'Success!' feedback op de knop */
   saveProfile() {}
 }
