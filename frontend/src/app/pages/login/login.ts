@@ -42,7 +42,7 @@ export class Login {
     });
   }
 
-  async submit() {
+  submit() {
     if (this.form.invalid) return;
 
     const { email, password, rememberMe } = this.form.getRawValue();

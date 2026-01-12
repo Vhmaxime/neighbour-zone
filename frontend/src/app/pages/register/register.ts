@@ -65,7 +65,7 @@ export class Register {
     return password === confirm ? null : { passwordMismatch: true };
   }
 
-  async submit() {
+  submit() {
     if (this.form.invalid) return;
 
     const { name, email, password } = this.form.getRawValue();
