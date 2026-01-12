@@ -25,12 +25,26 @@ authRouter.post(
     const { firstname, lastname, email, password, username, phoneNumber } =
       c.req.valid("json");
 
-    const existingUser = await db.query.usersTable.findFirst({
+    const existingEmail = await db.query.usersTable.findFirst({
       where: { email: { eq: email } },
     });
 
-    if (existingUser) {
-      return c.json({ message: "Email already in use" }, 409);
+    if (existingEmail) {
+      return c.json(
+        { message: "An account with this email already exists" },
+        409
+      );
+    }
+
+    const existingUsername = await db.query.usersTable.findFirst({
+      where: { username: { eq: username } },
+    });
+
+    if (existingUsername) {
+      return c.json(
+        { message: "An account with this username already exists" },
+        409
+      );
     }
 
     const hashedPassword = await hashPassword(password);
