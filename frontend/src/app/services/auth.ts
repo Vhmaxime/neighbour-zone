@@ -2,6 +2,8 @@ import { inject, Injectable, signal } from '@angular/core';
 import type { RegisterRequest, LoginRequest, AuthResponse } from '../types/api.types';
 import { Router } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
+import { HttpClient } from '@angular/common/http';
+import { tap } from 'rxjs/operators';
 
 export interface JwtPayload {
   sub: string;
@@ -16,6 +18,7 @@ export interface JwtPayload {
 })
 export class Auth {
   private router = inject(Router);
+  private http = inject(HttpClient);
 
   private readonly apiUrl = 'https://neighbour-zone.vercel.app/api';
   private readonly accessToken = 'accessToken';
@@ -46,7 +49,7 @@ export class Auth {
     return localStorage.getItem(this.accessToken) || sessionStorage.getItem(this.accessToken);
   }
 
-  private setToken(token: string, rememberMe: boolean): void {
+  private authenticate(token: string, rememberMe: boolean): void {
     if (rememberMe) {
       localStorage.setItem(this.accessToken, token);
     } else {
@@ -63,42 +66,20 @@ export class Auth {
     this.user.set(null);
   }
 
-  async register(data: RegisterRequest): Promise<void> {
-    const response = await fetch(`${this.apiUrl}/auth/register`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
-
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || 'Registration failed');
-    }
-
-    const result: AuthResponse = await response.json();
-
-    this.setToken(result.accessToken, false);
+  public register(data: RegisterRequest) {
+    return this.http.post<AuthResponse>(`${this.apiUrl}/auth/register`, data).pipe(
+      tap((response) => {
+        this.authenticate(response.accessToken, false);
+      })
+    );
   }
 
-  async login(data: LoginRequest, rememberMe: boolean): Promise<void> {
-    const response = await fetch(`${this.apiUrl}/auth/login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
-
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || 'Login failed');
-    }
-
-    const result: AuthResponse = await response.json();
-
-    this.setToken(result.accessToken, rememberMe);
+  public login(data: LoginRequest) {
+    return this.http.post<AuthResponse>(`${this.apiUrl}/auth/login`, data).pipe(
+      tap((response) => {
+        this.authenticate(response.accessToken, data.rememberMe ?? false);
+      })
+    );
   }
 
   public logout(): void {

@@ -1,11 +1,15 @@
-import { HttpRequest, HttpHandlerFn } from '@angular/common/http';
+import { HttpInterceptorFn } from '@angular/common/http';
+import { inject } from '@angular/core';
+import { Auth } from '../services/auth';
 
-export const authInterceptor = (req: HttpRequest<unknown>, next: HttpHandlerFn) => {
-  // Read directly from storage
-  const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
+export const authInterceptor: HttpInterceptorFn = (req, next) => {
+  const auth = inject(Auth);
+  const token = auth.getToken();
 
   const authReq = token
-    ? req.clone({ headers: req.headers.set('Authorization', `Bearer ${token}`) })
+    ? req.clone({
+        headers: req.headers.set('Authorization', `Bearer ${token}`),
+      })
     : req;
 
   return next(authReq);

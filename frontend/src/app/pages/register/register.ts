@@ -70,18 +70,18 @@ export class Register {
 
     const { name, email, password } = this.form.getRawValue();
 
-    try {
-      this.isSubmitting.set(true);
-      this.error.set(null);
+    this.isSubmitting.set(true);
+    this.error.set(null);
 
-      await this.auth.register({ name, email, password });
-
-      this.router.navigate(['/']);
-    } catch (err: any) {
-      console.error(err);
-      this.error.set(err.message || 'Something went wrong. Please try again.');
-    } finally {
-      this.isSubmitting.set(false);
-    }
+    this.auth.register({ name, email, password }).subscribe({
+      next: () => {
+        this.isSubmitting.set(false);
+        this.router.navigate(['/']);
+      },
+      error: (err) => {
+        this.isSubmitting.set(false);
+        this.error.set(err.error.message || 'An error occurred. Please try again.');
+      },
+    });
   }
 }
