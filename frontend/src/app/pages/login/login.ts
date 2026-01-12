@@ -47,18 +47,18 @@ export class Login {
 
     const { email, password, rememberMe } = this.form.getRawValue();
 
-    try {
-      this.isSubmitting.set(true);
-      this.error.set(null);
+    this.isSubmitting.set(true);
+    this.error.set(null);
 
-      await this.auth.login({ email, password }, rememberMe);
-
-     await this.router.navigate(['/dashboard']);
-    } catch (err: any) {
-      console.error(err);
-      this.error.set(err.message || 'Something went wrong. Please try again.');
-    } finally {
-      this.isSubmitting.set(false);
-    }
+    this.auth.login({ email, password, rememberMe }).subscribe({
+      next: () => {
+        this.isSubmitting.set(false);
+        this.router.navigate(['/dashboard']);
+      },
+      error: (err) => {
+        this.isSubmitting.set(false);
+        this.error.set(err.error.message || 'An error occurred. Please try again.');
+      },
+    });
   }
 }
