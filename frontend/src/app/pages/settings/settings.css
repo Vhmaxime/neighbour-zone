@@ -1,25 +1,36 @@
 :host {
   display: block;
-  margin-left: 240px;
   min-height: 100vh;
-  width: calc(100% - 240px);
   background-color: #FAFAF9;
 }
 
 .settings-page {
   display: flex;
   justify-content: center;
-  padding: 80px 40px;
+  padding: clamp(40px, 6vw, 80px) clamp(16px, 4vw, 40px);
   box-sizing: border-box;
 }
 
 .settings-content {
   width: 100%;
-  max-width: 800px; 
+  max-width: clamp(640px, 70vw, 800px);
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: clamp(24px, 4vw, 32px);
+  transition:
+    padding 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    max-width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .settings-page,
+  .settings-content {
+    transition: none;
+  }
+}
+
+
+
 
 .settings-card {
   background: #ffffff;
