@@ -1,5 +1,4 @@
 @if (user(); as user) {
-
 <section class="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
   <div class="flex items-start gap-6">
     <!-- Avatar with first letter -->
@@ -18,20 +17,27 @@
 
       <!-- Counts -->
       <div class="flex gap-8 mt-5">
-        <div class="flex flex-col">
+        <div class="flex flex-col items-center">
           <span class="text-xl font-semibold text-gray-900">{{ counts()[0] }}</span>
           <span class="text-sm text-gray-500 mt-0.5">Posts</span>
         </div>
-        <div class="flex flex-col">
+        <div class="flex flex-col items-center">
           <span class="text-xl font-semibold text-gray-900">{{ counts()[1] }}</span>
           <span class="text-sm text-gray-500 mt-0.5">Events</span>
         </div>
-        <div class="flex flex-col">
+        <div class="flex flex-col items-center">
           <span class="text-xl font-semibold text-gray-900">{{ counts()[2] }}</span>
           <span class="text-sm text-gray-500 mt-0.5">Marketplace</span>
         </div>
       </div>
     </div>
   </div>
+</section>
+
+<section class="mt-8">
+  @for (post of posts(); track post.id) {
+  <app-post [post]="post" />
+  } @empty {
+  <span class=""> No posts</span> }
 </section>
 }

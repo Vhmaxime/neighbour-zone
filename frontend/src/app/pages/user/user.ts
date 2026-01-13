@@ -3,10 +3,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MarketplaceItem, Post, UserPublic, Event } from '../../types/api.types';
 import { Api } from '../../services/api';
 import { forkJoin } from 'rxjs';
+import { Post as PostComponent } from '../../components/post/post';
 
 @Component({
   selector: 'app-user',
-  imports: [],
+  imports: [PostComponent],
   templateUrl: './user.html',
   styleUrl: './user.css',
 })
@@ -50,9 +51,9 @@ export class User {
         this.events.set(response.eventsRequest.events);
         this.marketplaceItems.set(response.marketplaceRequest.marketplace);
         this.counts.set([
-          this.posts().length,
-          this.events().length,
-          this.marketplaceItems().length,
+          response.postsRequest.count,
+          response.eventsRequest.count,
+          response.marketplaceRequest.count,
         ]);
       },
       error: (error) => {

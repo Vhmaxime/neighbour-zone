@@ -153,6 +153,7 @@ export interface PostResponse {
 
 export interface PostsResponse {
   posts: Post[];
+  count: number;
 }
 
 export interface EventResponse {
@@ -161,6 +162,7 @@ export interface EventResponse {
 
 export interface EventsResponse {
   events: Event[];
+  count: number;
 }
 
 export interface MarketplaceItemResponse {
@@ -169,6 +171,7 @@ export interface MarketplaceItemResponse {
 
 export interface MarketplaceItemsResponse {
   marketplace: MarketplaceItem[];
+  count: number;
 }
 
 export interface FriendsResponse {
