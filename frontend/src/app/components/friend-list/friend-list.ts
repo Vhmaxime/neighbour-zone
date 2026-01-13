@@ -2,10 +2,11 @@ import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { forkJoin } from 'rxjs';
 import { Api } from '../../services/api';
+import { UserPublic } from '../../types/api.types';
 
-interface Friend {
-  id: string;
-  username: string;
+interface State {
+  tabs: 'Friends' | 'Requests' | 'Sent';
+  actions: 'deleting' | 'accepting' | 'rejecting' | 'cancelling' | null;
 }
 
 @Component({
@@ -16,17 +17,21 @@ interface Friend {
 })
 export class FriendList {
   private api = inject(Api);
-  friends = signal<Friend[]>([]);
-  requests = signal<Friend[]>([]);
-  sent = signal<Friend[]>([]);
+  public tabs: State['tabs'][] = ['Friends', 'Requests', 'Sent'];
+  public friends = signal<UserPublic[] | null>(null);
+  public requests = signal<UserPublic[] | null>(null);
+  public sent = signal<UserPublic[] | null>(null);
+  public badge = signal<number[]>([]);
+  public isLoading = signal<boolean>(false);
+  public actionState = signal<State['actions']>(null);
+  public targetUserId = signal<string | null>(null);
+  public error = signal<string | null>(null);
+  public activeTab = signal<State['tabs']>('Friends');
+  public badges = signal<string[]>([]);
 
-  isLoading = signal<boolean>(false);
-
-  actionState = signal<'deleting' | 'accepting' | 'rejecting' | 'cancelling' | null>(null);
-
-  error = signal<string | null>(null);
-  activeTab = signal<'friends' | 'requests' | 'sent'>('friends');
-  badges = signal<string[]>([]);
+  public ngOnInit() {
+    this.loadData();
+  }
 
   private loadData() {
     this.isLoading.set(true);
@@ -36,15 +41,11 @@ export class FriendList {
       requests: this.api.getFriendRequests(),
       sent: this.api.getSentFriendRequests(),
     }).subscribe({
-      next: (response) => {
-        this.friends.set(response.friends.friends);
-        this.requests.set(response.requests.requests);
-        this.sent.set(response.sent.sent);
-        this.badges.set([
-          this.friends().length.toString(),
-          this.requests().length.toString(),
-          this.sent().length.toString(),
-        ]);
+      next: ({ friends, requests, sent }) => {
+        this.friends.set(friends.friends);
+        this.requests.set(requests.requests);
+        this.sent.set(sent.sent);
+        this.badge.set([friends.friends.length, requests.requests.length, sent.sent.length]);
         this.isLoading.set(false);
       },
       error: (error) => {
@@ -54,16 +55,13 @@ export class FriendList {
     });
   }
 
-  ngOnInit() {
-    this.loadData();
-  }
-
-  setActiveTab(tab: 'friends' | 'requests' | 'sent') {
+  public setActiveTab(tab: (typeof this.tabs)[number]) {
     this.activeTab.set(tab);
   }
 
-  deleteFriend(friendId: string) {
+  public deleteFriend(friendId: string) {
     this.actionState.set('deleting');
+    this.targetUserId.set(friendId);
     this.api.deleteFriend(friendId).subscribe({
       next: () => {
         this.loadData();
@@ -76,8 +74,9 @@ export class FriendList {
     });
   }
 
-  acceptRequest(requestId: string) {
+  public acceptRequest(requestId: string) {
     this.actionState.set('accepting');
+    this.targetUserId.set(requestId);
     this.api.acceptFriendRequest(requestId).subscribe({
       next: () => {
         this.loadData();
@@ -90,8 +89,9 @@ export class FriendList {
     });
   }
 
-  rejectRequest(requestId: string) {
+  public rejectRequest(requestId: string) {
     this.actionState.set('rejecting');
+    this.targetUserId.set(requestId);
     this.api.rejectFriendRequest(requestId).subscribe({
       next: () => {
         this.loadData();
@@ -104,8 +104,9 @@ export class FriendList {
     });
   }
 
-  cancelSentRequest(requestId: string) {
+  public cancelSentRequest(requestId: string) {
     this.actionState.set('cancelling');
+    this.targetUserId.set(requestId);
     this.api.cancelFriendRequest(requestId).subscribe({
       next: () => {
         this.loadData();

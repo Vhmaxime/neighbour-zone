@@ -1,11 +1,11 @@
 import { Component, input } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { Post as P } from '../../types/api.types';
 import { RouterLink } from '@angular/router';
+import { Post as P } from '../../types/api.types';
 
 @Component({
   selector: 'app-post',
-  imports: [DatePipe, RouterLink, Post],
+  imports: [DatePipe, RouterLink],
   templateUrl: './post.html',
   styleUrl: './post.css',
 })
