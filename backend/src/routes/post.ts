@@ -321,6 +321,9 @@ postRouter.get(
     }
 
     const posts = await db.query.postsTable.findMany({
+      where: {
+        authorId: { eq: userId },
+      },
       columns: {
         authorId: false,
       },
