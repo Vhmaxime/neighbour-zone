@@ -1,16 +1,8 @@
-@if (isLoading() || errorMessage()) {
-<div
-  class="absolute top-0 left-0 right-0 bottom-0 backdrop-blur-xs flex items-center justify-center z-50"
->
-  @if (isLoading()) {
-  <span class="bg-[var(--text-sec)]/10 text-[var(--text-sec)] px-4 py-2 rounded-md">loading</span>
-  } @if (errorMessage()) {
-  <div class="bg-red-100 text-red-700 px-4 py-2 rounded-md">
-    {{ errorMessage() }}
-  </div>
-  }
+@if (error()) {
+<div class="text-center py-4 bg-red-100 text-red-700 rounded-xl mb-4">
+  <p>{{ error() }}</p>
 </div>
-}
+} @else {
 <div class="w-full bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
   <div class="flex flex-col border-b border-gray-100">
     <button
@@ -52,10 +44,6 @@
       <div class="text-center py-8 text-gray-500">
         <p>Loading...</p>
       </div>
-      } @else if (errorMessage()) {
-      <div class="text-center py-8 text-red-500">
-        <p>{{ errorMessage() }}</p>
-      </div>
       } @else if (friends().length === 0) {
       <div class="text-center py-8 text-gray-500">
         <p class="text-lg font-semibold mb-2">No friends found</p>
@@ -65,12 +53,16 @@
       <div class="friend-item">
         <div class="flex items-center justify-between gap-3">
           <span class="font-semibold text-gray-900">{{ friend.username }}</span>
+          @if (!isDeleting()) {
           <button
             (click)="deleteFriend(friend.id)"
             class="text-xs text-red-500 hover:underline !p-2 !bg-transparent !text-[var(--accent)]"
           >
             Remove
           </button>
+          } @else {
+          <span class="text-xs text-gray-500 p-2 m-2">Removing...</span>
+          }
         </div>
       </div>
       } }
@@ -87,18 +79,25 @@
         <div class="flex items-center justify-between gap-3">
           <span class="font-semibold text-gray-900">{{ request.username }}</span>
           <div>
+            @if (!isAccepting()) {
             <button
               (click)="acceptRequest(request.id)"
-              class="text-xs text-red-500 hover:underline !p-2 !bg-transparent !text-[var(--accent)]"
+              class="text-xs text-red-500 hover:underline !p-2 !m-2 !bg-transparent !text-[var(--accent)]"
             >
               Accept
             </button>
+            } @else {
+            <span class="text-xs text-gray-500 p-2 m-2">Accepting...</span>
+            } @if (!isDeclining()) {
             <button
               (click)="declineRequest(request.id)"
               class="text-xs text-red-500 hover:underline !p-2 !bg-transparent !text-[var(--accent)]"
             >
               Decline
             </button>
+            } @else {
+            <span class="text-xs text-gray-500 p-2 m-2">Declining...</span>
+            }
           </div>
         </div>
       </div>
@@ -122,3 +121,4 @@
     }
   </div>
 </div>
+}

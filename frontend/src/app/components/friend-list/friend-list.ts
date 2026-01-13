@@ -19,14 +19,18 @@ export class FriendList {
   friends = signal<Friend[]>([]);
   requests = signal<Friend[]>([]);
   sent = signal<Friend[]>([]);
+
   isLoading = signal<boolean>(true);
-  errorMessage = signal<string | null>(null);
+  isDeleting = signal<boolean>(false);
+  isAccepting = signal<boolean>(false);
+  isDeclining = signal<boolean>(false);
+
+  error = signal<string | null>(null);
   activeTab = signal<'friends' | 'requests' | 'sent'>('friends');
   badges = signal<string[]>([]);
 
   ngOnInit() {
     this.isLoading.set(true);
-
     forkJoin({
       friends: this.api.getFriends(),
       requests: this.api.getFriendRequests(),
@@ -39,7 +43,7 @@ export class FriendList {
       },
       error: (error) => {
         console.error(error);
-        this.errorMessage.set('Something went wrong. Please try again later.');
+        this.error.set('Something went wrong. Please try again later.');
       },
       complete: () => {
         this.isLoading.set(false);
@@ -57,37 +61,49 @@ export class FriendList {
   }
 
   deleteFriend(friendId: string) {
+    this.isDeleting.set(true);
     this.api.deleteFriend(friendId).subscribe({
       next: () => {
         this.ngOnInit();
       },
       error: (error) => {
         console.error(error);
-        this.errorMessage.set('Something went wrong. Please try again later.');
+        this.error.set('Something went wrong. Please try again later.');
+      },
+      complete: () => {
+        this.isDeleting.set(false);
       },
     });
   }
 
   acceptRequest(requestId: string) {
+    this.isAccepting.set(true);
     this.api.acceptFriendRequest(requestId).subscribe({
       next: () => {
         this.ngOnInit();
       },
       error: (error) => {
         console.error(error);
-        this.errorMessage.set('Something went wrong. Please try again later.');
+        this.error.set('Something went wrong. Please try again later.');
+      },
+      complete: () => {
+        this.isAccepting.set(false);
       },
     });
   }
 
   declineRequest(requestId: string) {
+    this.isDeclining.set(true);
     this.api.declineFriendRequest(requestId).subscribe({
       next: () => {
         this.ngOnInit();
       },
       error: (error) => {
         console.error(error);
-        this.errorMessage.set('Something went wrong. Please try again later.');
+        this.error.set('Something went wrong. Please try again later.');
+      },
+      complete: () => {
+        this.isDeclining.set(false);
       },
     });
   }
