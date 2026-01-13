@@ -22,7 +22,7 @@ export class FriendList {
 
   isLoading = signal<boolean>(false);
 
-  actionState = signal<'deleting' | 'accepting' | 'declining' | null>(null);
+  actionState = signal<'deleting' | 'accepting' | 'rejecting' | null>(null);
 
   error = signal<string | null>(null);
   activeTab = signal<'friends' | 'requests' | 'sent'>('friends');
@@ -90,9 +90,9 @@ export class FriendList {
     });
   }
 
-  declineRequest(requestId: string) {
-    this.actionState.set('declining');
-    this.api.declineFriendRequest(requestId).subscribe({
+  rejectRequest(requestId: string) {
+    this.actionState.set('rejecting');
+    this.api.rejectFriendRequest(requestId).subscribe({
       next: () => {
         this.loadData();
         this.actionState.set(null);

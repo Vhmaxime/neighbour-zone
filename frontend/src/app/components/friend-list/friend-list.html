@@ -88,9 +88,9 @@
             </button>
             } @else {
             <span class="text-xs text-gray-500 p-2 m-2">Accepting...</span>
-            } @if (actionState() !== 'declining') {
+            } @if (actionState() !== 'rejecting') {
             <button
-              (click)="declineRequest(request.id)"
+              (click)="rejectRequest(request.id)"
               class="text-xs text-red-500 hover:underline !p-2 !bg-transparent !text-[var(--accent)]"
             >
               Decline

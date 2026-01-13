@@ -38,7 +38,7 @@ export class Api {
     return this.http.patch(`${this.apiUrl}/friend/accept/${requestId}`, {});
   }
 
-  declineFriendRequest(requestId: string) {
-    return this.http.post(`${this.apiUrl}/friend/decline/${requestId}`, {});
+  rejectFriendRequest(requestId: string) {
+    return this.http.delete(`${this.apiUrl}/friend/reject/${requestId}`);
   }
 }
