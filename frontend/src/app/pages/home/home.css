@@ -1,0 +1,62 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background: #FAFAF9;
+}
+
+.home-page {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 32px;
+  padding: 32px;
+}
+
+/* MAIN COLUMN */
+.home-main {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* MAP */
+.map-placeholder {
+  height: 360px;
+  background: #E5E7EB;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+/* EVENTS */
+.events-placeholder {
+  height: 300px;
+  background: #FFFFFF;
+  border: 1px solid #F3F4F6;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+/* SIDEBAR */
+.home-sidebar {
+  background: #FFFFFF;
+  border: 1px solid #F3F4F6;
+  border-radius: 16px;
+  padding: 24px;
+  font-weight: 700;
+}
+
+
+@media (max-width: 1200px) {
+  .home-page {
+    grid-template-columns: 1fr;
+  }
+
+  .home-sidebar {
+    order: -1;
+  }
+}
