@@ -22,7 +22,7 @@ export class FriendList {
 
   isLoading = signal<boolean>(false);
 
-  actionState = signal<'deleting' | 'accepting' | 'rejecting' | null>(null);
+  actionState = signal<'deleting' | 'accepting' | 'rejecting' | 'cancelling' | null>(null);
 
   error = signal<string | null>(null);
   activeTab = signal<'friends' | 'requests' | 'sent'>('friends');
@@ -93,6 +93,20 @@ export class FriendList {
   rejectRequest(requestId: string) {
     this.actionState.set('rejecting');
     this.api.rejectFriendRequest(requestId).subscribe({
+      next: () => {
+        this.loadData();
+        this.actionState.set(null);
+      },
+      error: (error) => {
+        console.error(error);
+        this.error.set('Something went wrong. Please try again later.');
+      },
+    });
+  }
+
+  cancelSentRequest(requestId: string) {
+    this.actionState.set('cancelling');
+    this.api.cancelFriendRequest(requestId).subscribe({
       next: () => {
         this.loadData();
         this.actionState.set(null);

@@ -138,6 +138,40 @@ friendRouter.post(
   }
 );
 
+friendRouter.delete(
+  "/request/:id",
+  zValidator("param", idSchema, (result, c) => {
+    if (!result.success) {
+      console.log(result.error);
+      return c.json({ message: "Bad Request" }, 400);
+    }
+  }),
+  async (c) => {
+    const { sub: userId } = c.get("jwtPayload");
+    const { id: friendId } = c.req.valid("param");
+
+    const friendship = await db.query.friendshipsTable.findFirst({
+      where: {
+        AND: [
+          { userId1: { eq: userId } },
+          { userId2: { eq: friendId } },
+          { status: { eq: "pending" } },
+        ],
+      },
+    });
+
+    if (!friendship) {
+      return c.json({ message: "No pending friend request found" }, 404);
+    }
+
+    await db
+      .delete(friendshipsTable)
+      .where(eq(friendshipsTable.id, friendship.id));
+
+    return c.json({ message: "ok" }, 200);
+  }
+);
+
 friendRouter.patch(
   "/accept/:id",
   zValidator("param", idSchema, (result, c) => {

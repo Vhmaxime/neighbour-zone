@@ -41,4 +41,8 @@ export class Api {
   rejectFriendRequest(requestId: string) {
     return this.http.delete(`${this.apiUrl}/friend/reject/${requestId}`);
   }
+
+  cancelFriendRequest(requestId: string) {
+    return this.http.delete(`${this.apiUrl}/friend/request/${requestId}`);
+  }
 }
