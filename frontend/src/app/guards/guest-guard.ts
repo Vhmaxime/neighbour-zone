@@ -15,7 +15,7 @@ export const guestGuard: CanActivateFn = async () => {
     return false; // (Cancels navigation)
   }
 
-  // If authenticated, redirect to home and block login page
-  await router.navigate(['/dashboard']);
+  // If authenticated, redirect to explore and block login page
+  await router.navigate(['/explore']);
   return false;
 };

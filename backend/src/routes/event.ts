@@ -302,4 +302,50 @@ eventRouter.post(
   }
 );
 
+eventRouter.get(
+  "/user/:id",
+  zValidator("param", idSchema, (result, c) => {
+    if (!result.success) {
+      console.error("Validation error:", result.error);
+      return c.json({ message: "Bad request" }, 400);
+    }
+  }),
+  async (c) => {
+    const { id: userId } = c.req.valid("param");
+
+    const user = await db.query.usersTable.findFirst({
+      where: {
+        id: { eq: userId },
+      },
+    });
+
+    if (!user) {
+      return c.json({ message: "Not found" }, 404);
+    }
+
+    const events = await db.query.eventsTable.findMany({
+      where: { userId: { eq: userId } },
+      columns: {
+        userId: false,
+      },
+      with: {
+        organizer: {
+          columns: {
+            id: true,
+            username: true,
+          },
+        },
+      },
+      extras: {
+        likes: (table) =>
+          db.$count(eventLikesTable, eq(table.id, eventLikesTable.eventId)),
+      },
+    });
+
+    const count = await db.$count(eventsTable, eq(eventsTable.userId, userId));
+
+    return c.json({ events, count }, 200);
+  }
+);
+
 export default eventRouter;

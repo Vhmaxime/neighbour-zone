@@ -7,7 +7,7 @@ import { userSchema } from "../schemas/user.js";
 import { usersTable } from "../database/schema.js";
 import { hashPassword } from "../utils/password.js";
 import { eq } from "drizzle-orm";
-import { passwordSchema } from "../schemas/index.js";
+import { idSchema, passwordSchema } from "../schemas/index.js";
 
 const userRouter = new Hono<{ Variables: Variables }>();
 
@@ -109,6 +109,40 @@ userRouter.patch(
       .where(eq(usersTable.id, id));
 
     return c.json({ message: "ok" }, 200);
+  }
+);
+
+userRouter.get(
+  "/:id",
+  zValidator("param", idSchema, (result, c) => {
+    if (!result.success) {
+      console.error(result.error);
+      return c.json({ message: "Bad request" }, 400);
+    }
+  }),
+  async (c) => {
+    const { id } = c.req.valid("param");
+
+    const user = await db.query.usersTable.findFirst({
+      where: {
+        id: { eq: id },
+      },
+    });
+
+    if (!user) {
+      return c.json({ message: "Not found" }, 404);
+    }
+
+    return c.json(
+      {
+        user: {
+          id: user.id,
+          username: user.username,
+          bio: user.bio,
+        },
+      },
+      200
+    );
   }
 );
 

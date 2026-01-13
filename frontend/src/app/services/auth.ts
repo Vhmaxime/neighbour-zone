@@ -7,7 +7,8 @@ import { tap } from 'rxjs/operators';
 
 export interface JwtPayload {
   sub: string;
-  name: string;
+  username: string;
+  name?: string; // This may exist, but it doesn't crash or throw a nerror if it's missing
   email: string;
   roles: string;
   exp: number;
@@ -20,6 +21,7 @@ export class Auth {
   private router = inject(Router);
   private http = inject(HttpClient);
 
+  // Ensure this API URL matches the backend configuration
   private readonly apiUrl = 'https://neighbour-zone.vercel.app/api';
   private readonly accessToken = 'accessToken';
 
@@ -66,24 +68,30 @@ export class Auth {
     this.user.set(null);
   }
 
+  // =================================================================
+  // PUBLIC API METHODS
+  // =================================================================
+
   public register(data: RegisterRequest) {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/auth/register`, data).pipe(
-      tap({
-        next: (response) => {
+      return this.http.post<AuthResponse>(`${this.apiUrl}/auth/register`, data).pipe(
+        tap((response) => {
           this.authenticate(response.accessToken);
-        },
-      })
-    );
+        })
+      );
   }
 
   public login(data: LoginRequest) {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/auth/login`, data).pipe(
-      tap({
-        next: (response) => {
+      return this.http.post<AuthResponse>(`${this.apiUrl}/auth/login`, data).pipe(
+        tap((response)=> {
           this.authenticate(response.accessToken, data.rememberMe);
-        },
-      })
-    );
+        }) 
+      );
+  }
+
+  public resetPassword(email: string) {
+    // We expect the backend to return 200 OK (and maybe a message),
+    // but we don't necessarily need the response body here.
+      return this.http.post<void>(`${this.apiUrl}/auth/reset-password`, { email });
   }
 
   public logout(): void {
