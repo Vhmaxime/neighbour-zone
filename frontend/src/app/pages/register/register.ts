@@ -89,7 +89,7 @@ export class Register {
       },
       error: (err) => {
         this.isSubmitting.set(false);
-        this.error.set(err.error.message || 'An error occurred. Please try again.');
+        this.error.set(err.error?.message || 'An error occurred. Please try again.');
       },
     });
   }
