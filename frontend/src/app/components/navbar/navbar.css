@@ -130,3 +130,13 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+.date-display {
+  font-size: 0.8rem;
+  margin-left: 30px;
+  color: hsl(217, 5%, 47%);
+  font-weight: 500;
+  margin-top: 4px;
+  line-height: 1.2;
+  white-space: normal;
+}

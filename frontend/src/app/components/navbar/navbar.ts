@@ -14,6 +14,8 @@ export class NavbarComponent {
   // We make this public so the HTML can access 'isAuthenticated' and 'getUser'
   public auth = inject(Auth);
 
+  today: Date = new Date();
+
   logout() {
     this.auth.logout();
   }
