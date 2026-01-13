@@ -10,8 +10,11 @@ import { authGuard } from './guards/auth-guard';
 import { guestGuard } from './guards/guest-guard';
 import { Home } from './pages/home/home';
 import { User } from './pages/user/user';
+import { NotFound } from './pages/not-found/not-found';
 
 export const routes: Routes = [
+  { path: 'not-found', component: NotFound },
+
   // =========================================================
   // GUEST ROUTES (Accessible only when logged out)
   // =========================================================
@@ -32,7 +35,7 @@ export const routes: Routes = [
       { path: 'profile', component: ProfilePage },
       { path: 'settings', component: Settings },
       { path: 'friends', component: Friends },
-      { path: 'friends/:id', component: User },
+      { path: 'user/:id', component: User },
     ],
   },
 
