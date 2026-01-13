@@ -13,40 +13,6 @@ const userRouter = new Hono<{ Variables: Variables }>();
 
 userRouter.use(authMiddleware);
 
-userRouter.get(
-  "/:id",
-  zValidator("param", idSchema, (result, c) => {
-    if (!result.success) {
-      console.error(result.error);
-      return c.json({ message: "Bad request" }, 400);
-    }
-  }),
-  async (c) => {
-    const { id } = c.req.valid("param");
-
-    const user = await db.query.usersTable.findFirst({
-      where: {
-        id: { eq: id },
-      },
-    });
-
-    if (!user) {
-      return c.json({ message: "Not found" }, 404);
-    }
-
-    return c.json(
-      {
-        user: {
-          id: user.id,
-          username: user.username,
-          bio: user.bio,
-        },
-      },
-      200
-    );
-  }
-);
-
 // Get current user info
 userRouter.get("/me", async (c) => {
   const { sub: id } = c.get("jwtPayload");
@@ -143,6 +109,40 @@ userRouter.patch(
       .where(eq(usersTable.id, id));
 
     return c.json({ message: "ok" }, 200);
+  }
+);
+
+userRouter.get(
+  "/:id",
+  zValidator("param", idSchema, (result, c) => {
+    if (!result.success) {
+      console.error(result.error);
+      return c.json({ message: "Bad request" }, 400);
+    }
+  }),
+  async (c) => {
+    const { id } = c.req.valid("param");
+
+    const user = await db.query.usersTable.findFirst({
+      where: {
+        id: { eq: id },
+      },
+    });
+
+    if (!user) {
+      return c.json({ message: "Not found" }, 404);
+    }
+
+    return c.json(
+      {
+        user: {
+          id: user.id,
+          username: user.username,
+          bio: user.bio,
+        },
+      },
+      200
+    );
   }
 );
 
