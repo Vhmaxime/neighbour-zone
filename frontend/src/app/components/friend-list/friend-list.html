@@ -53,7 +53,7 @@
       <div class="friend-item">
         <div class="flex items-center justify-between gap-3">
           <span class="font-semibold text-gray-900">{{ friend.username }}</span>
-          @if (!isDeleting()) {
+          @if (actionState() !== 'deleting') {
           <button
             (click)="deleteFriend(friend.id)"
             class="text-xs text-red-500 hover:underline !p-2 !bg-transparent !text-[var(--accent)]"
@@ -79,7 +79,7 @@
         <div class="flex items-center justify-between gap-3">
           <span class="font-semibold text-gray-900">{{ request.username }}</span>
           <div>
-            @if (!isAccepting()) {
+            @if (actionState() !== 'accepting') {
             <button
               (click)="acceptRequest(request.id)"
               class="text-xs text-red-500 hover:underline !p-2 !m-2 !bg-transparent !text-[var(--accent)]"
@@ -88,7 +88,7 @@
             </button>
             } @else {
             <span class="text-xs text-gray-500 p-2 m-2">Accepting...</span>
-            } @if (!isDeclining()) {
+            } @if (actionState() !== 'declining') {
             <button
               (click)="declineRequest(request.id)"
               class="text-xs text-red-500 hover:underline !p-2 !bg-transparent !text-[var(--accent)]"

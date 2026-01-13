@@ -20,17 +20,17 @@ export class FriendList {
   requests = signal<Friend[]>([]);
   sent = signal<Friend[]>([]);
 
-  isLoading = signal<boolean>(true);
-  isDeleting = signal<boolean>(false);
-  isAccepting = signal<boolean>(false);
-  isDeclining = signal<boolean>(false);
+  isLoading = signal<boolean>(false);
+
+  actionState = signal<'deleting' | 'accepting' | 'declining' | null>(null);
 
   error = signal<string | null>(null);
   activeTab = signal<'friends' | 'requests' | 'sent'>('friends');
   badges = signal<string[]>([]);
 
-  ngOnInit() {
+  private loadData() {
     this.isLoading.set(true);
+    this.error.set(null);
     forkJoin({
       friends: this.api.getFriends(),
       requests: this.api.getFriendRequests(),
@@ -40,20 +40,22 @@ export class FriendList {
         this.friends.set(response.friends.friends);
         this.requests.set(response.requests.requests);
         this.sent.set(response.sent.sent);
-      },
-      error: (error) => {
-        console.error(error);
-        this.error.set('Something went wrong. Please try again later.');
-      },
-      complete: () => {
-        this.isLoading.set(false);
         this.badges.set([
           this.friends().length.toString(),
           this.requests().length.toString(),
           this.sent().length.toString(),
         ]);
+        this.isLoading.set(false);
+      },
+      error: (error) => {
+        console.error(error);
+        this.error.set('Something went wrong. Please try again later.');
       },
     });
+  }
+
+  ngOnInit() {
+    this.loadData();
   }
 
   setActiveTab(tab: 'friends' | 'requests' | 'sent') {
@@ -61,49 +63,43 @@ export class FriendList {
   }
 
   deleteFriend(friendId: string) {
-    this.isDeleting.set(true);
+    this.actionState.set('deleting');
     this.api.deleteFriend(friendId).subscribe({
       next: () => {
-        this.ngOnInit();
+        this.loadData();
+        this.actionState.set(null);
       },
       error: (error) => {
         console.error(error);
         this.error.set('Something went wrong. Please try again later.');
-      },
-      complete: () => {
-        this.isDeleting.set(false);
       },
     });
   }
 
   acceptRequest(requestId: string) {
-    this.isAccepting.set(true);
+    this.actionState.set('accepting');
     this.api.acceptFriendRequest(requestId).subscribe({
       next: () => {
-        this.ngOnInit();
+        this.loadData();
+        this.actionState.set(null);
       },
       error: (error) => {
         console.error(error);
         this.error.set('Something went wrong. Please try again later.');
-      },
-      complete: () => {
-        this.isAccepting.set(false);
       },
     });
   }
 
   declineRequest(requestId: string) {
-    this.isDeclining.set(true);
+    this.actionState.set('declining');
     this.api.declineFriendRequest(requestId).subscribe({
       next: () => {
-        this.ngOnInit();
+        this.loadData();
+        this.actionState.set(null);
       },
       error: (error) => {
         console.error(error);
         this.error.set('Something went wrong. Please try again later.');
-      },
-      complete: () => {
-        this.isDeclining.set(false);
       },
     });
   }
