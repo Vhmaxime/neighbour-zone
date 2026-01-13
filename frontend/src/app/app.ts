@@ -1,22 +1,13 @@
-import { Component, signal, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { Auth } from './services/auth';
 import { NavbarComponent } from './components/navbar/navbar';
+import { FriendList } from './components/friend-list/friend-list';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, NavbarComponent],
+  imports: [RouterOutlet, NavbarComponent, FriendList],
   templateUrl: './app.html',
   styleUrls: ['./app.css'],
 })
-export class AppComponent {
-  private auth = inject(Auth);
-
-  constructor() {
-    const token = this.auth.getToken();
-    if (token) {
-      console.log('Session restored');
-    }
-  }
-}
+export class AppComponent {}
