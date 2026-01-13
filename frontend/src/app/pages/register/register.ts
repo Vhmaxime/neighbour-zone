@@ -85,7 +85,7 @@ export class Register {
     this.auth.register({ username, firstname, lastname, email, phoneNumber, password }).subscribe({
       next: () => {
         this.isSubmitting.set(false);
-        this.router.navigate(['/dashboard']);
+        this.router.navigate(['/home']);
       },
       error: (err) => {
         this.isSubmitting.set(false);
