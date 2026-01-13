@@ -21,6 +21,7 @@ export interface User {
 export interface UserPublic {
   id: string;
   username: string;
+  bio: string | null;
 }
 
 export interface Post {
@@ -139,6 +140,10 @@ export interface AuthResponse {
 }
 
 export interface UserResponse {
+  user: UserPublic;
+}
+
+export interface UserMeResponse {
   user: User;
 }
 
