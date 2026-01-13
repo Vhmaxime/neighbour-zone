@@ -20,9 +20,9 @@ export class User {
   private userId = this.activatedRoute.snapshot.paramMap.get('id') as string;
   // State signals
   public user = signal<UserPublic | null>(null);
-  public posts = signal<Post[]>([]);
-  public events = signal<Event[]>([]);
-  public marketplaceItems = signal<MarketplaceItem[]>([]);
+  public posts = signal<Post[] | null>(null);
+  public events = signal<Event[] | null>(null);
+  public marketplaceItems = signal<MarketplaceItem[] | null>(null);
   public isLoading = signal(true);
   public counts = signal<number[]>([]);
 
@@ -30,7 +30,6 @@ export class User {
     this.api.getUser(this.userId).subscribe({
       next: (response) => {
         this.user.set(response.user);
-        this.isLoading.set(false);
         this.loadUserContent();
       },
       error: (error) => {

@@ -33,11 +33,19 @@
     </div>
   </div>
 </section>
-
 <section class="mt-8">
-  @for (post of posts(); track post.id) {
+  @if (posts()) { @for (post of posts(); track post.id) {
   <app-post [post]="post" />
+
   } @empty {
-  <span class=""> No posts</span> }
+  <p class="text-gray-500 text-center py-12">No posts</p>
+  } } @else {
+  <div class="flex items-center justify-center gap-2 py-12">
+    <span
+      class="animate-spin inline-block w-5 h-5 border-2 border-transparent border-t-gray-600 rounded-full"
+    ></span
+    >Loading posts...
+  </div>
+  }
 </section>
 }
