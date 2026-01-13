@@ -8,7 +8,7 @@ import { Settings } from './pages/settings/settings';
 import { Friends } from './pages/friends/friends';
 import { authGuard } from './guards/auth-guard';
 import { guestGuard } from './guards/guest-guard';
-import { Home } from './pages/home/home';
+import { Explore } from './pages/explore/explore';
 
 export const routes: Routes = [
   // =========================================================
@@ -25,8 +25,8 @@ export const routes: Routes = [
     path: '',
     canActivate: [authGuard],
     children: [
-      { path: '', redirectTo: 'home', pathMatch: 'full' }, // Redirects root URL to /home
-      { path: 'home', component: Home },
+      { path: '', redirectTo: 'explore', pathMatch: 'full' }, // Redirects root URL to /explore
+      { path: 'explore', component: Explore },
       // { path: 'dashboard', component: Dashboard }, // We don't use a dashboard for now
       { path: 'profile', component: ProfilePage },
       { path: 'settings', component: Settings },
