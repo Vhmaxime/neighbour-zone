@@ -32,9 +32,6 @@ postRouter.get("/", async (c) => {
       likes: (table) =>
         db.$count(postLikesTable, eq(table.id, postLikesTable.postId)),
     },
-    orderBy: {
-      createdAt: "desc",
-    },
   });
 
   const likedPostIds = await db.query.postLikesTable.findMany({
@@ -324,7 +321,6 @@ postRouter.get(
     }
 
     const posts = await db.query.postsTable.findMany({
-      where: { authorId: { eq: userId } },
       columns: {
         authorId: false,
       },
@@ -342,7 +338,22 @@ postRouter.get(
       },
     });
 
-    return c.json({ posts }, 200);
+    const likedPostIds = await db.query.postLikesTable.findMany({
+      where: { userId: { eq: userId } },
+      columns: {
+        postId: true,
+      },
+    });
+
+    const postSet = posts.map((post) => {
+      const liked = likedPostIds.some((like) => like.postId === post.id);
+      return {
+        ...post,
+        liked,
+      };
+    });
+
+    return c.json({ posts: postSet }, 200);
   }
 );
 
