@@ -9,15 +9,16 @@ import { Friends } from './pages/friends/friends';
 import { authGuard } from './guards/auth-guard';
 import { guestGuard } from './guards/guest-guard';
 import { Home } from './pages/home/home';
+import { User } from './pages/user/user';
 
 export const routes: Routes = [
   // =========================================================
   // GUEST ROUTES (Accessible only when logged out)
   // =========================================================
-      { path: 'login', component: Login, canActivate: [guestGuard] },
-      { path: 'register', component: Register, canActivate: [guestGuard] },
-      { path: 'reset-password', component: ResetPassword, canActivate: [guestGuard]},
-  
+  { path: 'login', component: Login, canActivate: [guestGuard] },
+  { path: 'register', component: Register, canActivate: [guestGuard] },
+  { path: 'reset-password', component: ResetPassword, canActivate: [guestGuard] },
+
   // =========================================================
   // AUTHENTICATED ROUTES (Accessible only when logged in)
   // =========================================================
@@ -31,9 +32,10 @@ export const routes: Routes = [
       { path: 'profile', component: ProfilePage },
       { path: 'settings', component: Settings },
       { path: 'friends', component: Friends },
+      { path: 'friends/:id', component: User },
     ],
   },
-  
+
   // Fallback for unknown routes (404)
-  { path: '**', redirectTo: '' }
+  { path: '**', redirectTo: '' },
 ];
