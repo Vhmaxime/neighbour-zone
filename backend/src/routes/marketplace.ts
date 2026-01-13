@@ -381,7 +381,13 @@ marketplaceRouter.get(
         },
       },
     });
-    return c.json({ marketplace }, 200);
+
+    const count = await db.$count(
+      marketplaceItemsTable,
+      eq(marketplaceItemsTable.userId, userId)
+    );
+
+    return c.json({ marketplace, count }, 200);
   }
 );
 

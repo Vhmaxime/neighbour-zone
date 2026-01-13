@@ -341,7 +341,10 @@ eventRouter.get(
           db.$count(eventLikesTable, eq(table.id, eventLikesTable.eventId)),
       },
     });
-    return c.json({ events }, 200);
+
+    const count = await db.$count(eventsTable, eq(eventsTable.userId, userId));
+
+    return c.json({ events, count }, 200);
   }
 );
 

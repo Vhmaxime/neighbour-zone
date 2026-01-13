@@ -341,6 +341,8 @@ postRouter.get(
       },
     });
 
+    const count = await db.$count(postsTable, eq(postsTable.authorId, userId));
+
     const likedPostIds = await db.query.postLikesTable.findMany({
       where: { userId: { eq: userId } },
       columns: {
@@ -356,7 +358,7 @@ postRouter.get(
       };
     });
 
-    return c.json({ posts: postSet }, 200);
+    return c.json({ posts: postSet, count }, 200);
   }
 );
 
