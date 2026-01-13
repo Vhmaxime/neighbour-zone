@@ -302,4 +302,48 @@ postRouter.post(
   }
 );
 
+postRouter.get(
+  "/user/:id",
+  zValidator("param", idSchema, (result, c) => {
+    if (!result.success) {
+      console.error("Validation error:", result.error);
+      return c.json({ message: "Bad request" }, 400);
+    }
+  }),
+  async (c) => {
+    const { id: userId } = c.req.valid("param");
+
+    const user = await db.query.usersTable.findFirst({
+      where: {
+        id: { eq: userId },
+      },
+    });
+
+    if (!user) {
+      return c.json({ message: "Not found" }, 404);
+    }
+
+    const posts = await db.query.postsTable.findMany({
+      where: { authorId: { eq: userId } },
+      columns: {
+        authorId: false,
+      },
+      with: {
+        author: {
+          columns: {
+            id: true,
+            username: true,
+          },
+        },
+      },
+      extras: {
+        likes: (table) =>
+          db.$count(postLikesTable, eq(table.id, postLikesTable.postId)),
+      },
+    });
+
+    return c.json({ posts }, 200);
+  }
+);
+
 export default postRouter;
