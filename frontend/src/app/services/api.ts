@@ -1,6 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { CreatePostRequest, PostResponse, UserResponse } from '../types/api.types';
+import {
+  FriendsRequestsResponse,
+  FriendsResponse,
+  SentFriendsRequestsResponse,
+  UserResponse,
+} from '../types/api.types';
 
 @Injectable({
   providedIn: 'root',
@@ -13,19 +18,27 @@ export class Api {
     return this.http.get<UserResponse>(`${this.apiUrl}/user/me`);
   }
 
-  getPosts() {
-    return this.http.get<PostResponse>(`${this.apiUrl}/post`);
+  getFriends() {
+    return this.http.get<FriendsResponse>(`${this.apiUrl}/friend/list`);
   }
 
-  createPost(content: CreatePostRequest) {
-    return this.http.post<PostResponse>(`${this.apiUrl}/post`, content);
+  getFriendRequests() {
+    return this.http.get<FriendsRequestsResponse>(`${this.apiUrl}/friend/requests`);
   }
 
-  getPost(postId: string) {
-    return this.http.get<PostResponse>(`${this.apiUrl}/post/${postId}`);
+  getSentFriendRequests() {
+    return this.http.get<SentFriendsRequestsResponse>(`${this.apiUrl}/friend/sent`);
   }
 
-  updatePost(postId: string, content: Partial<CreatePostRequest>) {
-    return this.http.patch<PostResponse>(`${this.apiUrl}/post/${postId}`, content);
+  deleteFriend(friendId: string) {
+    return this.http.delete(`${this.apiUrl}/friend/remove/${friendId}`);
+  }
+
+  acceptFriendRequest(requestId: string) {
+    return this.http.patch(`${this.apiUrl}/friend/accept/${requestId}`, {});
+  }
+
+  declineFriendRequest(requestId: string) {
+    return this.http.post(`${this.apiUrl}/friend/decline/${requestId}`, {});
   }
 }

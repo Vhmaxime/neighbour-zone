@@ -1,0 +1,124 @@
+@if (isLoading() || errorMessage()) {
+<div
+  class="absolute top-0 left-0 right-0 bottom-0 backdrop-blur-xs flex items-center justify-center z-50"
+>
+  @if (isLoading()) {
+  <span class="bg-[var(--text-sec)]/10 text-[var(--text-sec)] px-4 py-2 rounded-md">loading</span>
+  } @if (errorMessage()) {
+  <div class="bg-red-100 text-red-700 px-4 py-2 rounded-md">
+    {{ errorMessage() }}
+  </div>
+  }
+</div>
+}
+<div class="w-full bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
+  <div class="flex flex-col border-b border-gray-100">
+    <button
+      (click)="setActiveTab('friends')"
+      [class]="activeTab() === 'friends' ? 'tab-button active' : 'tab-button'"
+      class="tab-button"
+    >
+      <div class="flex items-center justify-between w-full">
+        <span class="font-bold text-base">Friends</span>
+        <span>{{ badges()[0] }}</span>
+      </div>
+    </button>
+    <button
+      (click)="setActiveTab('requests')"
+      [class]="activeTab() === 'requests' ? 'tab-button active' : 'tab-button'"
+      class="tab-button"
+    >
+      <div class="flex items-center justify-between w-full">
+        <span class="font-bold text-base">Requests</span>
+        <span>{{ badges()[1] }}</span>
+      </div>
+    </button>
+    <button
+      (click)="setActiveTab('sent')"
+      [class]="activeTab() === 'sent' ? 'tab-button active' : 'tab-button'"
+      class="tab-button"
+    >
+      <div class="flex items-center justify-between w-full">
+        <span class="font-bold text-base">Sent</span>
+        <span>{{ badges()[2] }}</span>
+      </div>
+    </button>
+  </div>
+
+  <div class="p-6">
+    @if (activeTab() === 'friends') {
+    <div class="space-y-4">
+      @if (isLoading()) {
+      <div class="text-center py-8 text-gray-500">
+        <p>Loading...</p>
+      </div>
+      } @else if (errorMessage()) {
+      <div class="text-center py-8 text-red-500">
+        <p>{{ errorMessage() }}</p>
+      </div>
+      } @else if (friends().length === 0) {
+      <div class="text-center py-8 text-gray-500">
+        <p class="text-lg font-semibold mb-2">No friends found</p>
+        <p class="text-sm">Start adding friends!</p>
+      </div>
+      } @else { @for (friend of friends(); track friend.id) {
+      <div class="friend-item">
+        <div class="flex items-center justify-between gap-3">
+          <span class="font-semibold text-gray-900">{{ friend.username }}</span>
+          <button
+            (click)="deleteFriend(friend.id)"
+            class="text-xs text-red-500 hover:underline !p-2 !bg-transparent !text-[var(--accent)]"
+          >
+            Remove
+          </button>
+        </div>
+      </div>
+      } }
+    </div>
+    } @if (activeTab() === 'requests') {
+    <div class="space-y-4">
+      @if (requests().length === 0) {
+      <div class="text-center py-8 text-gray-500">
+        <p class="text-lg font-semibold mb-2">No friend requests</p>
+        <p class="text-sm">You currently have no pending requests</p>
+      </div>
+      } @else { @for (request of requests(); track request.id) {
+      <div class="friend-item">
+        <div class="flex items-center justify-between gap-3">
+          <span class="font-semibold text-gray-900">{{ request.username }}</span>
+          <div>
+            <button
+              (click)="acceptRequest(request.id)"
+              class="text-xs text-red-500 hover:underline !p-2 !bg-transparent !text-[var(--accent)]"
+            >
+              Accept
+            </button>
+            <button
+              (click)="declineRequest(request.id)"
+              class="text-xs text-red-500 hover:underline !p-2 !bg-transparent !text-[var(--accent)]"
+            >
+              Decline
+            </button>
+          </div>
+        </div>
+      </div>
+      } }
+    </div>
+    } @if (activeTab() === 'sent') {
+    <div class="space-y-4">
+      @if (sent().length === 0) {
+      <div class="text-center py-8 text-gray-500">
+        <p class="text-lg font-semibold mb-2">No sent requests</p>
+        <p class="text-sm">You haven't sent any friend requests yet</p>
+      </div>
+      } @else { @for (sentRequest of sent(); track sentRequest.id) {
+      <div class="friend-item">
+        <div class="flex items-center gap-3">
+          <span class="font-semibold text-gray-900">{{ sentRequest.username }}</span>
+        </div>
+      </div>
+      } }
+    </div>
+    }
+  </div>
+</div>

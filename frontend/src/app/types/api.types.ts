@@ -69,14 +69,6 @@ export interface MarketplaceApplication {
   applicant: UserPublic;
 }
 
-export interface Friendship {
-  id: string;
-  userId1: string;
-  userId2: string;
-  status: FriendshipStatus;
-  createdAt: string;
-}
-
 // Request
 export interface RegisterRequest {
   username: string;
@@ -172,6 +164,18 @@ export interface MarketplaceItemResponse {
 
 export interface MarketplaceItemsResponse {
   marketplace: MarketplaceItem[];
+}
+
+export interface FriendsResponse {
+  friends: UserPublic[];
+}
+
+export interface FriendsRequestsResponse {
+  requests: UserPublic[];
+}
+
+export interface SentFriendsRequestsResponse {
+  sent: UserPublic[];
 }
 
 export interface ErrorResponse {

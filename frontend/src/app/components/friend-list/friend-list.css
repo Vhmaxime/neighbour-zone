@@ -1,0 +1,5 @@
+@import "tailwindcss";
+
+button.active{
+  @apply bg-[var(--bg-main)] text-[var(--accent)] border border-[var(--accent)] transition-all;
+}
