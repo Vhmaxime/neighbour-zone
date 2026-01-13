@@ -26,7 +26,7 @@ export class User {
   public isLoading = signal(true);
   public counts = signal<number[]>([]);
 
-  ngOnInit() {
+  public ngOnInit() {
     this.api.getUser(this.userId).subscribe({
       next: (response) => {
         this.user.set(response.user);

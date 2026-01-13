@@ -1,14 +1,12 @@
 @if (user(); as user) {
 <section class="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
   <div class="flex items-start gap-6">
-    <!-- Avatar with first letter -->
     <div
       class="w-20 h-20 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white text-2xl font-semibold shadow-md flex-shrink-0"
     >
       {{ user.username.charAt(0).toUpperCase() }}
     </div>
 
-    <!-- User info -->
     <div class="flex-1 min-w-0">
       <h1 class="text-2xl font-semibold text-gray-900 mb-1.5">{{ user.username }}</h1>
       @if (user.bio) {

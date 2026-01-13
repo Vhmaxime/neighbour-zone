@@ -18,19 +18,20 @@ interface State {
 export class FriendList {
   private api = inject(Api);
   public tabs: State['tabs'][] = ['Friends', 'Requests', 'Sent'];
-  friends = signal<UserPublic[] | null>(null);
-  requests = signal<UserPublic[] | null>(null);
-  sent = signal<UserPublic[] | null>(null);
+  public friends = signal<UserPublic[] | null>(null);
+  public requests = signal<UserPublic[] | null>(null);
+  public sent = signal<UserPublic[] | null>(null);
   public badge = signal<number[]>([]);
+  public isLoading = signal<boolean>(false);
+  public actionState = signal<State['actions']>(null);
+  public targetUserId = signal<string | null>(null);
+  public error = signal<string | null>(null);
+  public activeTab = signal<State['tabs']>('Friends');
+  public badges = signal<string[]>([]);
 
-  isLoading = signal<boolean>(false);
-
-  actionState = signal<State['actions']>(null);
-  targetUserId = signal<string | null>(null);
-
-  error = signal<string | null>(null);
-  activeTab = signal<State['tabs']>('Friends');
-  badges = signal<string[]>([]);
+  public ngOnInit() {
+    this.loadData();
+  }
 
   private loadData() {
     this.isLoading.set(true);
@@ -54,15 +55,11 @@ export class FriendList {
     });
   }
 
-  ngOnInit() {
-    this.loadData();
-  }
-
-  setActiveTab(tab: (typeof this.tabs)[number]) {
+  public setActiveTab(tab: (typeof this.tabs)[number]) {
     this.activeTab.set(tab);
   }
 
-  deleteFriend(friendId: string) {
+  public deleteFriend(friendId: string) {
     this.actionState.set('deleting');
     this.targetUserId.set(friendId);
     this.api.deleteFriend(friendId).subscribe({
@@ -77,7 +74,7 @@ export class FriendList {
     });
   }
 
-  acceptRequest(requestId: string) {
+  public acceptRequest(requestId: string) {
     this.actionState.set('accepting');
     this.targetUserId.set(requestId);
     this.api.acceptFriendRequest(requestId).subscribe({
@@ -92,7 +89,7 @@ export class FriendList {
     });
   }
 
-  rejectRequest(requestId: string) {
+  public rejectRequest(requestId: string) {
     this.actionState.set('rejecting');
     this.targetUserId.set(requestId);
     this.api.rejectFriendRequest(requestId).subscribe({
@@ -107,7 +104,7 @@ export class FriendList {
     });
   }
 
-  cancelSentRequest(requestId: string) {
+  public cancelSentRequest(requestId: string) {
     this.actionState.set('cancelling');
     this.targetUserId.set(requestId);
     this.api.cancelFriendRequest(requestId).subscribe({
