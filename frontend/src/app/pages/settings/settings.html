@@ -163,7 +163,7 @@
     <!-- ===================================================== -->
 
     <!-- Security settings card -->
-    <section class="settings-card">
+    <section class="settings-card" [formGroup]="form">
       <div class="card-header">
         <h2 class="card-title">Security</h2>
         <p class="card-description">Update your password to keep your account secure</p>
@@ -172,22 +172,22 @@
       <div class="form-grid">
         <div class="field">
           <label class="input-label">Current Password</label>
-          <input type="password" class="input-field" placeholder="••••••••">
+          <input type="password" class="input-field" formControlName="currentPassword" placeholder="••••••••">
         </div>
 
         <div class="field">
           <label class="input-label">New Password</label>
-          <input type="password" class="input-field" placeholder="••••••••">
+          <input type="password" class="input-field" formControlName="newPassword" placeholder="••••••••">
         </div>
 
         <div class="field">
           <label class="input-label">Confirm New Password</label>
-          <input type="password" class="input-field" placeholder="••••••••">
+          <input type="password" class="input-field" formControlName="confirmPassword" placeholder="••••••••">
         </div>
       </div>
 
       <div class="card-footer">
-        <button type="button" class="btn-primary">Update Password</button>
+        <button type="button" class="btn-primary"(click)="updatePassword()" >Update Password</button>
       </div>
     </section>
 
@@ -195,7 +195,7 @@
     <section class="danger-area">
       <div class="danger-card">
         <div class="danger-text">
-          <button type="button" class="btn-danger">Delete Account</button>
+          <button type="button" class="btn-danger"(click)="deleteAccount()" >Delete Account</button>
           <span class="danger-desc">
             Once you delete your account, all data will be permanently removed
           </span>
