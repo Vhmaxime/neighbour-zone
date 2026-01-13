@@ -7,7 +7,8 @@ import { tap } from 'rxjs/operators';
 
 export interface JwtPayload {
   sub: string;
-  name: string;
+  username: string;
+  name?: string; // This may exist, but it doesn't crash or throw a nerror if it's missing
   email: string;
   roles: string;
   exp: number;
