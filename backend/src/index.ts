@@ -13,6 +13,7 @@ import marketplaceRouter from "./routes/marketplace.js";
 import eventRouter from "./routes/event.js";
 import { timeout } from "hono/timeout";
 import { logger } from "hono/logger";
+import friendRouter from "./routes/friend.js";
 
 const app = new Hono<{ Variables: Variables }>().basePath("/api");
 
@@ -34,6 +35,7 @@ app.get("/health", (c) => {
 //Routes
 app.route("/auth", authRouter);
 app.route("/user", userRouter);
+app.route("/friend", friendRouter);
 app.route("/post", postRouter);
 app.route("/marketplace", marketplaceRouter);
 app.route("/event", eventRouter);
