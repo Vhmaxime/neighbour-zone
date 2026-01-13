@@ -53,7 +53,7 @@ export class Login {
     this.auth.login({ email, password, rememberMe }).subscribe({
       next: () => {
         this.isSubmitting.set(false);
-        this.router.navigate(['/dashboard']);
+        this.router.navigate(['/explore']);
       },
       error: (err) => {
         this.isSubmitting.set(false);
