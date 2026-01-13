@@ -38,8 +38,8 @@ export class FriendList {
         this.sent.set(response.sent.sent);
       },
       error: (error) => {
-        console.error('Error fetching data:', error);
-        this.errorMessage.set('something went wrong. Please try again later.');
+        console.error(error);
+        this.errorMessage.set('Something went wrong. Please try again later.');
       },
       complete: () => {
         this.isLoading.set(false);
@@ -61,6 +61,10 @@ export class FriendList {
       next: () => {
         this.ngOnInit();
       },
+      error: (error) => {
+        console.error(error);
+        this.errorMessage.set('Something went wrong. Please try again later.');
+      },
     });
   }
 
@@ -70,7 +74,7 @@ export class FriendList {
         this.ngOnInit();
       },
       error: (error) => {
-        console.error('Error accepting friend request:', error);
+        console.error(error);
         this.errorMessage.set('Something went wrong. Please try again later.');
       },
     });
@@ -80,6 +84,10 @@ export class FriendList {
     this.api.declineFriendRequest(requestId).subscribe({
       next: () => {
         this.ngOnInit();
+      },
+      error: (error) => {
+        console.error(error);
+        this.errorMessage.set('Something went wrong. Please try again later.');
       },
     });
   }
