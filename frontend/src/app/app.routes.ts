@@ -8,16 +8,20 @@ import { Settings } from './pages/settings/settings';
 import { Friends } from './pages/friends/friends';
 import { authGuard } from './guards/auth-guard';
 import { guestGuard } from './guards/guest-guard';
+import { User } from './pages/user/user';
+import { NotFound } from './pages/not-found/not-found';
 import { Explore } from './pages/explore/explore';
 
 export const routes: Routes = [
+  { path: 'not-found', component: NotFound },
+
   // =========================================================
   // GUEST ROUTES (Accessible only when logged out)
   // =========================================================
-      { path: 'login', component: Login, canActivate: [guestGuard] },
-      { path: 'register', component: Register, canActivate: [guestGuard] },
-      { path: 'reset-password', component: ResetPassword, canActivate: [guestGuard]},
-  
+  { path: 'login', component: Login, canActivate: [guestGuard] },
+  { path: 'register', component: Register, canActivate: [guestGuard] },
+  { path: 'reset-password', component: ResetPassword, canActivate: [guestGuard] },
+
   // =========================================================
   // AUTHENTICATED ROUTES (Accessible only when logged in)
   // =========================================================
@@ -31,9 +35,10 @@ export const routes: Routes = [
       { path: 'profile', component: ProfilePage },
       { path: 'settings', component: Settings },
       { path: 'friends', component: Friends },
+      { path: 'user/:id', component: User },
     ],
   },
-  
+
   // Fallback for unknown routes (404)
-  { path: '**', redirectTo: '' }
+  { path: '**', redirectTo: '' },
 ];

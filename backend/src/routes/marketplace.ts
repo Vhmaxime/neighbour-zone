@@ -344,4 +344,51 @@ marketplaceRouter.post(
   }
 );
 
+marketplaceRouter.get(
+  "/user/:id",
+  zValidator("param", idSchema, (result, c) => {
+    if (!result.success) {
+      console.error("Validation error:", result.error);
+      return c.json({ message: "Bad request" }, 400);
+    }
+  }),
+  async (c) => {
+    const { id: userId } = c.req.valid("param");
+
+    const user = await db.query.usersTable.findFirst({
+      where: {
+        id: { eq: userId },
+      },
+    });
+
+    if (!user) {
+      return c.json({ message: "Not found" }, 404);
+    }
+
+    const marketplace = await db.query.marketplaceItemsTable.findMany({
+      where: {
+        userId: { eq: userId },
+      },
+      columns: {
+        userId: false,
+      },
+      with: {
+        provider: {
+          columns: {
+            id: true,
+            username: true,
+          },
+        },
+      },
+    });
+
+    const count = await db.$count(
+      marketplaceItemsTable,
+      eq(marketplaceItemsTable.userId, userId)
+    );
+
+    return c.json({ marketplace, count }, 200);
+  }
+);
+
 export default marketplaceRouter;

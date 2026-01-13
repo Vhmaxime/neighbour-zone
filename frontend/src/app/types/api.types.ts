@@ -21,6 +21,7 @@ export interface User {
 export interface UserPublic {
   id: string;
   username: string;
+  bio: string | null;
 }
 
 export interface Post {
@@ -139,6 +140,10 @@ export interface AuthResponse {
 }
 
 export interface UserResponse {
+  user: UserPublic;
+}
+
+export interface UserMeResponse {
   user: User;
 }
 
@@ -148,6 +153,7 @@ export interface PostResponse {
 
 export interface PostsResponse {
   posts: Post[];
+  count: number;
 }
 
 export interface EventResponse {
@@ -156,6 +162,7 @@ export interface EventResponse {
 
 export interface EventsResponse {
   events: Event[];
+  count: number;
 }
 
 export interface MarketplaceItemResponse {
@@ -164,6 +171,7 @@ export interface MarketplaceItemResponse {
 
 export interface MarketplaceItemsResponse {
   marketplace: MarketplaceItem[];
+  count: number;
 }
 
 export interface FriendsResponse {

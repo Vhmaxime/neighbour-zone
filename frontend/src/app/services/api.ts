@@ -1,9 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import {
+  EventsResponse,
   FriendsRequestsResponse,
   FriendsResponse,
+  MarketplaceItemsResponse,
+  PostsResponse,
   SentFriendsRequestsResponse,
+  UserMeResponse,
   UserResponse,
 } from '../types/api.types';
 
@@ -14,8 +18,24 @@ export class Api {
   private readonly apiUrl = 'https://neighbour-zone.vercel.app/api';
   private http = inject(HttpClient);
 
+  getUser(userId: string) {
+    return this.http.get<UserResponse>(`${this.apiUrl}/user/${userId}`);
+  }
+
+  getUserPosts(userId: string) {
+    return this.http.get<PostsResponse>(`${this.apiUrl}/post/user/${userId}`);
+  }
+
+  getUserEvents(userId: string) {
+    return this.http.get<EventsResponse>(`${this.apiUrl}/event/user/${userId}`);
+  }
+
+  getUserMarketplaceItems(userId: string) {
+    return this.http.get<MarketplaceItemsResponse>(`${this.apiUrl}/marketplace/user/${userId}`);
+  }
+
   getUserMe() {
-    return this.http.get<UserResponse>(`${this.apiUrl}/user/me`);
+    return this.http.get<UserMeResponse>(`${this.apiUrl}/user/me`);
   }
 
   getFriends() {
