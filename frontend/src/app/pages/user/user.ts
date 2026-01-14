@@ -6,9 +6,11 @@ import { forkJoin } from 'rxjs';
 import { Post as PostComponent } from '../../components/post/post';
 import { EventTile } from '../../components/event-tile/event-tile';
 import { MarketplaceTile } from '../../components/marketplace-tile/marketplace-tile';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-user',
+  standalone: true,
   imports: [PostComponent, EventTile, MarketplaceTile],
   templateUrl: './user.html',
   styleUrl: './user.css',
@@ -18,6 +20,7 @@ export class User {
   private activatedRoute = inject(ActivatedRoute);
   private router = inject(Router);
   private api = inject(Api);
+  private titleService = inject(Title);
   // URL parameter
   private userId = this.activatedRoute.snapshot.paramMap.get('id') as string;
   // State signals
@@ -32,6 +35,11 @@ export class User {
     this.api.getUser(this.userId).subscribe({
       next: (response) => {
         this.user.set(response.user);
+
+        if (response.user) {
+          this.titleService.setTitle(`${response.user.username}'s Profile | Neighbour Zone`);
+        }
+
         this.loadUserContent();
       },
       error: (error) => {

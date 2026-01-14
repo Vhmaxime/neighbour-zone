@@ -1,14 +1,15 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
-import { Observable, switchMap, catchError, of, tap } from 'rxjs';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { Observable, switchMap, catchError, of, tap, map } from 'rxjs';
 import { Event } from '../../types/api.types';
 import { Api } from '../../services/api';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-event-details',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './event-details.html',
   styleUrl: './event-details.css',
 })
@@ -17,21 +18,26 @@ export class EventDetails {
 
   private route = inject(ActivatedRoute);
   private api = inject(Api);
+  private titleService = inject(Title);
 
   constructor() {
     this.event$ = this.route.paramMap.pipe(
-      switchMap(params => {
+      switchMap((params) => {
         const id = params.get('id');
+        if (!id) return of(null);
 
-        // If id is null (broken URL), return null immediately,
-        // effectively skipping the API call so it doesn't crash
-        if(!id) return of (null);
-
-        // Now TypeScript knows 'id' is definitely a string
-        return this.api.getEvent(id);
+        return this.api
+          .getEvent(id)
+          .pipe(map((response: any) => (response.event ? response.event : response)));
       }),
-      tap(data => console.log('Event loaded:', data)), // To see it work
-      catchError(error => {
+      tap((data) => {
+        console.log('Event loaded:', data);
+        if (data) {
+          // Browser tab title
+          this.titleService.setTitle(`${data.title} | Neighbour Zone`);
+        }
+      }),
+      catchError((error) => {
         console.error('Error loading event:', error);
         return of(null);
       })

@@ -1,0 +1,22 @@
+<div class="max-w-2xl mx-auto py-8 px-4">
+  <h1 class="text-2xl font-bold text-gray-900 mb-6">Latest in the Neighborhood</h1>
+
+  @if (feedItems$ | async; as items) {
+    <div class="flex flex-col gap-6">
+      @for (item of items; track item.id) {
+        
+        @if (item.dateTime) {
+          <app-event-tile [event]="item" />
+        } 
+        @else {
+          <app-marketplace-tile [item]="item" />
+        }
+
+      } @empty {
+        <p class="text-center py-10 text-gray-500">Nothing new happening today.</p>
+      }
+    </div>
+  } @else {
+    <p class="text-center py-10">Loading neighbors' activity...</p>
+  }
+</div>

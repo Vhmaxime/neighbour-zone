@@ -78,11 +78,32 @@ export class Api {
     return this.http.get<PostResponse>(`${this.apiUrl}/post/${postId}`);
   }
 
+  getPosts() {
+    return this.http.get<PostsResponse>(`${this.apiUrl}/post`);
+  }
+
   getEvent(eventId: string) {
     return this.http.get<EventResponse>(`${this.apiUrl}/event/${eventId}`);
   }
 
+  getEvents() {
+    return this.http.get<EventsResponse>(`${this.apiUrl}/event`);
+  }
+
   getMarketplaceItem(itemId: string) {
     return this.http.get<MarketplaceItemResponse>(`${this.apiUrl}/marketplace/${itemId}`);
+  }
+
+  getMarketplaceItems() {
+    return this.http.get<MarketplaceItemsResponse>(`${this.apiUrl}/marketplace`);
+  }
+  updateMyProfile(data: {
+    firstname: string;
+    lastname: string;
+    email: string;
+    phoneNumber: string;
+    bio: string | undefined;
+  }) {
+    return this.http.patch(`${this.apiUrl}/user/me`, data);
   }
 }
