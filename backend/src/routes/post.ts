@@ -252,7 +252,7 @@ postRouter.delete(
 
 // Like or unlike a post
 postRouter.post(
-  "/:id/like",
+  "/like/:id",
   zValidator("param", idSchema, (result, c) => {
     if (!result.success) {
       console.error("Validation error:", result.error);
@@ -260,7 +260,7 @@ postRouter.post(
     }
   }),
   async (c) => {
-    const { id: postId } = c.req.param();
+    const { id: postId } = c.req.valid("param");
 
     const { sub: userId } = c.get("jwtPayload");
 

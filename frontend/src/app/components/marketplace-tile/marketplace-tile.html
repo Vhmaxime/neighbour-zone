@@ -1,0 +1,27 @@
+<div
+  class="flex flex-col bg-white rounded-lg shadow hover:shadow-md transition-shadow cursor-pointer overflow-hidden h-full"
+>
+  <div class="flex-1 p-4">
+    <div class="flex items-start justify-between mb-2">
+      <h3 class="text-lg font-semibold text-gray-900 line-clamp-2">{{ item().title }}</h3>
+      <span
+        class="ml-2 px-2 py-1 text-xs font-medium rounded-full shrink-0"
+        [class.bg-green-100]="item().category === 'offered'"
+        [class.text-green-700]="item().category === 'offered'"
+        [class.bg-blue-100]="item().category === 'wanted'"
+        [class.text-blue-700]="item().category === 'wanted'"
+      >
+        {{ item().category === 'offered' ? 'Offered' : 'Wanted' }}
+      </span>
+    </div>
+    <p class="text-sm text-gray-600 line-clamp-2 mb-3">{{ item().description }}</p>
+    <div class="flex items-center justify-between text-sm">
+      <span class="text-gray-500">{{ item().location }}</span>
+      @if (item().price) {
+      <span class="text-lg font-bold text-gray-900">€{{ item().price }}</span>
+      } @else {
+      <span class="text-sm text-gray-500 italic">Free</span>
+      }
+    </div>
+  </div>
+</div>

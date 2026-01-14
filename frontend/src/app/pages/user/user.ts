@@ -4,10 +4,12 @@ import { MarketplaceItem, Post, UserPublic, Event } from '../../types/api.types'
 import { Api } from '../../services/api';
 import { forkJoin } from 'rxjs';
 import { Post as PostComponent } from '../../components/post/post';
+import { EventTile } from '../../components/event-tile/event-tile';
+import { MarketplaceTile } from '../../components/marketplace-tile/marketplace-tile';
 
 @Component({
   selector: 'app-user',
-  imports: [PostComponent],
+  imports: [PostComponent, EventTile, MarketplaceTile],
   templateUrl: './user.html',
   styleUrl: './user.css',
 })
