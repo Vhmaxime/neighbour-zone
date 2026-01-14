@@ -11,6 +11,7 @@ import { guestGuard } from './guards/guest-guard';
 import { User } from './pages/user/user';
 import { NotFound } from './pages/not-found/not-found';
 import { Explore } from './pages/explore/explore';
+import { Search } from './pages/search/search';
 
 export const routes: Routes = [
   { path: 'not-found', component: NotFound },
@@ -34,7 +35,7 @@ export const routes: Routes = [
       // { path: 'dashboard', component: Dashboard }, // We don't use a dashboard for now
       { path: 'profile', component: ProfilePage },
       { path: 'settings', component: Settings },
-      { path: 'friends', component: Friends },
+      { path: 'search', component: Search },
       { path: 'user/:id', component: User },
     ],
   },
