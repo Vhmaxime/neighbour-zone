@@ -1,12 +1,15 @@
 import { Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MarketplaceItem, Post, UserPublic, Event } from '../../types/api.types';
-import { Api } from '../../services/api';
 import { forkJoin } from 'rxjs';
 import { Post as PostComponent } from '../../components/post/post';
 import { EventTile } from '../../components/event-tile/event-tile';
 import { MarketplaceTile } from '../../components/marketplace-tile/marketplace-tile';
 import { Title } from '@angular/platform-browser';
+import { UserService } from '../../services/user';
+import { PostService } from '../../services/post';
+import { EventService } from '../../services/event';
+import { MarketplaceService } from '../../services/marketplace';
 
 @Component({
   selector: 'app-user',
@@ -19,7 +22,10 @@ export class User {
   // Injected services
   private activatedRoute = inject(ActivatedRoute);
   private router = inject(Router);
-  private api = inject(Api);
+  private userService = inject(UserService);
+  private postService = inject(PostService);
+  private eventService = inject(EventService);
+  private marketplaceService = inject(MarketplaceService);
   private titleService = inject(Title);
   // URL parameter
   private userId = this.activatedRoute.snapshot.paramMap.get('id') as string;
@@ -32,7 +38,7 @@ export class User {
   public counts = signal<number[]>([]);
 
   public ngOnInit() {
-    this.api.getUser(this.userId).subscribe({
+    this.userService.getUser(this.userId).subscribe({
       next: (response) => {
         this.user.set(response.user);
 
@@ -51,9 +57,9 @@ export class User {
 
   private loadUserContent() {
     forkJoin({
-      postsRequest: this.api.getUserPosts(this.userId),
-      eventsRequest: this.api.getUserEvents(this.userId),
-      marketplaceRequest: this.api.getUserMarketplaceItems(this.userId),
+      postsRequest: this.postService.getUserPosts(this.userId),
+      eventsRequest: this.eventService.getUserEvents(this.userId),
+      marketplaceRequest: this.marketplaceService.getUserMarketplaceItems(this.userId),
     }).subscribe({
       next: (response) => {
         this.posts.set(response.postsRequest.posts);

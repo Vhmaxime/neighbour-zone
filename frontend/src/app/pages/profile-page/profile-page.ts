@@ -2,7 +2,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
-import { Api } from '../../services/api';
+import { UserService } from '../../services/user';
 
 @Component({
   selector: 'app-profile-page',
@@ -12,7 +12,7 @@ import { Api } from '../../services/api';
   styleUrls: ['./profile-page.css'],
 })
 export class ProfilePage {
-  private api = inject(Api);
+  private userService = inject(UserService);
 
   isLoading = signal(true);
   isSaving = signal(false);
@@ -29,16 +29,16 @@ export class ProfilePage {
   });
 
   ngOnInit() {
-    this.api.getUserMe().subscribe({
+    this.userService.getCurrentUser().subscribe({
       next: (response) => {
-        const user = response.user;
+        const { bio, firstname, lastname, email, phoneNumber } = response.user;
 
         this.profileForm.patchValue({
-          firstname: user.firstname,
-          lastname: user.lastname,
-          email: user.email,
-          phoneNumber: user.phoneNumber,
-          bio: user.bio ?? '',
+          firstname: firstname,
+          lastname: lastname,
+          email: email,
+          phoneNumber: phoneNumber,
+          bio: bio ?? '',
         });
       },
       complete: () => {
@@ -55,8 +55,8 @@ export class ProfilePage {
 
     const { firstname, lastname, email, phoneNumber, bio } = this.profileForm.getRawValue();
 
-    this.api
-      .updateMyProfile({
+    this.userService
+      .updateCurrentUser({
         firstname,
         lastname,
         email,

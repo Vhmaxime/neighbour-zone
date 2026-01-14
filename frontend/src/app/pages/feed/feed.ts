@@ -1,11 +1,12 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Api } from '../../services/api';
 import { Title } from '@angular/platform-browser';
 import { Observable, map, catchError, of } from 'rxjs';
 import { forkJoin } from 'rxjs';
 import { EventTile } from '../../components/event-tile/event-tile';
 import { MarketplaceTile } from '../../components/marketplace-tile/marketplace-tile';
+import { EventService } from '../../services/event';
+import { MarketplaceService } from '../../services/marketplace';
 
 @Component({
   selector: 'app-feed',
@@ -15,7 +16,8 @@ import { MarketplaceTile } from '../../components/marketplace-tile/marketplace-t
   styleUrl: './feed.css',
 })
 export class Feed implements OnInit {
-  private api = inject(Api);
+  private eventService = inject(EventService);
+  private marketplaceService = inject(MarketplaceService);
   private titleService = inject(Title);
 
   // Consistency: Using the Observable stream pattern
@@ -25,10 +27,10 @@ export class Feed implements OnInit {
     this.titleService.setTitle('Feed | Neighbour Zone');
 
     this.feedItems$ = forkJoin({
-      eventsReq: this.api.getEvents(),
-      marketplaceReq: this.api.getMarketplaceItems()
+      eventsReq: this.eventService.getEvents(),
+      marketplaceReq: this.marketplaceService.getMarketplaceItems(),
     }).pipe(
-      map(response => {
+      map((response) => {
         // Grab the arrays from the envelopes
         const events = response.eventsReq.events || [];
         const items = response.marketplaceReq.marketplace || [];
@@ -41,7 +43,7 @@ export class Feed implements OnInit {
           .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
           .slice(0, 10);
       }),
-      catchError(err => {
+      catchError((err) => {
         console.error('Error loading feed:', err);
         return of([]);
       })

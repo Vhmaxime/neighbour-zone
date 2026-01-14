@@ -5,10 +5,11 @@ import {
   FormBuilder,
   Validators,
   FormGroup,
+  FormControl,
 } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Api } from '../../services/api';
-import { Auth } from '../../services/auth';
+import { AuthService } from '../../services/auth';
+import { UserService } from '../../services/user';
 
 @Component({
   selector: 'app-settings',
@@ -19,14 +20,19 @@ import { Auth } from '../../services/auth';
 })
 export class Settings {
   private fb = inject(FormBuilder);
-  private api = inject(Api);
+  private userService = inject(UserService);
   private router = inject(Router);
-  private auth = inject(Auth);
+  private authService = inject(AuthService);
 
   error = signal<string | null>(null);
   isUpdatingPassword = signal(false);
   isDeletingAccount = signal(false);
-  form: FormGroup;
+
+  form: FormGroup<{
+    currentPassword: FormControl<string>;
+    newPassword: FormControl<string>;
+    confirmPassword: FormControl<string>;
+  }>;
 
   constructor() {
     this.form = this.fb.group(
@@ -46,13 +52,11 @@ export class Settings {
     );
   }
 
-  
   passwordsMatch(group: FormGroup) {
     const password = group.get('newPassword')?.value;
     const confirm = group.get('confirmPassword')?.value;
     return password === confirm ? null : { passwordMismatch: true };
   }
-
 
   private passwordValue(): string {
     return this.form.get('newPassword')?.value || '';
@@ -78,7 +82,6 @@ export class Settings {
     return this.passwordValue().length >= 8;
   }
 
-
   updatePassword() {
     if (this.form.invalid) {
       this.error.set(
@@ -92,7 +95,7 @@ export class Settings {
     this.isUpdatingPassword.set(true);
     this.error.set(null);
 
-    this.api.updateMyPassword(currentPassword, newPassword).subscribe({
+    this.userService.updateCurrentUserPassword({ currentPassword, newPassword }).subscribe({
       next: () => {
         this.isUpdatingPassword.set(false);
         this.form.reset();
@@ -106,20 +109,18 @@ export class Settings {
   }
 
   deleteAccount() {
-  if (!confirm('Are you sure you want to delete your account?')) return;
+    if (!confirm('Are you sure you want to delete your account?')) return;
 
-  this.isDeletingAccount.set(true);
+    this.isDeletingAccount.set(true);
 
-  this.api.deleteMyAccount().subscribe({
-    next: () => {
-      this.auth.logout();
-    },
-    error: (err) => {
-      this.isDeletingAccount.set(false);
-      this.error.set(err.error?.message || 'Delete failed.');
-    },
-  });
-}
-
+    this.userService.deleteCurrentUser().subscribe({
+      next: () => {
+        this.authService.logout();
+      },
+      error: (err) => {
+        this.isDeletingAccount.set(false);
+        this.error.set(err.error?.message || 'Delete failed.');
+      },
+    });
   }
-
+}
