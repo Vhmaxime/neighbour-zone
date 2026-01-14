@@ -233,3 +233,24 @@ input:checked + .slider:before {
   background: #B91C1C;
 }
 
+.password-hint {
+  font-size: 0.8rem;
+  color: #6B7280;
+  margin-top: 6px;
+}
+
+.password-hint ul {
+  margin: 6px 0 0 16px;
+  padding: 0;
+}
+
+.password-hint li {
+  list-style: disc;
+  color: #9CA3AF; /* neutraal */
+  transition: color 0.2s ease;
+}
+
+.password-hint li.valid {
+  color: #16A34A; /* groen */
+  font-weight: 600;
+}
