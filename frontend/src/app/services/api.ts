@@ -1,12 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import {
+  EventResponse,
   EventsResponse,
-  FriendsRequestsResponse,
   FriendsResponse,
+  MarketplaceItemResponse,
   MarketplaceItemsResponse,
+  PostResponse,
   PostsResponse,
-  SentFriendsRequestsResponse,
   UserMeResponse,
   UserResponse,
 } from '../types/api.types';
@@ -39,15 +40,7 @@ export class Api {
   }
 
   getFriends() {
-    return this.http.get<FriendsResponse>(`${this.apiUrl}/friend/list`);
-  }
-
-  getFriendRequests() {
-    return this.http.get<FriendsRequestsResponse>(`${this.apiUrl}/friend/requests`);
-  }
-
-  getSentFriendRequests() {
-    return this.http.get<SentFriendsRequestsResponse>(`${this.apiUrl}/friend/sent`);
+    return this.http.get<FriendsResponse>(`${this.apiUrl}/friend`);
   }
 
   deleteFriend(friendId: string) {
@@ -66,7 +59,30 @@ export class Api {
     return this.http.delete(`${this.apiUrl}/friend/request/${requestId}`);
   }
 
+  updateMyPassword(currentPassword: string, newPassword: string) {
+    return this.http.patch(`${this.apiUrl}/user/me/password`, {
+      currentPassword,
+      newPassword,
+    });
+  }
+
+  deleteMyAccount() {
+    return this.http.delete(`${this.apiUrl}/user/me`);
+  }
+
   tooglePostLike(postId: string) {
     return this.http.post(`${this.apiUrl}/post/like/${postId}`, {});
+  }
+
+  getPost(postId: string) {
+    return this.http.get<PostResponse>(`${this.apiUrl}/post/${postId}`);
+  }
+
+  getEvent(eventId: string) {
+    return this.http.get<EventResponse>(`${this.apiUrl}/event/${eventId}`);
+  }
+
+  getMarketplaceItem(itemId: string) {
+    return this.http.get<MarketplaceItemResponse>(`${this.apiUrl}/marketplace/${itemId}`);
   }
 }

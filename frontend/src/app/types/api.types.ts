@@ -176,16 +176,39 @@ export interface MarketplaceItemsResponse {
 
 export interface FriendsResponse {
   friends: UserPublic[];
-}
-
-export interface FriendsRequestsResponse {
   requests: UserPublic[];
-}
-
-export interface SentFriendsRequestsResponse {
   sent: UserPublic[];
 }
 
 export interface ErrorResponse {
   message: string;
+}
+
+export interface UserSearchResult {
+  id: string;
+  username: string;
+}
+
+export interface PostSearchResult {
+  id: string;
+  title: string;
+}
+
+export interface EventSearchResult {
+  id: string;
+  title: string;
+  dateTime: string;
+}
+
+export interface MarketplaceItemSearchResult {
+  id: string;
+  title: string;
+  description: string;
+}
+
+export interface SearchResult {
+  users: UserSearchResult[];
+  posts: PostSearchResult[];
+  events: EventSearchResult[];
+  marketplaceItems: MarketplaceItemSearchResult[];
 }

@@ -36,6 +36,8 @@ export const routes: Routes = [
       { path: 'settings', component: Settings },
       { path: 'friends', component: Friends },
       { path: 'user/:id', component: User },
+      { path: 'events/:id', loadComponent: () => import('./pages/event-details/event-details').then(m => m.EventDetails) },
+      { path: 'marketplace/:id', loadComponent: () => import('./pages/marketplace-details/marketplace-details').then(m => m.MarketplaceDetails) }
     ],
   },
 

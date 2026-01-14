@@ -23,7 +23,7 @@
   <div class="p-6">
     @if (activeTab() === 'Friends') {
     <div class="space-y-4">
-      @if (friends()) { @for (friend of friends(); track friend.id) {
+      @if (friends()?.friends) { @for (friend of friends()?.friends; track friend.id) {
       <div class="friend-item">
         <div class="flex items-center justify-between gap-3">
           <span class="font-semibold text-gray-900">{{ friend.username }}</span>
@@ -57,7 +57,7 @@
     </div>
     } @if (activeTab() === "Requests") {
     <div class="space-y-4">
-      @if (requests()) { @for (request of requests(); track request.id) {
+      @if (friends()?.requests) { @for (request of friends()?.requests; track request.id) {
       <div class="friend-item">
         <div class="flex items-center justify-between gap-3">
           <span class="font-semibold text-gray-900">{{ request.username }}</span>
@@ -100,7 +100,7 @@
     </div>
     }@if (activeTab() === "Sent") {
     <div class="space-y-4">
-      @if (sent()) { @for (request of sent(); track request.id) {
+      @if (friends()?.sent) { @for (request of friends()?.sent; track request.id) {
       <div class="friend-item">
         <div class="flex items-center justify-between gap-3">
           <span class="font-semibold text-gray-900">{{ request.username }}</span>
