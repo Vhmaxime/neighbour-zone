@@ -78,6 +78,10 @@ export class Api {
     return this.http.get<PostResponse>(`${this.apiUrl}/post/${postId}`);
   }
 
+  getPosts() {
+    return this.http.get<PostsResponse>(`${this.apiUrl}/post`);
+  }
+
   getEvent(eventId: string) {
     return this.http.get<EventResponse>(`${this.apiUrl}/event/${eventId}`);
   }
