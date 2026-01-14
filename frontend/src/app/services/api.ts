@@ -6,6 +6,7 @@ import {
   FriendsResponse,
   MarketplaceItemResponse,
   MarketplaceItemsResponse,
+  Post,
   PostResponse,
   PostsResponse,
   UserMeResponse,
@@ -97,5 +98,9 @@ export class Api {
     bio: string | undefined;
   }) {
     return this.http.patch(`${this.apiUrl}/user/me`, data);
+  }
+
+  createPost(data: { title: string; content: string; type: 'news' | 'tip' }) {
+    return this.http.post<PostResponse>(`${this.apiUrl}/post`, data);
   }
 }

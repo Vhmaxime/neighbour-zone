@@ -12,6 +12,7 @@ import { User } from './pages/user/user';
 import { NotFound } from './pages/not-found/not-found';
 import { Explore } from './pages/explore/explore';
 import { Feed } from './pages/feed/feed';
+import { CreatePostPage } from './pages/create-post-page/create-post-page';
 
 export const routes: Routes = [
   { path: 'not-found', title: '404 - Page Not Found | Neighbour Zone', component: NotFound },
@@ -58,6 +59,14 @@ export const routes: Routes = [
           import('./pages/marketplace-details/marketplace-details').then(
             (m) => m.MarketplaceDetails
           ),
+      },
+      {
+        path: 'post/:id',
+        component: CreatePostPage,
+      },
+      {
+        path: 'create/post',
+        component: CreatePostPage,
       },
     ],
   },
