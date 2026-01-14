@@ -26,10 +26,9 @@ export class Feed implements OnInit {
     
     this.posts$ = this.api.getPosts().pipe(
       map((response: any) => {
-        // Consistency: Opening the 'posts' envelope
-        const list = response.posts ? response.posts : response;
-        // Business logic: Take the last 10 (most recent)
-        return Array.isArray(list) ? list.slice(0, 10) : [];
+        // Accessing the 'posts' array from the API response envelope
+        // and taking the last 10 for the feed
+        return response.posts ? response.posts.slice(0, 10) : [];
       }),
       catchError(err => {
         console.error('Failed to load feed', err);
