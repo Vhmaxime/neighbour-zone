@@ -1,9 +1,9 @@
+// import { datetime } from "drizzle-orm/mssql-core";
 import {
   pgTable,
   text,
   uuid,
   timestamp,
-  decimal,
   pgEnum,
   unique,
   primaryKey,
@@ -14,10 +14,14 @@ export const userRoleEnum = pgEnum("user_role", ["user", "admin"]);
 
 export const usersTable = pgTable("users", {
   id: uuid("id").primaryKey().defaultRandom(),
-  name: text("name").notNull(),
+  firstname: text("firstname").notNull(),
+  lastname: text("lastname").notNull(),
+  username: text("username").notNull().unique(),
+  bio: text("bio"),
   email: text("email").notNull().unique(),
   password: text("password").notNull(),
   role: userRoleEnum("role").notNull().default("user"),
+  phoneNumber: text("phone_number").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
@@ -61,8 +65,8 @@ export const eventsTable = pgTable("events", {
   title: text("title").notNull(),
   description: text("description").notNull(),
   location: text("location").notNull(),
-  dateTime: timestamp("date_time").notNull(),
-  endAt: timestamp("end_at"),
+  dateTime: timestamp("date_time", { mode: "date" }).notNull(),
+  endAt: timestamp("end_at", { mode: "date" }),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 

@@ -1,132 +1,101 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
+import type { RegisterRequest, LoginRequest, AuthResponse } from '../types/api.types';
+import { Router } from '@angular/router';
+import { jwtDecode } from 'jwt-decode';
+import { HttpClient } from '@angular/common/http';
+import { tap } from 'rxjs/operators';
 
-@Injectable({ providedIn: 'root' })
-export class Auth {
-  // URL is defined here
-  private baseUrl: string = 'https://neighbour-zone.vercel.app/api';
-
-  constructor() {}
-
-  get currentUserEmail(): string | null {
-    const token = this.getToken();
-    if (!token) return null;
-
-    try {
-      const payloadBase64 = token.split('.')[1];
-      const payloadJson = atob(payloadBase64);
-      const payload = JSON.parse(payloadJson);
-      return payload.email || payload.sub || null;
-    } catch (e) {
-      console.error('Error decoding token', e);
-      return null;
-    }
-  }
-
-  isLoggedIn(): boolean {
-    const token = this.getToken();
-    if (!token) return false;
-
-    try {
-      // Decode the token payload
-      const payloadBase64 = token.split('.')[1];
-      const payloadJson = atob(payloadBase64);
-      const payload = JSON.parse(payloadJson);
-
-      // Check Expiration (exp is in seconds, Date.now() is in ms)
-      if (payload.exp) {
-        const isExpired = Date.now() >= payload.exp * 1000;
-        if (isExpired) {
-          this.logout(); // Clean up the expired token automatically
-          return false;
-        }
-      }
-      return true;
-    } catch (e) {
-      // If token is malformed, treat as not logged in
-      return false;
-    }
-  }
-
-  async register(payload: { name: string; email: string; password: string }): Promise<any> {
-    return this.request('/auth/register', payload);
-  }
-
-  async login(payload: { email: string; password: string }): Promise<any> {
-    return this.request('/auth/login', payload);
-  }
-
-  // Commented out because we are not using a reset password page for now
-  // async resetPassword(email: string): Promise<any> {
-  //   return this.request('/auth/reset-password', { email });
-  // }
-
-  // --- Helper to handle Fetch logic & Errors ---
-  private async request(endpoint: string, body: any): Promise<any> {
-    const response = await fetch(`${this.baseUrl}${endpoint}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-    });
-
-    // Handle "Success" (Status 200-299)
-    if (response.ok) {
-      // Check if there is actually content before parsing
-      if (response.status === 204) {
-        return {}; // Return empty object for "No Content"
-      }
-      return response.json();
-    }
-
-    // Parse the backend error message (if available)
-    let errorData;
-    try {
-      errorData = await response.json();
-    } catch (parseError) {
-      errorData = { message: 'An unexpected error occurred.' };
-    }
-
-    const errorMessage = errorData.message || 'Unknown error';
-
-    // Handle Specific Status Codes
-    switch (response.status) {
-      case 400:
-        // Bad Request: User entered wrong data (e.g., invalid email format)
-        throw new Error(`Validation Error: ${errorMessage}`);
-      
-      case 401:
-        // Unauthorized: Wrong password or email
-        throw new Error(`Login Failed: ${errorMessage}`);
-
-      case 500:
-        // Server Error: Something broke on the backend
-        throw new Error('Server Error: Please try again later.');
-
-      default:
-        // Catch-all for other weird errors (e.g. 503 Service Unavailable)
-        throw new Error(`Error (${response.status}): ${errorMessage}`);
-    }
-  }
-
-  // Token Logic
-  getToken(): string | null {
-    return localStorage.getItem('authToken')
-      || sessionStorage.getItem('authToken');
-  }
-
-  saveToken(token: string, rememberMe: boolean): void {
-    if (rememberMe) {
-      localStorage.setItem('authToken', token);
-      sessionStorage.removeItem('authToken');
-    } else {
-      sessionStorage.setItem('authToken', token);
-      localStorage.removeItem('authToken');
-    }
-  }
-
-  logout(): void {
-    localStorage.removeItem('authToken');
-    sessionStorage.removeItem('authToken');
-  }
+export interface JwtPayload {
+  sub: string;
+  username: string;
+  name?: string; // This may exist, but it doesn't crash or throw a nerror if it's missing
+  email: string;
+  roles: string;
+  exp: number;
 }
 
+@Injectable({
+  providedIn: 'root',
+})
+export class Auth {
+  private router = inject(Router);
+  private http = inject(HttpClient);
 
+  // Ensure this API URL matches the backend configuration
+  private readonly apiUrl = 'https://neighbour-zone.vercel.app/api';
+  private readonly accessToken = 'accessToken';
+
+  private readonly user = signal<JwtPayload | null>(null);
+  isAuthenticated = signal<boolean>(!!this.getToken());
+
+  constructor() {
+    if (this.isAuthenticated()) {
+      this.setUser(this.getToken() as string);
+    }
+  }
+
+  public getUser(): JwtPayload | null {
+    return this.user();
+  }
+
+  private setUser(token: string): void {
+    try {
+      const user = jwtDecode<JwtPayload>(token);
+      this.user.set(user);
+    } catch (e) {
+      this.logout();
+    }
+  }
+
+  public getToken(): string | null {
+    return localStorage.getItem(this.accessToken) || sessionStorage.getItem(this.accessToken);
+  }
+
+  private authenticate(token: string, rememberMe: boolean = false): void {
+    if (rememberMe) {
+      localStorage.setItem(this.accessToken, token);
+    } else {
+      sessionStorage.setItem(this.accessToken, token);
+    }
+    this.isAuthenticated.set(true);
+    this.setUser(token);
+  }
+
+  private removeToken(): void {
+    localStorage.removeItem(this.accessToken);
+    sessionStorage.removeItem(this.accessToken);
+    this.isAuthenticated.set(false);
+    this.user.set(null);
+  }
+
+  // =================================================================
+  // PUBLIC API METHODS
+  // =================================================================
+
+  public register(data: RegisterRequest) {
+      return this.http.post<AuthResponse>(`${this.apiUrl}/auth/register`, data).pipe(
+        tap((response) => {
+          this.authenticate(response.accessToken);
+        })
+      );
+  }
+
+  public login(data: LoginRequest) {
+      return this.http.post<AuthResponse>(`${this.apiUrl}/auth/login`, data).pipe(
+        tap((response)=> {
+          this.authenticate(response.accessToken, data.rememberMe);
+        }) 
+      );
+  }
+
+  public resetPassword(email: string) {
+    // We expect the backend to return 200 OK (and maybe a message),
+    // but we don't necessarily need the response body here.
+      return this.http.post<void>(`${this.apiUrl}/auth/reset-password`, { email });
+  }
+
+  public logout(): void {
+    this.removeToken();
+    this.router.navigate(['/login']);
+  }
+}

@@ -7,16 +7,21 @@ export type FriendshipStatus = 'pending' | 'accepted';
 // Models
 export interface User {
   id: string;
-  name: string;
+  firstname: string;
+  lastname: string;
+  username: string;
   email: string;
   role: UserRole;
+  bio: string | null;
+  phoneNumber: string;
   createdAt: string;
   updatedAt: string;
 }
 
 export interface UserPublic {
   id: string;
-  name: string;
+  username: string;
+  bio: string | null;
 }
 
 export interface Post {
@@ -65,24 +70,20 @@ export interface MarketplaceApplication {
   applicant: UserPublic;
 }
 
-export interface Friendship {
-  id: string;
-  userId1: string;
-  userId2: string;
-  status: FriendshipStatus;
-  createdAt: string;
-}
-
 // Request
 export interface RegisterRequest {
-  name: string;
+  username: string;
+  firstname: string;
+  lastname: string;
   email: string;
+  phoneNumber: string;
   password: string;
 }
 
 export interface LoginRequest {
   email: string;
   password: string;
+  rememberMe?: boolean;
 }
 
 export interface CreatePostRequest {
@@ -139,6 +140,10 @@ export interface AuthResponse {
 }
 
 export interface UserResponse {
+  user: UserPublic;
+}
+
+export interface UserMeResponse {
   user: User;
 }
 
@@ -148,6 +153,7 @@ export interface PostResponse {
 
 export interface PostsResponse {
   posts: Post[];
+  count: number;
 }
 
 export interface EventResponse {
@@ -156,6 +162,7 @@ export interface EventResponse {
 
 export interface EventsResponse {
   events: Event[];
+  count: number;
 }
 
 export interface MarketplaceItemResponse {
@@ -164,8 +171,44 @@ export interface MarketplaceItemResponse {
 
 export interface MarketplaceItemsResponse {
   marketplace: MarketplaceItem[];
+  count: number;
+}
+
+export interface FriendsResponse {
+  friends: UserPublic[];
+  requests: UserPublic[];
+  sent: UserPublic[];
 }
 
 export interface ErrorResponse {
   message: string;
+}
+
+export interface UserSearchResult {
+  id: string;
+  username: string;
+}
+
+export interface PostSearchResult {
+  id: string;
+  title: string;
+}
+
+export interface EventSearchResult {
+  id: string;
+  title: string;
+  dateTime: string;
+}
+
+export interface MarketplaceItemSearchResult {
+  id: string;
+  title: string;
+  description: string;
+}
+
+export interface SearchResult {
+  users: UserSearchResult[];
+  posts: PostSearchResult[];
+  events: EventSearchResult[];
+  marketplaceItems: MarketplaceItemSearchResult[];
 }

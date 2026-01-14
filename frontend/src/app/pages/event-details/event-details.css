@@ -1,0 +1,55 @@
+.event-container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 2rem;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  background: white;
+}
+
+.header {
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 1rem;
+}
+
+h1 {
+  margin: 0;
+  font-size: 2rem;
+  color: #333;
+}
+
+.badge {
+  background: #e0f2fe;
+  color: #0284c7;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.date, .location {
+  font-size: 1.1rem;
+  color: #555;
+  margin: 0.5rem 0;
+}
+
+.description {
+  line-height: 1.6;
+  color: #333;
+  font-size: 1rem;
+  margin-top: 1.5rem;
+}
+
+.organizer {
+  margin-top: 2rem;
+  color: #888;
+  font-style: italic;
+}
+
+.loading {
+  text-align: center;
+  margin-top: 3rem;
+  font-size: 1.2rem;
+  color: #666;
+}

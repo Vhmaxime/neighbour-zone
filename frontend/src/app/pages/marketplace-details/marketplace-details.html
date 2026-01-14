@@ -1,0 +1,26 @@
+<div *ngIf="item$ | async as item; else loading" class="details-container">
+  
+  <div class="header">
+    <h1>{{ item.title }}</h1>
+    <span class="badge">Marketplace</span>
+  </div>
+
+  <div class="content">
+    <p class="price" *ngIf="item.price">
+      💰 {{ item.price | currency:'EUR' }}
+    </p>
+
+    <hr />
+    
+    <p class="description">{{ item.description }}</p>
+    
+    <div class="seller">
+      <small>Sold by: {{ item.provider.username || 'Unknown Seller' }}</small>
+    </div>
+  </div>
+
+</div>
+
+<ng-template #loading>
+  <div class="loading">Loading item details...</div>
+</ng-template>

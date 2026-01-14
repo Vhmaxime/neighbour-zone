@@ -24,16 +24,13 @@ postRouter.get("/", async (c) => {
       author: {
         columns: {
           id: true,
-          name: true,
+          username: true,
         },
       },
     },
     extras: {
       likes: (table) =>
         db.$count(postLikesTable, eq(table.id, postLikesTable.postId)),
-    },
-    orderBy: {
-      createdAt: "desc",
     },
   });
 
@@ -88,7 +85,7 @@ postRouter.post(
         author: {
           columns: {
             id: true,
-            name: true,
+            username: true,
           },
         },
       },
@@ -121,7 +118,7 @@ postRouter.get(
         author: {
           columns: {
             id: true,
-            name: true,
+            username: true,
           },
         },
       },
@@ -149,7 +146,7 @@ postRouter.get(
           user: {
             columns: {
               id: true,
-              name: true,
+              username: true,
             },
           },
         },
@@ -171,7 +168,7 @@ postRouter.patch(
       return c.json({ message: "Bad request" }, 400);
     }
   }),
-  zValidator("json", postSchema, (result, c) => {
+  zValidator("json", postSchema.partial(), (result, c) => {
     if (!result.success) {
       console.error("Validation error:", result.error);
       return c.json({ message: "Bad request" }, 400);
@@ -211,7 +208,7 @@ postRouter.patch(
         author: {
           columns: {
             id: true,
-            name: true,
+            username: true,
           },
         },
       },
@@ -255,7 +252,7 @@ postRouter.delete(
 
 // Like or unlike a post
 postRouter.post(
-  "/:id/like",
+  "/like/:id",
   zValidator("param", idSchema, (result, c) => {
     if (!result.success) {
       console.error("Validation error:", result.error);
@@ -263,7 +260,7 @@ postRouter.post(
     }
   }),
   async (c) => {
-    const { id: postId } = c.req.param();
+    const { id: postId } = c.req.valid("param");
 
     const { sub: userId } = c.get("jwtPayload");
 
@@ -299,6 +296,69 @@ postRouter.post(
     });
 
     return c.json({ message: "ok" }, 200);
+  }
+);
+
+postRouter.get(
+  "/user/:id",
+  zValidator("param", idSchema, (result, c) => {
+    if (!result.success) {
+      console.error("Validation error:", result.error);
+      return c.json({ message: "Bad request" }, 400);
+    }
+  }),
+  async (c) => {
+    const { id: userId } = c.req.valid("param");
+
+    const user = await db.query.usersTable.findFirst({
+      where: {
+        id: { eq: userId },
+      },
+    });
+
+    if (!user) {
+      return c.json({ message: "Not found" }, 404);
+    }
+
+    const posts = await db.query.postsTable.findMany({
+      where: {
+        authorId: { eq: userId },
+      },
+      columns: {
+        authorId: false,
+      },
+      with: {
+        author: {
+          columns: {
+            id: true,
+            username: true,
+          },
+        },
+      },
+      extras: {
+        likes: (table) =>
+          db.$count(postLikesTable, eq(table.id, postLikesTable.postId)),
+      },
+    });
+
+    const count = await db.$count(postsTable, eq(postsTable.authorId, userId));
+
+    const likedPostIds = await db.query.postLikesTable.findMany({
+      where: { userId: { eq: userId } },
+      columns: {
+        postId: true,
+      },
+    });
+
+    const postSet = posts.map((post) => {
+      const liked = likedPostIds.some((like) => like.postId === post.id);
+      return {
+        ...post,
+        liked,
+      };
+    });
+
+    return c.json({ posts: postSet, count }, 200);
   }
 );
 

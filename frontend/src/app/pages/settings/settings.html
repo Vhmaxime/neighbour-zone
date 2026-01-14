@@ -1,194 +1,97 @@
-<!-- Settings page wrapper -->
 <div class="settings-page">
-    <div class="settings-content">
-        <!-- Page header -->
-        <header class="settings-header">
-            <h1 class="page-title">Settings</h1>
-            <p class="page-subtitle">Manage your account preferences and security settings</p>
-        </header>
-        <!-- Notifications settings card -->
-        <section class="settings-card">
-            <div class="card-header">
-                <h2 class=" card-title">Notifications</h2>
-            </div>
-            <div class="settings-list">
-                <!-- Notifications Friends -->
-                <div class="settings-row">
-                    <div class="settings-info">
-                        <span class="settings-label">Friends</span>
+  <div class="settings-content">
+    <header class="settings-header">
+      <h1 class="page-title">Settings</h1>
+      <p class="page-subtitle">Manage your account preferences and security settings</p>
+    </header>
 
-                        <div class="settings-row">
-                            <span class="settings-hint">Friend request recieved</span>
-                            <label class="switch">
-                                <input type="checkbox" checked>
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-
-                        <div class="settings-row">
-                            <span class="settings-hint">Friend request accepted</span>
-                            <label class="switch">
-                                <input type="checkbox">
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-
-                        <div class="settings-row">
-                            <span class="settings-hint">Direct message</span>
-                            <label class="switch">
-                                <input type="checkbox" checked>
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-
-                         <div class="settings-row">
-                            <span class="settings-hint">Help request from a friend</span>
-                            <label class="switch">
-                                <input type="checkbox" checked>
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-                        
-                         <div class="settings-row">
-                            <span class="settings-hint">Friend activity nearby</span>
-                            <label class="switch">
-                                <input type="checkbox" checked>
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-                        
-                    </div>
-                </div>
-                <!-- Notifications Items -->
-                <div class="settings-row">
-                    <div class="settings-info">
-                        <span class="settings-label">Items</span>
-
-                        <div class="settings-row">
-                            <span class="settings-hint">Incoming item request</span>
-                            <label class="switch">
-                                <input type="checkbox" checked>
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-
-                        <div class="settings-row">
-                            <span class="settings-hint">Outgoing item request: ACCEPTED</span>
-                            <label class="switch">
-                                <input type="checkbox">
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-                         <div class="settings-row">
-                            <span class="settings-hint">Outgoing item request: DECLINED</span>
-                            <label class="switch">
-                                <input type="checkbox">
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-                         <div class="settings-row">
-                            <span class="settings-hint">Return reminder</span>
-                            <label class="switch">
-                                <input type="checkbox">
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-                        <div class="settings-row">
-                            <span class="settings-hint">Item available alert</span>
-                            <label class="switch">
-                                <input type="checkbox">
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <!-- Notifications Events -->
-                <div class="settings-row">
-                    <div class="settings-info">
-                        <span class="settings-label">Events</span>
-
-                        <div class="settings-row">
-                            <span class="settings-hint">New event</span>
-                            <label class="switch">
-                                <input type="checkbox" checked>
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-
-                        <div class="settings-row">
-                            <span class="settings-hint">Event reminder</span>
-                            <label class="switch">
-                                <input type="checkbox">
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-                        <div class="settings-row">
-                            <span class="settings-hint">Event update</span>
-                            <label class="switch">
-                                <input type="checkbox">
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-                        <div class="settings-row">
-                            <span class="settings-hint">Event cancelled</span>
-                            <label class="switch">
-                                <input type="checkbox">
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-                        <div class="settings-row">
-                            <span class="settings-hint">New comment/message on event</span>
-                            <label class="switch">
-                                <input type="checkbox">
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </section>
-        <!-- Security settings card -->
-        <section class="settings-card">
-            <div class="card-header">
-                <h2 class="card-title">Security</h2>
-                <p class="card-description">Update your password to keep your account secure</p>
-            </div>
-            <!-- Password update form -->
-            <div class="form-grid">
-                <!-- Current password -->
-                <div class="field">
-                    <label class="input-label">Current Password</label>
-                    <input type="password" class="input-field" placeholder="••••••••">
-                </div>
-                 <!-- New password -->
-            <div class="field">
-                <label class="input-label">New Password</label>
-                <input type="password" class="input-field" placeholder="••••••••">
-            </div>
-            <!-- Confirm new password -->
-            <div class="field">
-                <label class="input-label">Confirm New Password</label>
-                <input type="password" class="input-field" placeholder="••••••••">
-            </div>
-
-            </div>
-           
-            <!-- Update password -->
-            <div class="card-footer">
-                <button type="button" class="primary">Update Password</button>
-            </div>
-        </section>
-        <!-- Danger zone -->
-        <section class="danger-area">
-            <!-- Delete account action -->
-            <div class="danger-card">
-                <div class="danger-text">
-                    <button type="button" class="btn-danger">Delete Account</button>
-                    <span class="danger-desc"> Once you delete your account, all data will be permanently removed</span>
-                </div>
-            </div>
-
-        </section>
+    <div *ngIf="error()" class="error-banner">
+      {{ error() }}
     </div>
+
+    <section class="settings-card" [formGroup]="form">
+      <div class="card-header">
+        <h2 class="card-title">Security</h2>
+      </div>
+
+      <div class="form-grid">
+        <div class="field">
+          <label class="input-label">Current Password</label>
+          <input
+            type="password"
+            class="input-field"
+            formControlName="currentPassword"
+            placeholder="••••••••"
+          >
+        </div>
+
+        <div class="field">
+          <label class="input-label">New Password</label>
+          <input
+            type="password"
+            class="input-field"
+            formControlName="newPassword"
+            placeholder="••••••••"
+          >
+
+          <small class="password-hint">
+  Password must contain:
+  <ul>
+    <li [class.valid]="hasMinLength()">At least 8 characters</li>
+    <li [class.valid]="hasUppercase()">1 uppercase letter (A–Z)</li>
+    <li [class.valid]="hasLowercase()">1 lowercase letter (a–z)</li>
+    <li [class.valid]="hasNumber()">1 number (0–9)</li>
+    <li [class.valid]="hasSpecial()">1 special character (!@#$%^&*)</li>
+  </ul>
+</small>
+
+        </div>
+
+        <div class="field">
+          <label class="input-label">Confirm New Password</label>
+          <input
+            type="password"
+            class="input-field"
+            formControlName="confirmPassword"
+            placeholder="••••••••"
+          >
+          <small
+            *ngIf="form.hasError('passwordMismatch') && form.get('confirmPassword')?.dirty"
+            class="error-text"
+          >
+            Passwords do not match.
+          </small>
+        </div>
+      </div>
+
+      <div class="card-footer">
+        <button
+          type="button"
+          class="btn-primary"
+          (click)="updatePassword()"
+          [disabled]="form.invalid || isUpdatingPassword()"
+        >
+          {{ isUpdatingPassword() ? 'Updating...' : 'Update Password' }}
+        </button>
+      </div>
+    </section>
+
+    <section class="danger-area">
+      <div class="danger-card">
+        <div class="danger-text">
+          <button
+            type="button"
+            class="btn-danger"
+            (click)="deleteAccount()"
+            [disabled]="isDeletingAccount()"
+          >
+            Delete Account
+          </button>
+          <span class="danger-desc">
+            Once you delete your account, all data will be permanently removed
+          </span>
+        </div>
+      </div>
+    </section>
+  </div>
 </div>

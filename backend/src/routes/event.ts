@@ -24,7 +24,7 @@ eventRouter.get("/", async (c) => {
       organizer: {
         columns: {
           id: true,
-          name: true,
+          username: true,
         },
       },
     },
@@ -88,7 +88,7 @@ eventRouter.post(
         organizer: {
           columns: {
             id: true,
-            name: true,
+            username: true,
           },
         },
       },
@@ -121,7 +121,7 @@ eventRouter.get(
         organizer: {
           columns: {
             id: true,
-            name: true,
+            username: true,
           },
         },
       },
@@ -149,7 +149,7 @@ eventRouter.get(
           user: {
             columns: {
               id: true,
-              name: true,
+              username: true,
             },
           },
         },
@@ -171,7 +171,7 @@ eventRouter.patch(
       return c.json({ message: "Bad request" }, 400);
     }
   }),
-  zValidator("json", eventSchema, (result, c) => {
+  zValidator("json", eventSchema.partial(), (result, c) => {
     if (!result.success) {
       console.error("Validation error:", result.error);
       return c.json({ message: "Bad request" }, 400);
@@ -211,7 +211,7 @@ eventRouter.patch(
         organizer: {
           columns: {
             id: true,
-            name: true,
+            username: true,
           },
         },
       },
@@ -299,6 +299,52 @@ eventRouter.post(
     });
 
     return c.json({ message: "ok" }, 200);
+  }
+);
+
+eventRouter.get(
+  "/user/:id",
+  zValidator("param", idSchema, (result, c) => {
+    if (!result.success) {
+      console.error("Validation error:", result.error);
+      return c.json({ message: "Bad request" }, 400);
+    }
+  }),
+  async (c) => {
+    const { id: userId } = c.req.valid("param");
+
+    const user = await db.query.usersTable.findFirst({
+      where: {
+        id: { eq: userId },
+      },
+    });
+
+    if (!user) {
+      return c.json({ message: "Not found" }, 404);
+    }
+
+    const events = await db.query.eventsTable.findMany({
+      where: { userId: { eq: userId } },
+      columns: {
+        userId: false,
+      },
+      with: {
+        organizer: {
+          columns: {
+            id: true,
+            username: true,
+          },
+        },
+      },
+      extras: {
+        likes: (table) =>
+          db.$count(eventLikesTable, eq(table.id, eventLikesTable.eventId)),
+      },
+    });
+
+    const count = await db.$count(eventsTable, eq(eventsTable.userId, userId));
+
+    return c.json({ events, count }, 200);
   }
 );
 

@@ -11,11 +11,17 @@ import userRouter from "./routes/user.js";
 import postRouter from "./routes/post.js";
 import marketplaceRouter from "./routes/marketplace.js";
 import eventRouter from "./routes/event.js";
+import { timeout } from "hono/timeout";
+import { logger } from "hono/logger";
+import friendRouter from "./routes/friend.js";
+import searchRouter from "./routes/search.js";
 
 const app = new Hono<{ Variables: Variables }>().basePath("/api");
 
-// CORS Middleware
+// Middleware
 app.use(cors());
+app.use(timeout(5000));
+app.use(logger());
 
 // Health Check Endpoint
 app.get("/health", (c) => {
@@ -30,9 +36,11 @@ app.get("/health", (c) => {
 //Routes
 app.route("/auth", authRouter);
 app.route("/user", userRouter);
+app.route("/friend", friendRouter);
 app.route("/post", postRouter);
 app.route("/marketplace", marketplaceRouter);
 app.route("/event", eventRouter);
+app.route("/search", searchRouter);
 
 // Swagger UI and OpenAPI Document
 app.get("/doc", (c) => c.json(openApiDoc));

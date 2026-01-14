@@ -14,6 +14,7 @@ import { RouterModule } from '@angular/router';
 export class ResetPassword {
   error = signal<string | null>(null);
   success = signal<string | null>(null);
+  isSubmitting = signal(false);
 
   form: FormGroup;
 
@@ -26,20 +27,27 @@ export class ResetPassword {
     });
   }
 
- submit() {
+  submit() {
     if (this.form.invalid) return;
     
-    // Commented this out because we don't use it for now
-    // this.auth.resetPassword(this.form.value.email)
-    //   .then(() => {
-    //     // Success case
-    //     this.success.set('Check your email for reset instructions.');
-    //     this.error.set(null);
-    //   })
-    //   .catch(() => {
-    //     // Error case
-    //     this.error.set('Failed to send reset email.');
-    //   });
+    const { email } = this.form.value;
+
+    // Reset states
+    this.isSubmitting.set(true);
+    this.error.set(null);
+    this.success.set(null);
+
+    this.auth.resetPassword(email).subscribe({
+      next: () => {
+        this.isSubmitting.set(false);
+        this.success.set('Check your email for reset instructions')
+      },
+      // Error handling
+      error: (err) => {
+        this.isSubmitting.set(false);
+        this.error.set(err.error?.message || 'Failed to send reset email.');
+      }
+    });
   }
 }
 

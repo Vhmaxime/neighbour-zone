@@ -1,98 +1,77 @@
 <div class="profile-page">
   <div class="profile-container">
-
     <header class="profile-header">
-      <h1 class="page-title">My Profile</h1>
-      <p class="page-subtitle">
-        Update your personal details and how neighbors can reach you.
-      </p>
+      <h1 class="page-title">Profile</h1>
+      <p class="page-subtitle">Update your personal details and how neighbours can reach you.</p>
     </header>
 
-    <div class="profile-form-card">
+    <div class="profile-form-card" [formGroup]="profileForm">
       <div class="form-grid">
-
+        <!-- First name -->
         <div class="field">
           <label class="label">First name</label>
-          <input
-            class="input"
-            type="text"
-            name="firstName"
-            placeholder="First name"
-          >
+          <input class="input" type="text" formControlName="firstname" placeholder="First name" />
         </div>
 
+        <!-- Last name -->
         <div class="field">
           <label class="label">Last name</label>
-          <input
-            class="input"
-            type="text"
-            name="lastName"
-            placeholder="Last name"
-          >
+          <input class="input" type="text" formControlName="lastname" placeholder="Last name" />
         </div>
 
+        <!-- Email -->
         <div class="field">
           <label class="label">Email</label>
           <input
             class="input"
             type="email"
-            name="email"
+            formControlName="email"
             placeholder="you@email.com"
-          >
+            [disabled]="true"
+          />
         </div>
 
+        <!-- Phone number -->
         <div class="field">
           <label class="label">Phone number</label>
           <input
             class="input"
             type="tel"
-            name="phone"
+            formControlName="phoneNumber"
             placeholder="+32 4 00 00 00 00"
-          >
+          />
         </div>
 
-        <div class="field full">
-          <label class="label">Municipality</label>
-          <input
-            class="input input-disabled"
-            type="text"
-            disabled
-            placeholder="Linked to verification"
-          >
-        </div>
-
+        <!-- Bio -->
         <div class="field full">
           <label class="label">Bio</label>
           <textarea
             class="textarea"
             rows="4"
-            name="bio"
-            [(ngModel)]="bioText"
+            formControlName="bio"
             [attr.maxlength]="maxChars"
             placeholder="Briefly describe yourself for your neighbors..."
           ></textarea>
 
           <div
             class="char-counter"
-            [class.limit-reached]="charCount >= maxChars"
+            [class.limit-reached]="(profileForm.get('bio')?.value?.length || 0) >= maxChars"
           >
-            {{ charCount }} / {{ maxChars }} characters
+            {{ profileForm.get('bio')?.value?.length || 0 }} / {{ maxChars }} characters
           </div>
         </div>
-
       </div>
 
       <div class="form-footer">
         <button
           class="btn-save"
           (click)="saveProfile()"
-          [disabled]="isSaving"
+          [disabled]="isSaving() || profileForm.invalid"
           [class.btn-success]="saveStatus.includes('SUCCESS')"
         >
           {{ saveStatus }}
         </button>
       </div>
     </div>
-
   </div>
 </div>
