@@ -11,6 +11,7 @@ import { guestGuard } from './guards/guest-guard';
 import { User } from './pages/user/user';
 import { NotFound } from './pages/not-found/not-found';
 import { Explore } from './pages/explore/explore';
+import { Feed } from './pages/feed/feed';
 
 export const routes: Routes = [
   { path: 'not-found', title: '404 - Page Not Found | Neighbour Zone', component: NotFound },
@@ -32,6 +33,7 @@ export const routes: Routes = [
       { path: '', redirectTo: 'explore', pathMatch: 'full' }, // Redirects root URL to /explore
       { path: 'explore', title: 'Explore | Neighbour Zone', component: Explore },
       // { path: 'dashboard', component: Dashboard }, // We don't use a dashboard for now
+      { path: 'feed', title: 'Feed | Neighbour Zone', component: Feed },
       { path: 'profile', title: 'Profile | Neighbour Zone', component: ProfilePage },
       { path: 'settings', title: 'Settings | Neighbour Zone', component: Settings },
       { path: 'friends', title: 'Friends | Neighbour Zone', component: Friends },
