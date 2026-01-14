@@ -25,7 +25,7 @@ export class ProfilePage {
     lastname: new FormControl('', { nonNullable: true }),
     email: new FormControl({ value: '', disabled: true }, { nonNullable: true }),
     phoneNumber: new FormControl('', { nonNullable: true }),
-    bio: new FormControl('', { nonNullable: true }),
+    bio: new FormControl(''),
   });
 
   ngOnInit() {
@@ -48,35 +48,34 @@ export class ProfilePage {
   }
 
   saveProfile() {
-  if (this.isSaving) return;
+    if (this.isSaving) return;
 
-  this.isSaving = true;
-  this.saveStatus = 'SAVING...';
+    this.isSaving = true;
+    this.saveStatus = 'SAVING...';
 
-  const { firstname, lastname, email, phoneNumber } =
-    this.profileForm.getRawValue();
+    const { firstname, lastname, email, phoneNumber, bio } = this.profileForm.getRawValue();
 
-  this.api.updateMyProfile({
-    firstname,
-    lastname,
-    email,
-    phoneNumber,
-    bio: this.bioText || undefined,
-  }).subscribe({
-    next: () => {
-      this.isSaving = false;
-      this.saveStatus = 'SUCCESS ✓';
+    this.api
+      .updateMyProfile({
+        firstname,
+        lastname,
+        email,
+        phoneNumber,
+        bio: bio || undefined,
+      })
+      .subscribe({
+        next: () => {
+          this.isSaving = false;
+          this.saveStatus = 'SUCCESS ✓';
 
-      setTimeout(() => {
-        this.saveStatus = 'SAVE CHANGES';
-      }, 1500);
-    },
-    error: () => {
-      this.isSaving = false;
-      this.saveStatus = 'SAVE CHANGES';
-    },
-  });
-}
-
-
+          setTimeout(() => {
+            this.saveStatus = 'SAVE CHANGES';
+          }, 1500);
+        },
+        error: () => {
+          this.isSaving = false;
+          this.saveStatus = 'SAVE CHANGES';
+        },
+      });
+  }
 }
