@@ -176,13 +176,7 @@ export interface MarketplaceItemsResponse {
 
 export interface FriendsResponse {
   friends: UserPublic[];
-}
-
-export interface FriendsRequestsResponse {
   requests: UserPublic[];
-}
-
-export interface SentFriendsRequestsResponse {
   sent: UserPublic[];
 }
 
