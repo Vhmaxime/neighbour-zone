@@ -47,6 +47,11 @@ h1 {
   font-style: italic;
 }
 
+.organizer a {
+  color: #0284c7;
+  text-decoration: none;
+}
+
 .loading {
   text-align: center;
   margin-top: 3rem;
