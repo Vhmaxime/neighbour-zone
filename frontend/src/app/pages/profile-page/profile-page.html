@@ -1,36 +1,22 @@
 <div class="profile-page">
   <div class="profile-container">
-
     <header class="profile-header">
       <h1 class="page-title">Profile</h1>
-      <p class="page-subtitle">
-        Update your personal details and how neighbours can reach you.
-      </p>
+      <p class="page-subtitle">Update your personal details and how neighbours can reach you.</p>
     </header>
 
     <div class="profile-form-card" [formGroup]="profileForm">
       <div class="form-grid">
-
         <!-- First name -->
         <div class="field">
           <label class="label">First name</label>
-          <input
-            class="input"
-            type="text"
-            formControlName="firstname"
-            placeholder="First name"
-          >
+          <input class="input" type="text" formControlName="firstname" placeholder="First name" />
         </div>
 
         <!-- Last name -->
         <div class="field">
           <label class="label">Last name</label>
-          <input
-            class="input"
-            type="text"
-            formControlName="lastname"
-            placeholder="Last name"
-          >
+          <input class="input" type="text" formControlName="lastname" placeholder="Last name" />
         </div>
 
         <!-- Email -->
@@ -42,7 +28,7 @@
             formControlName="email"
             placeholder="you@email.com"
             [disabled]="true"
-          >
+          />
         </div>
 
         <!-- Phone number -->
@@ -53,7 +39,7 @@
             type="tel"
             formControlName="phoneNumber"
             placeholder="+32 4 00 00 00 00"
-          >
+          />
         </div>
 
         <!-- Bio -->
@@ -74,20 +60,18 @@
             {{ profileForm.get('bio')?.value?.length || 0 }} / {{ maxChars }} characters
           </div>
         </div>
-
       </div>
 
       <div class="form-footer">
         <button
           class="btn-save"
           (click)="saveProfile()"
-          [disabled]="isSaving || profileForm.invalid"
+          [disabled]="isSaving() || profileForm.invalid"
           [class.btn-success]="saveStatus.includes('SUCCESS')"
         >
           {{ saveStatus }}
         </button>
       </div>
     </div>
-
   </div>
 </div>

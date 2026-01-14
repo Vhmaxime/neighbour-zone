@@ -15,7 +15,7 @@ export class ProfilePage {
   private api = inject(Api);
 
   isLoading = signal(true);
-  isSaving = false;
+  isSaving = signal(false);
   saveStatus = 'SAVE CHANGES';
   bioText: string = '';
   maxChars = 250;
@@ -48,9 +48,9 @@ export class ProfilePage {
   }
 
   saveProfile() {
-    if (this.isSaving) return;
+    if (this.isSaving()) return;
 
-    this.isSaving = true;
+    this.isSaving.set(true);
     this.saveStatus = 'SAVING...';
 
     const { firstname, lastname, email, phoneNumber, bio } = this.profileForm.getRawValue();
@@ -65,7 +65,7 @@ export class ProfilePage {
       })
       .subscribe({
         next: () => {
-          this.isSaving = false;
+          this.isSaving.set(false);
           this.saveStatus = 'SUCCESS ✓';
 
           setTimeout(() => {
@@ -73,7 +73,7 @@ export class ProfilePage {
           }, 1500);
         },
         error: () => {
-          this.isSaving = false;
+          this.isSaving.set(false);
           this.saveStatus = 'SAVE CHANGES';
         },
       });
