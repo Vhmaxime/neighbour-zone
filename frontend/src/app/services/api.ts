@@ -66,11 +66,14 @@ export class Api {
     return this.http.delete(`${this.apiUrl}/friend/request/${requestId}`);
   }
 
-  updateMyPassword(newPassword: string) {
-  return this.http.patch(`${this.apiUrl}/user/me/password`, newPassword);
+ updateMyPassword(currentPassword: string, newPassword: string) {
+  return this.http.patch(`${this.apiUrl}/user/me/password`, { 
+    currentPassword, 
+    newPassword 
+  });
 }
 
-deleteMyAccount() {
-  return this.http.delete(`${this.apiUrl}/user/me`);
-}
+  deleteMyAccount() {
+    return this.http.delete(`${this.apiUrl}/user/me`);
+  }
 }
