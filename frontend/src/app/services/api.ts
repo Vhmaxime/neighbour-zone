@@ -1,9 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import {
+  EventResponse,
   EventsResponse,
   FriendsResponse,
+  MarketplaceItemResponse,
   MarketplaceItemsResponse,
+  PostResponse,
   PostsResponse,
   UserMeResponse,
   UserResponse,
@@ -58,5 +61,17 @@ export class Api {
 
   tooglePostLike(postId: string) {
     return this.http.post(`${this.apiUrl}/post/like/${postId}`, {});
+  }
+
+  getPost(postId: string) {
+    return this.http.get<PostResponse>(`${this.apiUrl}/post/${postId}`);
+  }
+
+  getEvent(eventId: string) {
+    return this.http.get<EventResponse>(`${this.apiUrl}/event/${eventId}`);
+  }
+
+  getMarketplaceItem(itemId: string) {
+    return this.http.get<MarketplaceItemResponse>(`${this.apiUrl}/marketplace/${itemId}`);
   }
 }
