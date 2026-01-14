@@ -1,8 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { forkJoin } from 'rxjs';
 import { Api } from '../../services/api';
-import { UserPublic } from '../../types/api.types';
+import { FriendsResponse } from '../../types/api.types';
 
 interface State {
   tabs: 'Friends' | 'Requests' | 'Sent';
@@ -18,9 +17,7 @@ interface State {
 export class FriendList {
   private api = inject(Api);
   public tabs: State['tabs'][] = ['Friends', 'Requests', 'Sent'];
-  public friends = signal<UserPublic[] | null>(null);
-  public requests = signal<UserPublic[] | null>(null);
-  public sent = signal<UserPublic[] | null>(null);
+  public friends = signal<FriendsResponse | null>(null);
   public badge = signal<number[]>([]);
   public isLoading = signal<boolean>(false);
   public actionState = signal<State['actions']>(null);
@@ -36,21 +33,16 @@ export class FriendList {
   private loadData() {
     this.isLoading.set(true);
     this.error.set(null);
-    forkJoin({
-      friends: this.api.getFriends(),
-      requests: this.api.getFriendRequests(),
-      sent: this.api.getSentFriendRequests(),
-    }).subscribe({
-      next: ({ friends, requests, sent }) => {
-        this.friends.set(friends.friends);
-        this.requests.set(requests.requests);
-        this.sent.set(sent.sent);
-        this.badge.set([friends.friends.length, requests.requests.length, sent.sent.length]);
+    this.api.getFriends().subscribe({
+      next: (response) => {
+        this.friends.set(response);
+        this.badge.set([response.friends.length, response.requests.length, response.sent.length]);
         this.isLoading.set(false);
       },
       error: (error) => {
-        console.error(error);
+        console.error('Error fetching friends:', error);
         this.error.set('Something went wrong. Please try again later.');
+        this.isLoading.set(false);
       },
     });
   }

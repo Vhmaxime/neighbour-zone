@@ -37,7 +37,7 @@ export class Api {
   }
 
   getFriends() {
-    return this.http.get<FriendsResponse>(`${this.apiUrl}/friend/list`);
+    return this.http.get<FriendsResponse>(`${this.apiUrl}/friend`);
   }
 
   deleteFriend(friendId: string) {
