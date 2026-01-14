@@ -85,4 +85,14 @@ export class Api {
   getMarketplaceItem(itemId: string) {
     return this.http.get<MarketplaceItemResponse>(`${this.apiUrl}/marketplace/${itemId}`);
   }
+  updateMyProfile(data: {
+  firstname: string;
+  lastname: string;
+  email: string;
+  phoneNumber: string;
+  bio: string | undefined;
+}) {
+  return this.http.patch(`${this.apiUrl}/user/me`, data);
+}
+
 }

@@ -1,44 +1,44 @@
 // src/app/pages/profile-page/profile-page.ts
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormGroup, FormsModule } from '@angular/forms';
+import { FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Api } from '../../services/api';
-import { User } from '../../types/api.types';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-profile-page',
   standalone: true,
-  /* VERANDERING: FormsModule toegevoegd zodat de bio-teller en invoer live reageren */
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './profile-page.html',
   styleUrls: ['./profile-page.css'],
 })
 export class ProfilePage {
   private api = inject(Api);
-  public isLoading = signal(true);
+
+  isLoading = signal(true);
+  isSaving = false;
+  saveStatus = 'SAVE CHANGES';
+  bioText: string = '';
+  maxChars = 250;
 
   profileForm = new FormGroup({
-    name: new FormControl('', { nonNullable: true }),
-    email: new FormControl('', { nonNullable: true }),
+    firstname: new FormControl('', { nonNullable: true }),
+    lastname: new FormControl('', { nonNullable: true }),
+    email: new FormControl({ value: '', disabled: true }, { nonNullable: true }),
+    phoneNumber: new FormControl('', { nonNullable: true }),
+    bio: new FormControl('', { nonNullable: true }),
   });
-
-  bioText: string = '';
-  maxChars: number = 250;
-
-  isSaving: boolean = false;
-  saveStatus: string = 'SAVE CHANGES';
-
-  get charCount(): number {
-    return this.bioText ? this.bioText.length : 0;
-  }
 
   ngOnInit() {
     this.api.getUserMe().subscribe({
       next: (response) => {
-        this.profileForm.setValue({
-          name: response.user.username,
-          email: response.user.email,
+        const user = response.user;
+
+        this.profileForm.patchValue({
+          firstname: user.firstname,
+          lastname: user.lastname,
+          email: user.email,
+          phoneNumber: user.phoneNumber,
+          bio: user.bio ?? '',
         });
       },
       complete: () => {
@@ -47,5 +47,36 @@ export class ProfilePage {
     });
   }
 
-  saveProfile() {}
+  saveProfile() {
+  if (this.isSaving) return;
+
+  this.isSaving = true;
+  this.saveStatus = 'SAVING...';
+
+  const { firstname, lastname, email, phoneNumber } =
+    this.profileForm.getRawValue();
+
+  this.api.updateMyProfile({
+    firstname,
+    lastname,
+    email,
+    phoneNumber,
+    bio: this.bioText || undefined,
+  }).subscribe({
+    next: () => {
+      this.isSaving = false;
+      this.saveStatus = 'SUCCESS ✓';
+
+      setTimeout(() => {
+        this.saveStatus = 'SAVE CHANGES';
+      }, 1500);
+    },
+    error: () => {
+      this.isSaving = false;
+      this.saveStatus = 'SAVE CHANGES';
+    },
+  });
+}
+
+
 }
