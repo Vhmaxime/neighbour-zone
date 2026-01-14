@@ -1,86 +1,88 @@
 import { Hono } from "hono";
-import { or, ilike } from "drizzle-orm";
 import { db } from "../database/index.js";
-import {
-  usersTable,
-  postsTable,
-  eventsTable,
-  marketplaceItemsTable,
-} from "../database/schema.js";
+import authMiddleware from "../middleware/auth.js";
+import { Variables } from "../types/index.js";
 
-const searchRouter = new Hono();
+const searchRouter = new Hono<{ Variables: Variables }>();
+
+searchRouter.use(authMiddleware);
 
 searchRouter.get("/", async (c) => {
   const query = c.req.query("q");
 
   if (!query || query.trim() === "") {
-    return c.json(
-      {
-        users: [],
-        posts: [],
-        events: [],
-        marketplace: [],
-      },
-      200
-    );
+    return c.json({ users: [], posts: [], events: [], marketplace: [] });
   }
 
-  const searchPattern = `%${query}%`;
-
-  const user = await db
-    .select()
-    .from(usersTable)
-    .where(
-      or(
-        ilike(usersTable.username, searchPattern),
-        ilike(usersTable.firstname, searchPattern),
-        ilike(usersTable.lastname, searchPattern),
-        ilike(usersTable.bio, searchPattern)
-      )
-    )
-    .limit(20);
-
-  const posts = await db
-    .select()
-    .from(postsTable)
-    .where(
-      or(
-        ilike(postsTable.title, searchPattern),
-        ilike(postsTable.content, searchPattern)
-      )
-    )
-    .limit(20);
-
-  const events = await db
-    .select()
-    .from(eventsTable)
-    .where(
-      or(
-        ilike(eventsTable.title, searchPattern),
-        ilike(eventsTable.description, searchPattern),
-        ilike(eventsTable.location, searchPattern)
-      )
-    )
-    .limit(20);
-
-  const marketplace = await db
-    .select()
-    .from(marketplaceItemsTable)
-    .where(
-      or(
-        ilike(marketplaceItemsTable.title, searchPattern),
-        ilike(marketplaceItemsTable.description, searchPattern),
-        ilike(marketplaceItemsTable.location, searchPattern)
-      )
-    )
-    .limit(20);
-
-  return c.json({
-    users: user,
-    posts: posts,
-    events: events,
-    marketplace: marketplace,
+  const user = await db.query.usersTable.findMany({
+    where: {
+      username: {
+        ilike: `%${query}%`,
+      },
+    },
+    columns: {
+      id: true,
+      username: true,
+    },
   });
+
+  const posts = await db.query.postsTable.findMany({
+    where: {
+      OR: [
+        {
+          title: {
+            ilike: `%${query}%`,
+          },
+        },
+        {
+          content: {
+            ilike: `%${query}%`,
+          },
+        },
+      ],
+    },
+    columns: {
+      id: true,
+      title: true,
+    },
+  });
+
+  const events = await db.query.eventsTable.findMany({
+    where: {
+      title: {
+        ilike: `%${query}%`,
+      },
+    },
+    columns: {
+      id: true,
+      title: true,
+      dateTime: true,
+    },
+  });
+
+  const marketplaceItems = await db.query.marketplaceItemsTable.findMany({
+    where: {
+      OR: [
+        {
+          title: {
+            ilike: `%${query}%`,
+          },
+        },
+        {
+          description: {
+            ilike: `%${query}%`,
+          },
+        },
+      ],
+    },
+    columns: {
+      id: true,
+      title: true,
+      description: true,
+    },
+  });
+
+  return c.json({ users: user, posts, events, marketplace: marketplaceItems });
 });
 
 export default searchRouter;
