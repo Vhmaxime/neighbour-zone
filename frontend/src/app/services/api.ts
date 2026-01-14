@@ -59,15 +59,17 @@ export class Api {
     return this.http.delete(`${this.apiUrl}/friend/request/${requestId}`);
   }
 
- updateMyPassword(currentPassword: string, newPassword: string) {
-  return this.http.patch(`${this.apiUrl}/user/me/password`, { 
-    currentPassword, 
-    newPassword 
-  });
-}
+  updateMyPassword(currentPassword: string, newPassword: string) {
+    return this.http.patch(`${this.apiUrl}/user/me/password`, {
+      currentPassword,
+      newPassword,
+    });
+  }
 
   deleteMyAccount() {
     return this.http.delete(`${this.apiUrl}/user/me`);
+  }
+
   tooglePostLike(postId: string) {
     return this.http.post(`${this.apiUrl}/post/like/${postId}`, {});
   }
