@@ -5,9 +5,13 @@ import authMiddleware from "../middleware/auth.js";
 import { zValidator } from "@hono/zod-validator";
 import { userSchema } from "../schemas/user.js";
 import { usersTable } from "../database/schema.js";
-import { hashPassword } from "../utils/password.js";
+import { hashPassword, verifyPassword } from "../utils/password.js";
 import { eq } from "drizzle-orm";
-import { idSchema, passwordSchema } from "../schemas/index.js";
+import {
+  idSchema,
+  passwordSchema,
+  passwordUpdateSchema,
+} from "../schemas/index.js";
 
 const userRouter = new Hono<{ Variables: Variables }>();
 
@@ -96,12 +100,36 @@ userRouter.delete("/me", async (c) => {
 
 userRouter.patch(
   "/me/password",
-  zValidator("json", passwordSchema),
+  zValidator("json", passwordUpdateSchema, (result, c) => {
+    if (!result.success) {
+      console.error(result.error);
+      return c.json({ message: "Bad request" }, 400);
+    }
+  }),
   async (c) => {
     const { sub: id } = c.get("jwtPayload");
-    const newPassword = await c.req.valid("json");
+    const { currentPassword, newPassword } = await c.req.valid("json");
 
     const hashedPassword = await hashPassword(newPassword);
+
+    const user = await db.query.usersTable.findFirst({
+      where: {
+        id: { eq: id },
+      },
+    });
+
+    if (!user) {
+      return c.json({ message: "Not found" }, 404);
+    }
+
+    const isCurrentPasswordValid = await verifyPassword(
+      currentPassword,
+      user.password
+    );
+
+    if (!isCurrentPasswordValid) {
+      return c.json({ message: "Current password is incorrect" }, 400);
+    }
 
     await db
       .update(usersTable)

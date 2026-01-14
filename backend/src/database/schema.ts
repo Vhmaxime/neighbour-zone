@@ -1,3 +1,4 @@
+// import { datetime } from "drizzle-orm/mssql-core";
 import {
   pgTable,
   text,
@@ -64,8 +65,8 @@ export const eventsTable = pgTable("events", {
   title: text("title").notNull(),
   description: text("description").notNull(),
   location: text("location").notNull(),
-  dateTime: timestamp("date_time").notNull(),
-  endAt: timestamp("end_at"),
+  dateTime: timestamp("date_time", { mode: "date" }).notNull(),
+  endAt: timestamp("end_at", { mode: "date" }),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 

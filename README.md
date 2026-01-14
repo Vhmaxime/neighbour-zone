@@ -11,12 +11,11 @@ The focus is on clean architecture, security, and long-term scalability.
 
 ## ✨ Pages ##
 
-- **Explore page**: Overview of existing listings in the surrounding area, with the ability to swap between people, events and goods.
+- **Explore**: Overview of existing listings in the surrounding area, with the ability to swap between people, events and goods.
 - **Register & login**: Create an account and login.
-- **Dashboard**: Check notifications, the date and time and your login status.
-- **Profile**: Manage what other people see when they visit your profile.
 - **Friends**: Dedicated to finding other people and making friends.
-- **Settings**: Manage your password, notifications and privacy settings.
+- **Profile**: Manage what other people see when they visit your profile.
+- **Settings**: Manage your password and privacy settings.
 
 ## 🛠 Tech Stack ##
 

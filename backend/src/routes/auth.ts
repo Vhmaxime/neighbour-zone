@@ -149,45 +149,59 @@ authRouter.post(
 );
 
 // Refresh access token
-authRouter.post("/refresh", async (c) => {
-  const refreshToken = getCookie(c, "refresh_token");
+// authRouter.post("/refresh", async (c) => {
+//   const refreshToken = getCookie(c, "refresh_token");
 
-  if (!refreshToken) {
-    return c.json({ error: "No refresh token provided" }, 401);
-  }
+//   if (!refreshToken) {
+//     return c.json({ error: "No refresh token provided" }, 401);
+//   }
 
-  const payload = (await verify(
-    refreshToken,
-    constants.jwtRefreshSecret
-  )) as JwtPayload;
+//   try {
+//     const payload = (await verify(
+//       refreshToken,
+//       constants.jwtRefreshSecret
+//     )) as JwtPayload;
 
-  const newAccessToken = await sign(
-    {
-      sub: payload.sub,
-      username: payload.username,
-      email: payload.email,
-      role: payload.role,
-      exp: Math.floor(Date.now() / 1000) + 60 * 15,
-    },
-    constants.jwtSecret
-  );
+//     // Fetch user from database to get current user data
+//     const user = await db.query.usersTable.findFirst({
+//       where: { id: { eq: payload.sub } },
+//     });
 
-  const newRefreshToken = await sign(
-    {
-      sub: payload.sub,
-      exp: payload.exp,
-    },
-    constants.jwtRefreshSecret
-  );
+//     if (!user) {
+//       return c.json({ error: "User not found" }, 401);
+//     }
 
-  setCookie(c, "refresh_token", newRefreshToken, {
-    httpOnly: true,
-    secure: getEnvironment() != "development" ? true : false,
-    sameSite: "Strict",
-    maxAge: Math.floor(Date.now() / 1000) - payload.exp,
-  });
+//     const newAccessToken = await sign(
+//       {
+//         sub: user.id,
+//         username: user.username,
+//         email: user.email,
+//         role: user.role,
+//         exp: Math.floor(Date.now() / 1000) + 60 * 15,
+//       },
+//       constants.jwtSecret
+//     );
 
-  return c.json({ accessToken: newAccessToken }, 200);
-});
+//     const newRefreshToken = await sign(
+//       {
+//         sub: user.id,
+//         exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7,
+//       },
+//       constants.jwtRefreshSecret
+//     );
+
+//     setCookie(c, "refresh_token", newRefreshToken, {
+//       httpOnly: true,
+//       secure: getEnvironment() != "development" ? true : false,
+//       sameSite: "Strict",
+//       path: "/",
+//       maxAge: 60 * 60 * 24 * 7,
+//     });
+
+//     return c.json({ accessToken: newAccessToken }, 200);
+//   } catch (error) {
+//     return c.json({ error: "Invalid refresh token" }, 401);
+//   }
+// });
 
 export default authRouter;
