@@ -9,3 +9,8 @@ export const passwordSchema = z
   .min(8)
   .max(32)
   .regex(/^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*])/);
+
+export const passwordUpdateSchema = z.object({
+  currentPassword: passwordSchema,
+  newPassword: passwordSchema,
+});
