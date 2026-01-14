@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ExploreSearch } from '../../explore-search/explore-search';
+import { ExploreSearch } from '../../components/explore-search/explore-search';
 
 @Component({
   selector: 'app-explore',
