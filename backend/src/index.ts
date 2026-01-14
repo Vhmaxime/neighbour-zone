@@ -14,6 +14,7 @@ import eventRouter from "./routes/event.js";
 import { timeout } from "hono/timeout";
 import { logger } from "hono/logger";
 import friendRouter from "./routes/friend.js";
+import searchRouter from "./routes/search.js";
 
 const app = new Hono<{ Variables: Variables }>().basePath("/api");
 
@@ -39,6 +40,7 @@ app.route("/friend", friendRouter);
 app.route("/post", postRouter);
 app.route("/marketplace", marketplaceRouter);
 app.route("/event", eventRouter);
+app.route("/search", searchRouter);
 
 // Swagger UI and OpenAPI Document
 app.get("/doc", (c) => c.json(openApiDoc));
