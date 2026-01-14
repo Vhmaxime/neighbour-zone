@@ -97,4 +97,13 @@ export class Api {
   getMarketplaceItems() {
     return this.http.get<MarketplaceItemsResponse>(`${this.apiUrl}/marketplace`);
   }
+  updateMyProfile(data: {
+    firstname: string;
+    lastname: string;
+    email: string;
+    phoneNumber: string;
+    bio: string | undefined;
+  }) {
+    return this.http.patch(`${this.apiUrl}/user/me`, data);
+  }
 }

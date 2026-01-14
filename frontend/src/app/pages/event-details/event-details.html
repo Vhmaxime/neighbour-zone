@@ -1,23 +1,24 @@
 <div *ngIf="event$ | async as event; else loading" class="event-container">
-  
   <div class="header">
     <h1>{{ event.title }}</h1>
     <span class="badge">Event</span>
   </div>
 
   <div class="content">
-    <p class="date">📅 {{ event.dateTime | date:'fullDate' }}</p>
+    <p class="date">📅 {{ event.dateTime | date : 'fullDate' }}</p>
     <p class="location">📍 {{ event.location }}</p>
-    
+
     <hr />
-    
+
     <p class="description">{{ event.description }}</p>
-    
+
     <div class="organizer">
-      <small>Organized by: {{ event.organizer.username }}</small>
+      <small
+        >Organized by:
+        <a [routerLink]="['/user', event.organizer.id]">{{ event.organizer.username }}</a></small
+      >
     </div>
   </div>
-
 </div>
 
 <ng-template #loading>

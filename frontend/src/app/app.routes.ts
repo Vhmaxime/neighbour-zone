@@ -20,8 +20,18 @@ export const routes: Routes = [
   // GUEST ROUTES (Accessible only when logged out)
   // =========================================================
   { path: 'login', component: Login, title: 'Login | Neighbour Zone', canActivate: [guestGuard] },
-  { path: 'register', component: Register, title: 'Register | Neighbour Zone', canActivate: [guestGuard] },
-  { path: 'reset-password', component: ResetPassword, title: 'Reset Password | Neighbour Zone', canActivate: [guestGuard] },
+  {
+    path: 'register',
+    component: Register,
+    title: 'Register | Neighbour Zone',
+    canActivate: [guestGuard],
+  },
+  {
+    path: 'reset-password',
+    component: ResetPassword,
+    title: 'Reset Password | Neighbour Zone',
+    canActivate: [guestGuard],
+  },
 
   // =========================================================
   // AUTHENTICATED ROUTES (Accessible only when logged in)
@@ -36,10 +46,19 @@ export const routes: Routes = [
       { path: 'feed', title: 'Feed | Neighbour Zone', component: Feed },
       { path: 'profile', title: 'Profile | Neighbour Zone', component: ProfilePage },
       { path: 'settings', title: 'Settings | Neighbour Zone', component: Settings },
-      { path: 'friends', title: 'Friends | Neighbour Zone', component: Friends },
       { path: 'user/:id', component: User },
-      { path: 'events/:id', loadComponent: () => import('./pages/event-details/event-details').then(m => m.EventDetails) },
-      { path: 'marketplace/:id', loadComponent: () => import('./pages/marketplace-details/marketplace-details').then(m => m.MarketplaceDetails) }
+      {
+        path: 'events/:id',
+        loadComponent: () =>
+          import('./pages/event-details/event-details').then((m) => m.EventDetails),
+      },
+      {
+        path: 'marketplace/:id',
+        loadComponent: () =>
+          import('./pages/marketplace-details/marketplace-details').then(
+            (m) => m.MarketplaceDetails
+          ),
+      },
     ],
   },
 
