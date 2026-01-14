@@ -3,9 +3,16 @@
 
   <app-explore-search></app-explore-search>
 
-  <div class="flex mt-5">
-    <div class="flex-1">// news feed</div>
-    <div class="w-[250px]">
+  <div class="flex mt-5 gap-6 explore-body">
+    <div class="flex-1 explore-main">
+      <div id="map" class="explore-map"></div>
+
+      <div class="mt-4">
+        // news feed
+      </div>
+    </div>
+
+    <div class="w-[250px] explore-sidebar">
       <app-friend-list />
     </div>
   </div>
