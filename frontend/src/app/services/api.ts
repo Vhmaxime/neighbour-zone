@@ -65,4 +65,8 @@ export class Api {
   cancelFriendRequest(requestId: string) {
     return this.http.delete(`${this.apiUrl}/friend/request/${requestId}`);
   }
+
+  tooglePostLike(postId: string) {
+    return this.http.post(`${this.apiUrl}/post/like/${postId}`, {});
+  }
 }
