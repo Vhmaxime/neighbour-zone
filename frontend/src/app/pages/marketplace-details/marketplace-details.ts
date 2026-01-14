@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { Observable, switchMap, catchError, of, tap } from 'rxjs';
+import { Observable, switchMap, catchError, of, tap, map } from 'rxjs';
 import { MarketplaceItem } from '../../types/api.types';
 import { Api } from '../../services/api';
 
@@ -23,11 +23,16 @@ export class MarketplaceDetails {
       switchMap(params => {
         const id = params.get('id');
         
-        // Safety check
         if (!id) return of(null);
 
-        // Use the Service!
-        return this.api.getMarketplaceItem(id);
+        return this.api.getMarketplaceItem(id).pipe(
+          // Open the envelope: Get 'marketplace' from the response
+          map((response: any) => {
+             // If API Service is typed to return 'MarketplaceItem', 
+             // but actually returns the Response wrapper, we fix it here.
+             return response.marketplace ? response.marketplace : response;
+          })
+        );
       }),
       tap(data => console.log('Marketplace Item loaded:', data)),
       catchError(error => {
