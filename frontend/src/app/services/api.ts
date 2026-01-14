@@ -65,4 +65,12 @@ export class Api {
   cancelFriendRequest(requestId: string) {
     return this.http.delete(`${this.apiUrl}/friend/request/${requestId}`);
   }
+
+  updateMyPassword(newPassword: string) {
+  return this.http.patch(`${this.apiUrl}/user/me/password`, newPassword);
+}
+
+deleteMyAccount() {
+  return this.http.delete(`${this.apiUrl}/user/me`);
+}
 }
