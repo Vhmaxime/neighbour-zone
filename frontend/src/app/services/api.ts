@@ -86,7 +86,15 @@ export class Api {
     return this.http.get<EventResponse>(`${this.apiUrl}/event/${eventId}`);
   }
 
+  getEvents() {
+    return this.http.get<EventsResponse>(`${this.apiUrl}/event`);
+  }
+
   getMarketplaceItem(itemId: string) {
     return this.http.get<MarketplaceItemResponse>(`${this.apiUrl}/marketplace/${itemId}`);
+  }
+
+  getMarketplaceItems() {
+    return this.http.get<MarketplaceItemsResponse>(`${this.apiUrl}/marketplace`);
   }
 }
