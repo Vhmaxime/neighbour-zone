@@ -37,10 +37,6 @@ userRouter.get("/me", async (c) => {
     },
   });
 
-  if (!user) {
-    return c.json({ message: "Not found" }, 404);
-  }
-
   return c.json({ user }, 200);
 });
 

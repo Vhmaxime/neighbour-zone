@@ -306,7 +306,7 @@ eventRouter.get(
   "/user/:id",
   zValidator("param", idSchema, (result, c) => {
     if (!result.success) {
-      console.error("Validation error:", result.error);
+      console.error(result.error);
       return c.json({ message: "Bad request" }, 400);
     }
   }),
@@ -314,9 +314,7 @@ eventRouter.get(
     const { id: userId } = c.req.valid("param");
 
     const user = await db.query.usersTable.findFirst({
-      where: {
-        id: { eq: userId },
-      },
+      where: { id: { eq: userId } },
     });
 
     if (!user) {

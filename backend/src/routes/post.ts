@@ -252,7 +252,7 @@ postRouter.delete(
 
 // Like or unlike a post
 postRouter.post(
-  "/like/:id",
+  "/:id/like",
   zValidator("param", idSchema, (result, c) => {
     if (!result.success) {
       console.error("Validation error:", result.error);
@@ -301,9 +301,10 @@ postRouter.post(
 
 postRouter.get(
   "/user/:id",
+
   zValidator("param", idSchema, (result, c) => {
     if (!result.success) {
-      console.error("Validation error:", result.error);
+      console.error(result.error);
       return c.json({ message: "Bad request" }, 400);
     }
   }),
