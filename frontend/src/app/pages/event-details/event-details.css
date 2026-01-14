@@ -45,11 +45,7 @@ h1 {
   margin-top: 2rem;
   color: #888;
   font-style: italic;
-}
-
-.organizer a {
-  color: #0284c7;
-  text-decoration: none;
+  cursor: pointer;
 }
 
 .loading {
