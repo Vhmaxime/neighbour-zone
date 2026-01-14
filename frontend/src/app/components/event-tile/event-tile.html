@@ -1,0 +1,19 @@
+<div
+  class="flex items-center gap-4 p-4 bg-white rounded-lg shadow hover:shadow-md transition-shadow cursor-pointer"
+>
+  <div
+    class="flex flex-col items-center justify-center bg-linear-to-br from-blue-500 to-blue-600 text-white rounded-lg px-4 py-3 min-w-[80px]"
+  >
+    <span class="text-xs font-semibold uppercase tracking-wide">{{
+      eventDate() | date : 'MMM'
+    }}</span>
+    <span class="text-3xl font-bold leading-none">{{ eventDate() | date : 'd' }}</span>
+  </div>
+  <div class="flex-1">
+    <h3 class="text-lg font-semibold text-gray-900 mb-1">{{ event().title }}</h3>
+    <div class="flex items-center gap-2 text-sm text-gray-600">
+      <span>{{ eventDate() | date : 'HH:mm' }}</span>
+      <span>{{ event().location }}</span>
+    </div>
+  </div>
+</div>
