@@ -5,13 +5,16 @@ import { ResetPassword } from './pages/reset-password/reset-password';
 // import { Dashboard } from './pages/dashboard/dashboard'; // We don't use a dashboard for now
 import { ProfilePage } from './pages/profile-page/profile-page';
 import { Settings } from './pages/settings/settings';
-import { Friends } from './pages/friends/friends';
 import { authGuard } from './guards/auth-guard';
 import { guestGuard } from './guards/guest-guard';
 import { User } from './pages/user/user';
 import { NotFound } from './pages/not-found/not-found';
 import { Explore } from './pages/explore/explore';
 import { Feed } from './pages/feed/feed';
+import { About } from './pages/about/about';
+import { Contact } from './pages/contact/contact';
+import { Privacy } from './pages/privacy/privacy';
+import { Terms } from './pages/terms/terms';
 
 export const routes: Routes = [
   { path: 'not-found', title: '404 - Page Not Found | Neighbour Zone', component: NotFound },
@@ -26,6 +29,14 @@ export const routes: Routes = [
     title: 'Register | Neighbour Zone',
     canActivate: [guestGuard],
   },
+  // =========================================================
+  // PUBLIC ROUTES (Accessible to everyone)
+  // =========================================================
+  { path: 'about', title: 'About Us | Neighbour Zone', component: About },
+  { path: 'contact', title: 'Contact | Neighbour Zone', component: Contact },
+  { path: 'privacy', title: 'Privacy Policy | Neighbour Zone', component: Privacy },
+  { path: 'terms', title: 'Terms & Conditions | Neighbour Zone', component: Terms },
+
   {
     path: 'reset-password',
     component: ResetPassword,
