@@ -11,92 +11,14 @@ const friendRouter = new Hono<{ Variables: Variables }>();
 
 friendRouter.use(authMiddleware);
 
-friendRouter.get("/list", async (c) => {
+friendRouter.get("/", async (c) => {
   const { sub: userId } = c.get("jwtPayload");
 
-  const friends = await db.query.friendshipsTable.findMany({
-    where: {
-      AND: [
-        {
-          OR: [{ userId1: { eq: userId } }, { userId2: { eq: userId } }],
-        },
-        {
-          status: { eq: "accepted" },
-        },
-      ],
-    },
-    columns: {},
-    with: {
-      user1: {
-        columns: {
-          id: true,
-          username: true,
-        },
-      },
-      user2: {
-        columns: {
-          id: true,
-          username: true,
-        },
-      },
-    },
-  });
+  const friends = await getFriends(userId);
+  const requests = await getFriendRequests(userId);
+  const sent = await getSentRequests(userId);
 
-  const friendList = friends.map((friendship) => {
-    if (friendship.user1?.id === userId) {
-      return friendship.user2;
-    } else {
-      return friendship.user1;
-    }
-  });
-
-  return c.json({ friends: friendList });
-});
-
-friendRouter.get("/requests", async (c) => {
-  const { sub: userId } = c.get("jwtPayload");
-
-  console.log("tzst");
-
-  const requests = await db.query.friendshipsTable.findMany({
-    where: {
-      AND: [{ userId2: { eq: userId } }, { status: { eq: "pending" } }],
-    },
-    columns: {},
-    with: {
-      user1: {
-        columns: {
-          id: true,
-          username: true,
-        },
-      },
-    },
-  });
-
-  const requestList = requests.map((friendship) => friendship.user1);
-
-  return c.json({ requests: requestList }, 200);
-});
-
-friendRouter.get("/sent", async (c) => {
-  const { sub: userId } = c.get("jwtPayload");
-  const sentRequests = await db.query.friendshipsTable.findMany({
-    where: {
-      AND: [{ userId1: { eq: userId } }, { status: { eq: "pending" } }],
-    },
-    columns: {},
-    with: {
-      user2: {
-        columns: {
-          id: true,
-          username: true,
-        },
-      },
-    },
-  });
-
-  const sentList = sentRequests.map((friendship) => friendship.user2);
-  return c.json({ sent: sentList });
+  return c.json({ friends, requests, sent }, 200);
 });
 
 friendRouter.post(
@@ -271,5 +193,87 @@ friendRouter.delete(
     return c.json({ message: "ok" }, 200);
   }
 );
+
+async function getFriends(userId: string) {
+  const friends = await db.query.friendshipsTable.findMany({
+    where: {
+      AND: [
+        {
+          OR: [{ userId1: { eq: userId } }, { userId2: { eq: userId } }],
+        },
+        {
+          status: { eq: "accepted" },
+        },
+      ],
+    },
+    columns: {},
+    with: {
+      user1: {
+        columns: {
+          id: true,
+          username: true,
+        },
+      },
+      user2: {
+        columns: {
+          id: true,
+          username: true,
+        },
+      },
+    },
+  });
+
+  const friendList = friends.map((friendship) => {
+    if (friendship.user1?.id === userId) {
+      return friendship.user2;
+    } else {
+      return friendship.user1;
+    }
+  });
+
+  return friendList;
+}
+
+async function getFriendRequests(userId: string) {
+  const requests = await db.query.friendshipsTable.findMany({
+    where: {
+      AND: [{ userId2: { eq: userId } }, { status: { eq: "pending" } }],
+    },
+    columns: {},
+    with: {
+      user1: {
+        columns: {
+          id: true,
+          username: true,
+        },
+      },
+    },
+  });
+
+  const requestList = requests.map((friendship) => friendship.user1);
+
+  return requestList;
+}
+
+async function getSentRequests(userId: string) {
+  const sentRequests = await db.query.friendshipsTable.findMany({
+    where: {
+      AND: [{ userId1: { eq: userId } }, { status: { eq: "pending" } }],
+    },
+    columns: {},
+    with: {
+      user2: {
+        columns: {
+          id: true,
+          username: true,
+        },
+      },
+    },
+  });
+
+  const sentList = sentRequests.map((friendship) => friendship.user2);
+
+  return sentList;
+}
 
 export default friendRouter;

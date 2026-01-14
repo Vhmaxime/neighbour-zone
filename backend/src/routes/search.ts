@@ -14,7 +14,28 @@ searchRouter.get("/", async (c) => {
     return c.json({ users: [], posts: [], events: [], marketplace: [] });
   }
 
-  const user = await db.query.usersTable.findMany({
+  const users = await usersSearch(query);
+  const posts = await postsSearch(query);
+  const events = await eventsSearch(query);
+  const marketplaceItems = await marketplaceSearch(query);
+
+  return c.json({ users, posts, events, marketplace: marketplaceItems });
+});
+
+searchRouter.get("/users", async (c) => {
+  const query = c.req.query("q");
+
+  if (!query || query.trim() === "") {
+    return c.json({ users: [] });
+  }
+
+  const users = await usersSearch(query);
+
+  return c.json({ users });
+});
+
+async function usersSearch(query: string) {
+  return db.query.usersTable.findMany({
     where: {
       username: {
         ilike: `%${query}%`,
@@ -25,8 +46,10 @@ searchRouter.get("/", async (c) => {
       username: true,
     },
   });
+}
 
-  const posts = await db.query.postsTable.findMany({
+async function postsSearch(query: string) {
+  return db.query.postsTable.findMany({
     where: {
       OR: [
         {
@@ -46,8 +69,10 @@ searchRouter.get("/", async (c) => {
       title: true,
     },
   });
+}
 
-  const events = await db.query.eventsTable.findMany({
+async function eventsSearch(query: string) {
+  return db.query.eventsTable.findMany({
     where: {
       title: {
         ilike: `%${query}%`,
@@ -59,8 +84,10 @@ searchRouter.get("/", async (c) => {
       dateTime: true,
     },
   });
+}
 
-  const marketplaceItems = await db.query.marketplaceItemsTable.findMany({
+async function marketplaceSearch(query: string) {
+  return db.query.marketplaceItemsTable.findMany({
     where: {
       OR: [
         {
@@ -81,8 +108,6 @@ searchRouter.get("/", async (c) => {
       description: true,
     },
   });
-
-  return c.json({ users: user, posts, events, marketplace: marketplaceItems });
-});
+}
 
 export default searchRouter;
