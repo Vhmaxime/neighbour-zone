@@ -2,11 +2,9 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import {
   EventsResponse,
-  FriendsRequestsResponse,
   FriendsResponse,
   MarketplaceItemsResponse,
   PostsResponse,
-  SentFriendsRequestsResponse,
   UserMeResponse,
   UserResponse,
 } from '../types/api.types';
@@ -40,14 +38,6 @@ export class Api {
 
   getFriends() {
     return this.http.get<FriendsResponse>(`${this.apiUrl}/friend/list`);
-  }
-
-  getFriendRequests() {
-    return this.http.get<FriendsRequestsResponse>(`${this.apiUrl}/friend/requests`);
-  }
-
-  getSentFriendRequests() {
-    return this.http.get<SentFriendsRequestsResponse>(`${this.apiUrl}/friend/sent`);
   }
 
   deleteFriend(friendId: string) {
