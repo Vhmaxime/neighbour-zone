@@ -7,6 +7,6 @@ export const eventSchema = z.object({
   placeId: z.number().int(),
   lat: string().min(1),
   lon: string().min(1),
-  dateTime: z.coerce.date(),
-  endAt: z.coerce.date().optional(),
+  dateTime: z.iso.datetime(),
+  endAt: z.iso.datetime().optional(),
 });
