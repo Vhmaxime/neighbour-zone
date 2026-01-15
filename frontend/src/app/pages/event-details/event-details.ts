@@ -31,7 +31,6 @@ export class EventDetails {
     firstValueFrom(this.eventService.getEvent(this.eventId))
       .then(({ event }) => {
         this.event.set(event);
-        console.log(event);
         this.titleService.setTitle(`${event.title} | Neighbour Zone`);
       })
       .catch((error) => {

@@ -16,6 +16,7 @@ export class LikeButton {
   public isLiked = input.required<boolean>();
   public type = input.required<'post' | 'event'>();
   public id = input.required<string>();
+  public readonly = input<boolean>(false);
   public isLoading = signal<boolean>(false);
 
   public likeCounter = signal<number>(0);
