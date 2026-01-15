@@ -53,6 +53,15 @@ export class Calendar implements OnInit, OnChanges {
   });
 }
 
+ public getEventsForDate(date: DateTime): any[] {
+    return this.events.filter(event => {
+      if (!event.dateTime) return false;
+
+      const eventDate = DateTime.fromISO(event.dateTime).startOf('day');
+      return eventDate.equals(date.startOf('day'));
+    });
+  }
+
   public prevMonth(): void {
     this.viewDate = this.viewDate.minus({ months: 1 });
     this.setupCalendar();
