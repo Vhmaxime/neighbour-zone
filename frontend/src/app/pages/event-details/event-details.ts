@@ -1,8 +1,8 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterLink } from '@angular/router';
-import { Observable, switchMap, catchError, of, tap, map } from 'rxjs';
-import { Event } from '../../types/api.types';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { Observable, switchMap, catchError, of, tap, map, firstValueFrom } from 'rxjs';
+import { Event, EventResponse } from '../../types/api.types';
 import { Title } from '@angular/platform-browser';
 import { EventService } from '../../services/event';
 
@@ -14,33 +14,34 @@ import { EventService } from '../../services/event';
   styleUrl: './event-details.css',
 })
 export class EventDetails {
-  event$: Observable<Event | null>;
-
-  private route = inject(ActivatedRoute);
-  private event = inject(EventService);
+  private activatedRoute = inject(ActivatedRoute);
+  private router = inject(Router);
+  private eventService = inject(EventService);
   private titleService = inject(Title);
+  private eventId = this.activatedRoute.snapshot.paramMap.get('id') as string;
+  public isLoading = signal(false);
+  public event = signal<Event | null>(null);
 
-  constructor() {
-    this.event$ = this.route.paramMap.pipe(
-      switchMap((params) => {
-        const id = params.get('id');
-        if (!id) return of(null);
+  public ngOnInit() {
+    this.loadEvent();
+  }
 
-        return this.event
-          .getEvent(id)
-          .pipe(map((response: any) => (response.event ? response.event : response)));
-      }),
-      tap((data) => {
-        console.log('Event loaded:', data);
-        if (data) {
-          // Browser tab title
-          this.titleService.setTitle(`${data.title} | Neighbour Zone`);
-        }
-      }),
-      catchError((error) => {
-        console.error('Error loading event:', error);
-        return of(null);
+  private loadEvent() {
+    this.isLoading.set(true);
+    firstValueFrom(this.eventService.getEvent(this.eventId))
+      .then(({ event }) => {
+        this.event.set(event);
+        console.log(event);
+        this.titleService.setTitle(`${event.title} | Neighbour Zone`);
       })
-    );
+      .catch((error) => {
+        if (error.status === 404) {
+          this.router.navigate(['/not-found']);
+        }
+        console.error('Error fetching event:', error);
+      })
+      .finally(() => {
+        this.isLoading.set(false);
+      });
   }
 }

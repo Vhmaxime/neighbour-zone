@@ -1,4 +1,7 @@
-<div *ngIf="event$ | async as event; else loading" class="event-container">
+@if (isLoading()) {
+<div class="loading">Loading event details...</div>
+} @else if (event(); as event) {
+<div class="event-container">
   <div class="header">
     <h1>{{ event.title }}</h1>
     <span class="badge">Event</span>
@@ -20,7 +23,4 @@
     </div>
   </div>
 </div>
-
-<ng-template #loading>
-  <div class="loading">Loading event details...</div>
-</ng-template>
+}
