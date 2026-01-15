@@ -4,10 +4,11 @@ import { RouterLink } from '@angular/router';
 import { Post as P } from '../../types/api.types';
 import { PostService } from '../../services/post';
 import { firstValueFrom } from 'rxjs';
+import { LikeButton } from '../like-button/like-button';
 
 @Component({
   selector: 'app-post',
-  imports: [DatePipe, RouterLink],
+  imports: [DatePipe, RouterLink, LikeButton],
   templateUrl: './post.html',
   styleUrl: './post.css',
 })

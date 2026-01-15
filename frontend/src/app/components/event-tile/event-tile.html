@@ -17,4 +17,13 @@
       <span>{{ event().placeDisplayName }}</span>
     </div>
   </div>
+  <div>
+    <app-like-button
+      [type]="'event'"
+      [id]="event().id"
+      [isLiked]="event().liked"
+      [likes]="event().likes"
+      [readonly]="true"
+    />
+  </div>
 </div>

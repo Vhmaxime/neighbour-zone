@@ -2,10 +2,11 @@ import { Component, input, computed, inject } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { Event } from '../../types/api.types';
 import { Router } from '@angular/router';
+import { LikeButton } from '../like-button/like-button';
 
 @Component({
   selector: 'app-event-tile',
-  imports: [DatePipe],
+  imports: [DatePipe, LikeButton],
   templateUrl: './event-tile.html',
   styleUrl: './event-tile.css',
 })
