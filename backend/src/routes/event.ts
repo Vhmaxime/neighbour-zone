@@ -32,6 +32,9 @@ eventRouter.get("/", async (c) => {
       likes: (table) =>
         db.$count(eventLikesTable, eq(table.id, eventLikesTable.eventId)),
     },
+    orderBy: {
+      createdAt: "desc",
+    },
   });
 
   const likedEventIds = await db.query.eventLikesTable.findMany({
@@ -134,6 +137,9 @@ eventRouter.get(
       extras: {
         likes: (table) =>
           db.$count(eventLikesTable, eq(table.id, eventLikesTable.eventId)),
+      },
+      orderBy: {
+        createdAt: "desc",
       },
     });
 

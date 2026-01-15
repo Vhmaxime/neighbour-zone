@@ -32,6 +32,9 @@ postRouter.get("/", async (c) => {
       likes: (table) =>
         db.$count(postLikesTable, eq(table.id, postLikesTable.postId)),
     },
+    orderBy: {
+      createdAt: "desc",
+    },
   });
 
   const likedPostIds = await db.query.postLikesTable.findMany({
@@ -136,6 +139,9 @@ postRouter.get(
       extras: {
         likes: (table) =>
           db.$count(postLikesTable, eq(table.id, postLikesTable.postId)),
+      },
+      orderBy: {
+        createdAt: "desc",
       },
     });
 

@@ -109,7 +109,7 @@ marketplaceRouter.post(
   }
 );
 
-// Get marketplace items by user ID (specifieke route - moet voor /:id komen)
+// Get marketplace items by user ID
 marketplaceRouter.get(
   "/user/:id",
   zValidator("param", idSchema, (result, c) => {
@@ -145,6 +145,9 @@ marketplaceRouter.get(
             username: true,
           },
         },
+      },
+      orderBy: {
+        createdAt: "desc",
       },
     });
 
