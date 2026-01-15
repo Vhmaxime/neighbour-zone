@@ -21,13 +21,18 @@
    ============================================================ */
 .nav-link {
   display: block;
-  padding: 18px 24px;
+  padding: 20px 24px;
   color: #1F2937;
   text-decoration: none;
   font-weight: 700;
   font-size: 1rem;
   transition: all 0.2s ease;
   border-bottom: 1px solid #F3F4F6;
+}
+
+.nav-link.active {
+  color: #D97757;
+  padding-left: 28px;
 }
 
 
@@ -50,7 +55,7 @@
    ============================================================ */
 
 .action-button {
-  width: 100%; 
+  width: 100%;
   height: 48px;
   display: flex;
   justify-content: center;
