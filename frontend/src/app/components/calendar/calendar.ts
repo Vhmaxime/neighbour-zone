@@ -11,7 +11,7 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class Calendar implements OnInit {
 
-   @Input() events: any[] = [];
+  @Input() events: any[] = [];
 
   public viewDate: DateTime = DateTime.now();
   public days: DateTime[] = [];
@@ -24,11 +24,10 @@ export class Calendar implements OnInit {
 
   private setupCalendar(): void {
     const startOfMonth = this.viewDate.startOf('month');
-    
     let day = startOfMonth.startOf('week');
 
     this.days = [];
-    
+
     for (let i = 0; i < 42; i++) {
       this.days.push(day);
       day = day.plus({ days: 1 });
@@ -37,6 +36,12 @@ export class Calendar implements OnInit {
 
   public isToday(date: DateTime): boolean {
     return date.hasSame(DateTime.now(), 'day');
+  }
+
+  public hasEventOnDate(date: DateTime): boolean {
+    return this.events.some(event =>
+      DateTime.fromISO(event.dateTime).hasSame(date, 'day')
+    );
   }
 
   public prevMonth(): void {
