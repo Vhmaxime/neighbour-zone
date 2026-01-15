@@ -14,7 +14,7 @@ export class EventService {
   }
 
   public getEventsByUser(userId: string) {
-    return this.http.get<EventsResponse>(`${this.apiUrl}/event`, { params: { userId } });
+    return this.http.get<EventsResponse>(`${this.apiUrl}/event`, { params: { eventBy: userId } });
   }
 
   public getEvent(eventId: string) {
