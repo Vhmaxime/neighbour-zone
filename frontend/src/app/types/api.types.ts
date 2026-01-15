@@ -206,6 +206,16 @@ export interface FriendsResponse {
   sent: UserPublic[];
 }
 
+export interface FriendshipResponse {
+  friendship: {
+    id: string;
+    createdAt: Date;
+    userId1: string;
+    userId2: string;
+    status: 'pending' | 'accepted';
+  };
+}
+
 export interface ErrorResponse {
   message: string;
 }

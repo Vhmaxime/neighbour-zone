@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { FriendsResponse } from '../types/api.types';
+import { FriendshipResponse, FriendsResponse } from '../types/api.types';
 
 @Injectable({
   providedIn: 'root',
@@ -11,6 +11,14 @@ export class FriendService {
 
   public getFriends() {
     return this.http.get<FriendsResponse>(`${this.apiUrl}/friend`);
+  }
+
+  public getFriendship(userId: string) {
+    return this.http.get<FriendshipResponse>(`${this.apiUrl}/friend/friendship/${userId}`);
+  }
+
+  public sendFriendRequest(userId: string) {
+    return this.http.post<void>(`${this.apiUrl}/friend/request/${userId}`, {});
   }
 
   public deleteFriend(friendId: string) {
