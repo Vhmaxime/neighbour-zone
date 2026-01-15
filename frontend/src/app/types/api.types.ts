@@ -246,5 +246,5 @@ export interface SearchResponse {
   users: UserPublic[];
   posts: Post[];
   events: Event[];
-  marketplaceItems: MarketplaceItem[];
+  marketplace: MarketplaceItem[];
 }
