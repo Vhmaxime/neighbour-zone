@@ -1,10 +1,10 @@
 <div class="max-w-2xl mx-auto py-10 px-4">
   <div class="mb-8">
-    <h1 class="text-3xl font-bold text-gray-900">Edit Your Post</h1>
-    <p class="text-gray-500 mt-2">Update the details of your message below.</p>
+    <h1 class="text-3xl font-bold text-gray-900">Create a New Post</h1>
+    <p class="text-gray-500 mt-2">Share news or an alert with your neighbors.</p>
   </div>
 
-  <form [formGroup]="editForm" (ngSubmit)="onSubmit()" class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 space-y-6">
+  <form [formGroup]="createForm" (ngSubmit)="onSubmit()" class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 space-y-6">
     
     <div>
       <label class="block text-sm font-bold text-gray-700 mb-2">Title</label>
@@ -17,14 +17,13 @@
     </div>
 
     <div>
-      <label class="block text-sm font-bold text-gray-700 mb-2">Post Type</label>
-      <select 
+        <label class="block text-sm font-bold text-gray-700 mb-2">Post Type</label>
+        <select 
         formControlName="type"
         class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-      >
+    >
         <option value="news">News</option>
-        <option value="tip">Neighbourhood Tip</option>
-      </select>
+        <option value="tip">Neighbourhood Tip</option> </select>
     </div>
 
     <div>
@@ -43,10 +42,10 @@
       </a>
       <button 
         type="submit" 
-        [disabled]="editForm.invalid || isSaving()"
+        [disabled]="createForm.invalid || isSaving()"
         class="px-8 py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 disabled:opacity-50 transition-all shadow-lg shadow-blue-100"
       >
-        {{ isSaving() ? 'Saving changes...' : 'Update Post' }}
+        {{ isSaving() ? 'Posting...' : 'Share with Neighbors' }}
       </button>
     </div>
   </form>
