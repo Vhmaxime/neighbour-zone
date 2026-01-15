@@ -15,11 +15,13 @@ import { UserService } from '../../services/user';
 import { PostService } from '../../services/post';
 import { EventService } from '../../services/event';
 import { MarketplaceService } from '../../services/marketplace';
+import { FriendButton } from '../../components/fiend-button/friend-button';
+import { FriendList } from '../../components/friend-list/friend-list';
 
 @Component({
   selector: 'app-user',
   standalone: true,
-  imports: [PostComponent, EventTile, MarketplaceTile],
+  imports: [PostComponent, EventTile, MarketplaceTile, FriendButton],
   templateUrl: './user.html',
   styleUrl: './user.css',
 })
