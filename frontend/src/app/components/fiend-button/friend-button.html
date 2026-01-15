@@ -1,24 +1,29 @@
-@if (friendship(); as friendship ) { @if (friendship.friendship.status === "accepted") {
+@if (isLoading()) {
+<button
+  disabled
+  class="bg-transparent! text-gray-400! text-sm! font-normal! p-1! cursor-not-allowed!"
+>
+  Loading...
+</button>
+} @else if (friendship(); as friendship ) { @if (friendship.friendship.status === "accepted") {
 <button
   (click)="deleteFriend()"
-  [disabled]="isLoading()"
-  class="bg-transparent! text-(--accent)! text-sm! font-normal! disabled:text-gray-500! p-1!"
+  class="bg-transparent! text-(--accent)! text-sm! font-normal! hover:text-(--accent-dark)! p-1!"
 >
   Remove
 </button>
 } @else if (friendship.friendship.status === "pending" && friendship.friendship.userId1 ===
 friendId()) {
-<div>
+<div class="flex gap-2">
   <button
     (click)="acceptFriendRequest()"
-    [disabled]="isLoading()"
-    class="bg-transparent! text-green-500! text-sm! font-normal! disabled:text-gray-500! p-1!"
+    class="bg-transparent! text-green-500! text-sm! font-normal! hover:text-green-600! p-1!"
   >
-    Accept</button
-  ><button
+    Accept
+  </button>
+  <button
     (click)="rejectFriendRequest()"
-    [disabled]="isLoading()"
-    class="bg-transparent! text-red-600! text-sm! font-normal! disabled:text-gray-500! p-1!"
+    class="bg-transparent! text-red-600! text-sm! font-normal! hover:text-red-700! p-1!"
   >
     Reject
   </button>
@@ -27,16 +32,14 @@ friendId()) {
 friendId()) {
 <button
   (click)="cancelFriendRequest()"
-  [disabled]="isLoading()"
-  class="bg-transparent! text-(--accent)! text-sm! font-normal! disabled:text-gray-500! p-1!"
+  class="bg-transparent! text-(--accent)! text-sm! font-normal! hover:text-(--accent-dark)! p-1!"
 >
   Cancel
 </button>
-}} @else if (!isError() && !isLoading()) {
+}} @else if (!isError()) {
 <button
   (click)="sendFriendRequest()"
-  [disabled]="isLoading()"
-  class="bg-transparent! text-(--accent)! text-sm! font-normal! disabled:text-gray-500! p-1!"
+  class="bg-transparent! text-(--accent)! text-sm! font-normal! hover:text-(--accent-dark)! p-1!"
 >
   Add Friend
 </button>
