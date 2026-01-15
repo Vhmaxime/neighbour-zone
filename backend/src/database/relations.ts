@@ -51,6 +51,16 @@ export const relations = defineRelations(schema, (r) => ({
       alias: "user2Friendships",
     }),
   },
+  messagesTable: {
+    sender: r.one.usersTable({
+      from: r.messagesTable.senderId,
+      to: r.usersTable.id,
+    }),
+    receiver: r.one.usersTable({
+      from: r.messagesTable.receiverId,
+      to: r.usersTable.id,
+    }),
+  },
   postLikesTable: {
     user: r.one.usersTable({
       from: r.postLikesTable.userId,

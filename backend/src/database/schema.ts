@@ -9,6 +9,7 @@ import {
   primaryKey,
   real,
 } from "drizzle-orm/pg-core";
+import { send } from "node:process";
 
 export const userRoleEnum = pgEnum("user_role", ["user", "admin"]);
 
@@ -90,6 +91,18 @@ export const friendshipsTable = pgTable(
   },
   (table) => [unique().on(table.userId1, table.userId2)]
 );
+
+export const messagesTable = pgTable("messages", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  senderId: uuid("sender_id").references(() => usersTable.id, {
+    onDelete: "cascade",
+  }),
+  receiverId: uuid("receiver_id").references(() => usersTable.id, {
+    onDelete: "cascade",
+  }),
+  content: text("content").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
 
 export const postLikesTable = pgTable(
   "post_likes",
