@@ -48,7 +48,7 @@
           } @else {
           <button
             (click)="deleteFriend(friend.id)"
-            class="text-xs hover:underline p-2 bg-transparent text-red-500"
+            class="text-xs! hover:underline! p-1! m-1! bg-transparent! text-red-500!"
           >
             remove
           </button>
@@ -77,13 +77,13 @@
             } @else {
             <button
               (click)="acceptRequest(request.id)"
-              class="text-xs hover:underline p-2 bg-transparent text-green-500"
+              class="text-xs! hover:underline! p-1! m-1! bg-transparent! text-green-500!"
             >
               accept
             </button>
             <button
               (click)="rejectRequest(request.id)"
-              class="text-xs hover:underline p-2 bg-transparent text-red-500"
+              class="text-xs! hover:underline! p-1! m-1! bg-transparent! text-red-500!"
             >
               reject
             </button>
@@ -109,7 +109,7 @@
           } @else {
           <button
             (click)="cancelSentRequest(request.id)"
-            class="text-xs hover:underline p-2 bg-transparent text-green-500"
+            class="text-xs! hover:underline! p-1! m-1! bg-transparent! text-red-500!"
           >
             cancel
           </button>

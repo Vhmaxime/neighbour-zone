@@ -19,7 +19,7 @@ export class FriendList {
   private friendService = inject(FriendService);
   public tabs: State['tabs'][] = ['Friends', 'Requests', 'Sent'];
   public friends = signal<FriendsResponse | null>(null);
-  public isLoading = signal<boolean>(false);
+  public isLoading = signal<boolean>(true);
   public actionState = signal<State['actions']>(null);
   public targetUserId = signal<string | null>(null);
   public error = signal<string | null>(null);
