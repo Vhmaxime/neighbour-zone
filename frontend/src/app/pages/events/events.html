@@ -1,7 +1,7 @@
 <div class="max-w-6xl mx-auto py-8 px-4">
   <div class="flex justify-between items-center mb-8">
     <div>
-      <h1 class="text-3xl font-bold text-gray-900">Neighborhood Events</h1>
+      <h1 class="text-3xl font-bold text-gray-900">Neighbourhood Events</h1>
       <p class="text-gray-500 mt-1">See what's happening around you.</p>
     </div>
     
@@ -31,7 +31,7 @@
           </p>
           
           <div class="text-xs text-gray-400 mb-2 flex items-center gap-1">
-             📍 {{ event.location }}
+             📍 {{ event.placeDisplayName }}
           </div>
 
           <a [routerLink]="['/events', event.id]" 
