@@ -12,7 +12,7 @@ The focus is on clean architecture, security, and long-term scalability.
 ## ✨ Core features ##
 
 - **Explore**: Discover the neighbourhood with a versatile view that toggles between local people, upcoming events and goods.
-- **Feed**: A real-time stream of local activity, keeping you connected to what's happening in your neighbourhood.
+- **Feed**: A real-time stream of local activity, keeping you connected to what's happening in your community.
 - **Global Friends List**: Persistent widget anchored across the entire web app, ensuring your social circle is always accessible.
 - **Profile**: Personalize your digital presence and control how you appear to the community.
 
