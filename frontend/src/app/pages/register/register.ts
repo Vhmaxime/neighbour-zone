@@ -11,6 +11,7 @@ import {
 } from '@angular/forms';
 import { AuthService } from '../../services/auth';
 import { Router, RouterLink } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-register',
@@ -74,7 +75,7 @@ export class Register {
     return password === confirm ? null : { passwordMismatch: true };
   }
 
-  submit() {
+  public onSubmit() {
     if (this.form.invalid) return;
 
     const { username, firstname, lastname, email, phoneNumber, password } = this.form.getRawValue();
@@ -82,17 +83,16 @@ export class Register {
     this.isSubmitting.set(true);
     this.error.set(null);
 
-    this.authService
-      .register({ username, firstname, lastname, email, phoneNumber, password })
-      .subscribe({
-        next: () => {
-          this.isSubmitting.set(false);
-          this.router.navigate(['/explore']);
-        },
-        error: (err) => {
-          this.isSubmitting.set(false);
-          this.error.set(err.error?.message || 'An error occurred. Please try again.');
-        },
+    firstValueFrom(
+      this.authService.register({ username, firstname, lastname, email, phoneNumber, password })
+    )
+      .then(() => {
+        this.isSubmitting.set(false);
+        this.router.navigate(['/explore']);
+      })
+      .catch((err) => {
+        this.isSubmitting.set(false);
+        this.error.set(err.error?.message || 'An error occurred. Please try again.');
       });
   }
 }
