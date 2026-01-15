@@ -108,25 +108,14 @@ export interface CreatePostRequest {
   type: PostType;
 }
 
-export interface UpdatePostRequest {
-  title?: string;
-  content?: string;
-  type?: PostType;
-}
-
 export interface CreateEventRequest {
   title: string;
   description: string;
-  location: string;
+  placeDisplayName: string;
+  placeId: number;
+  lat: string;
+  lon: string;
   dateTime: Date | string;
-  endAt?: Date | string;
-}
-
-export interface UpdateEventRequest {
-  title?: string;
-  description?: string;
-  location?: string;
-  dateTime?: Date | string;
   endAt?: Date | string;
 }
 
@@ -136,14 +125,6 @@ export interface CreateMarketplaceItemRequest {
   price?: number;
   location: string;
   category: MarketplaceCategory;
-}
-
-export interface UpdateMarketplaceItemRequest {
-  title?: string;
-  description?: string;
-  price?: number;
-  location?: string;
-  category?: MarketplaceCategory;
 }
 
 export interface CreateMarketplaceApplicationRequest {
