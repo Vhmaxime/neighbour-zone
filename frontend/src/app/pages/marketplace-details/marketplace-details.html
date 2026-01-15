@@ -1,27 +1,17 @@
 @if (isLoading()) {
-<div class="loading">Loading item details...</div>
-} @else if (item(); as item) {
-<div class="details-container">
-  <div class="header">
-    <h1>{{ item.title }}</h1>
-    <span class="badge">Marketplace</span>
-  </div>
-
-  <div class="content">
-    @if (item.price) {
-    <p class="price">💰 {{ item.price | currency : 'EUR' }}</p>
-    }
-
-    <hr />
-
-    <p class="description">{{ item.description }}</p>
-
+  <div class="loading">Loading item details...</div>
+} @else if (item()) {
+  @let data = item()!; 
+  <div class="details-container">
+    <h1>{{ data.title }}</h1>
+    <p class="price">💰 {{ data.price | currency : 'EUR' }}</p>
+    <p class="description">{{ data.description }}</p>
+    
     <div class="seller">
-      <small
-        >Sold by:
-        <a [routerLink]="['/user', item.provider.id]">{{ item.provider.username }}</a></small
-      >
+       <small>Sold by: {{ data.provider?.username || 'Unknown User' }}</small>
     </div>
   </div>
-</div>
+} @else {
+  <div class="error">Item not found.</div>
 }
+

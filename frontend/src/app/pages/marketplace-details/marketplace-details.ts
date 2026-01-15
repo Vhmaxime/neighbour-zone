@@ -2,7 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
-import { MarketplaceItem } from '../../types/api.types';
+import { MarketplaceItem, MarketplaceItemResponse } from '../../types/api.types';
 import { Title } from '@angular/platform-browser';
 import { MarketplaceService } from '../../services/marketplace';
 
@@ -30,16 +30,21 @@ export class MarketplaceDetails {
     this.isLoading.set(true);
     firstValueFrom(this.marketplaceService.getMarketplaceItem(this.itemId))
       .then((response: any) => {
-        const item = response.marketplace ? response.marketplace : response;
-        this.item.set(item);
-        console.log(item);
-        this.titleService.setTitle(`${item.title} - ${item.price}€ | Neighbour Zone`);
+        console.log('Backend Response:', response); // For checking stuff
+        const itemData = response.marketplace || response;
+
+        if (itemData && itemData.title) {
+          this.item.set(itemData);
+          this.titleService.setTitle(`${itemData.title} | Neighbour Zone`);
+        } else {
+          console.error('Data received but item structure is missing:', itemData);
+        }
       })
       .catch((error) => {
+        console.error('Error loading item:', error);
         if (error.status === 404) {
           this.router.navigate(['/not-found']);
         }
-        console.error('Error loading item:', error);
       })
       .finally(() => {
         this.isLoading.set(false);
