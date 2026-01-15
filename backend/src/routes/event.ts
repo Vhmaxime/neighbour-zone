@@ -200,10 +200,10 @@ eventRouter.get(
         },
       });
 
-      return c.json({ ...event, liked, likedBy }, 200);
+      return c.json({ event, liked, likedBy }, 200);
     }
 
-    return c.json({ ...event, liked }, 200);
+    return c.json({ event, liked }, 200);
   }
 );
 
