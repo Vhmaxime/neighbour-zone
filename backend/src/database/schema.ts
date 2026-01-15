@@ -53,7 +53,10 @@ export const marketplaceItemsTable = pgTable("marketplace_items", {
   title: text("title").notNull(),
   description: text("description").notNull(),
   price: real("price"),
-  location: text("location").notNull(),
+  placeDisplayName: text("place_display_name").notNull(),
+  placeId: integer("place_id").notNull(),
+  lat: text("lat").notNull(),
+  lon: text("lon").notNull(),
   category: marketplaceCategoryEnum("category").notNull().default("offered"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
