@@ -1,0 +1,22 @@
+<div class="calendar-container">
+  <div class="calendar-header">
+    <button (click)="prevMonth()" class="nav-btn">&larr;</button>
+    <h2>{{ viewDate.toFormat('MMMM yyyy', { locale: 'en' }) }}</h2>
+    <button (click)="nextMonth()" class="nav-btn">&rarr;</button>
+  </div>
+
+  <div class="weekdays-grid">
+    <div *ngFor="let dayName of weekDays" class="weekday">
+      {{ dayName }}
+    </div>
+  </div>
+
+  <div class="days-grid">
+    <div *ngFor="let date of days" 
+         class="day-cell" 
+         [class.different-month]="date.month !== viewDate.month"
+         [class.today]="isToday(date)">
+      <span class="day-number">{{ date.day }}</span>
+    </div>
+  </div>
+</div>

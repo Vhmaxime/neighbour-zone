@@ -2,12 +2,13 @@ import { Component, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ExploreSearch } from '../../components/explore-search/explore-search';
 import { FriendList } from '../../components/friend-list/friend-list';
+import { Calendar } from '../../components/calendar/calendar';
 import * as L from 'leaflet';
 
 @Component({
   selector: 'app-explore',
   standalone: true,
-  imports: [CommonModule, ExploreSearch, FriendList],
+  imports: [CommonModule, ExploreSearch, FriendList, Calendar],
   templateUrl: './explore.html',
   styleUrl: './explore.css',
 })
