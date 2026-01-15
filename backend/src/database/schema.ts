@@ -67,6 +67,8 @@ export const eventsTable = pgTable("events", {
   description: text("description").notNull(),
   placeDisplayName: text("place_display_name").notNull(),
   placeId: integer("place_id").notNull(),
+  lat: text("lat").notNull(),
+  lon: text("lon").notNull(),
   dateTime: timestamp("date_time", { mode: "date" }).notNull(),
   endAt: timestamp("end_at", { mode: "date" }),
   createdAt: timestamp("created_at").defaultNow().notNull(),

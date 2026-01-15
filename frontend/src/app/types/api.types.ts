@@ -53,7 +53,10 @@ export interface Event {
   id: string;
   title: string;
   description: string;
-  location: string;
+  placeDisplayName: string;
+  placeId: number;
+  lat: string;
+  lon: string;
   dateTime: string;
   endAt: string | null;
   createdAt: string;
@@ -246,5 +249,5 @@ export interface SearchResponse {
   users: UserPublic[];
   posts: Post[];
   events: Event[];
-  marketplaceItems: MarketplaceItem[];
+  marketplace: MarketplaceItem[];
 }

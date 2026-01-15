@@ -36,10 +36,10 @@
       </div>
       }
     </div>
-    } @if (searchResults.marketplaceItems.length > 0) {
+    } @if (searchResults.marketplace.length > 0) {
     <div>
       <div class="section-header">Marketplace</div>
-      @for (item of searchResults.marketplaceItems; track item.id) {
+      @for (item of searchResults.marketplace ; track item.id) {
       <div class="result-item" (click)="onSelectMarketplace(item.id)">
         <span class="title">{{ item.title }}</span>
         <span class="meta">{{ item.description.slice(0, 30) }}...</span>
@@ -47,8 +47,8 @@
       }
     </div>
     } @if ( searchResults.users.length === 0 && searchResults.posts.length === 0 &&
-    searchResults.events.length === 0 && searchResults.marketplaceItems.length === 0 &&
-    !isSearching() ) {
+    searchResults.events.length === 0 && searchResults.marketplace.length === 0 && !isSearching() )
+    {
     <div class="no-results">No matches found.</div>
     } @if (isSearching()) {
     <div class="no-results">Searching...</div>
