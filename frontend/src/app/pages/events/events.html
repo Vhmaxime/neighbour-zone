@@ -1,0 +1,50 @@
+<div class="max-w-6xl mx-auto py-8 px-4">
+  <div class="flex justify-between items-center mb-8">
+    <div>
+      <h1 class="text-3xl font-bold text-gray-900">Neighborhood Events</h1>
+      <p class="text-gray-500 mt-1">See what's happening around you.</p>
+    </div>
+    
+    <a routerLink="/events/create" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg shadow-sm transition">
+      + Create Event
+    </a>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+    @for (event of events$ | async; track event.id) {
+      <div class="bg-white border rounded-xl overflow-hidden shadow-sm hover:shadow-md transition flex flex-col h-full group">
+        
+        <div class="h-48 bg-gray-100 flex items-center justify-center text-gray-400 relative">
+          <span class="text-3xl">📅</span>
+          <div class="absolute top-2 right-2 bg-white/90 backdrop-blur px-2 py-1 rounded-md text-xs font-bold text-blue-600 shadow-sm">
+            {{ event.dateTime | date:'MMM d' }}
+          </div>
+        </div>
+
+        <div class="p-4 flex flex-col flex-grow">
+          <h3 class="font-bold text-gray-900 truncate mb-2" [title]="event.title">
+            {{ event.title }}
+          </h3>
+          
+          <p class="text-gray-500 text-sm line-clamp-2 mb-4 flex-grow">
+            {{ event.description }}
+          </p>
+          
+          <div class="text-xs text-gray-400 mb-2 flex items-center gap-1">
+             📍 {{ event.location }}
+          </div>
+
+          <a [routerLink]="['/events', event.id]" 
+            class="block text-center w-full mt-auto border border-gray-200 text-gray-600 py-2 rounded-lg hover:bg-gray-50 text-sm font-medium transition cursor-pointer">
+            View Event Details
+          </a>
+        </div>
+      </div>
+    } @empty {
+      <div class="col-span-full py-16 text-center">
+        <h3 class="text-lg font-medium text-gray-900">No events yet</h3>
+        <p class="text-gray-500">Be the first to organize something!</p>
+      </div>
+    }
+  </div>
+</div>

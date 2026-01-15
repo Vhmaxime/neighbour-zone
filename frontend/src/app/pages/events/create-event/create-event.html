@@ -1,0 +1,82 @@
+<div class="max-w-2xl mx-auto py-8 px-4">
+  
+  <div class="mb-8">
+    <a routerLink="/events" class="text-blue-600 hover:underline text-sm mb-2 inline-block">&larr; Back to Events</a>
+    <h1 class="text-3xl font-bold text-gray-900">Organize an Event</h1>
+    <p class="text-gray-500">Bring your neighbors together for something special.</p>
+  </div>
+
+  <form (ngSubmit)="onSubmit()" #eventForm="ngForm" class="bg-white p-6 rounded-xl border shadow-sm space-y-6">
+    
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">Event Title</label>
+      <input 
+        type="text" 
+        name="title"
+        [(ngModel)]="eventData.title"
+        required
+        #title="ngModel"
+        class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+        [class.border-red-500]="title.invalid && title.touched"
+        placeholder="e.g. Neighborhood BBQ"
+      >
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Date and Time</label>
+        <input 
+          type="datetime-local" 
+          name="dateTime"
+          [(ngModel)]="eventData.dateTime"
+          required
+          #date="ngModel"
+          class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white"
+          [class.border-red-500]="date.invalid && date.touched"
+        >
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Location</label>
+        <input 
+          type="text" 
+          name="location"
+          [(ngModel)]="eventData.location"
+          required
+          #loc="ngModel"
+          class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+          [class.border-red-500]="loc.invalid && loc.touched"
+          placeholder="e.g. Central Park"
+        >
+      </div>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+      <textarea 
+        name="description"
+        [(ngModel)]="eventData.description"
+        required
+        minlength="10"
+        #desc="ngModel"
+        rows="4"
+        class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+        [class.border-red-500]="desc.invalid && desc.touched"
+        placeholder="Details about the event..."
+      ></textarea>
+    </div>
+
+    <button 
+      type="submit" 
+      [disabled]="eventForm.invalid || isSubmitting()"
+      class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg shadow-sm transition disabled:opacity-50 disabled:cursor-not-allowed"
+    >
+      @if (isSubmitting()) {
+        Creating Event...
+      } @else {
+        Publish Event
+      }
+    </button>
+
+  </form>
+</div>
