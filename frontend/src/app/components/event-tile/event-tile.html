@@ -23,7 +23,7 @@
       [id]="event().id"
       [isLiked]="event().liked"
       [likes]="event().likes"
-      [readonly]="true"
+      (click)="$event.stopPropagation()"
     />
   </div>
 </div>
