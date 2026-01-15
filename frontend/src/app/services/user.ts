@@ -23,7 +23,7 @@ export class UserService {
   }
 
   public updateCurrentUser(data: Partial<CreateUserRequest>) {
-    return this.http.patch<UserResponse>(`${this.apiUrl}/user/me`, data);
+    return this.http.patch<CurrentUserResponse>(`${this.apiUrl}/user/me`, data);
   }
 
   public updateCurrentUserPassword(

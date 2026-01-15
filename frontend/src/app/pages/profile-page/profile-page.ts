@@ -3,6 +3,7 @@ import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { UserService } from '../../services/user';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-profile-page',
@@ -13,12 +14,11 @@ import { UserService } from '../../services/user';
 })
 export class ProfilePage {
   private userService = inject(UserService);
-
-  isLoading = signal(true);
-  isSaving = signal(false);
-  saveStatus = 'SAVE CHANGES';
-  bioText: string = '';
-  maxChars = 250;
+  public isLoading = signal(true);
+  public isSaving = signal(false);
+  public saveStatus = 'SAVE CHANGES';
+  public bioText: string = '';
+  public maxChars = 250;
 
   profileForm = new FormGroup({
     firstname: new FormControl('', { nonNullable: true }),
@@ -28,54 +28,59 @@ export class ProfilePage {
     bio: new FormControl(''),
   });
 
-  ngOnInit() {
-    this.userService.getCurrentUser().subscribe({
-      next: (response) => {
-        const { bio, firstname, lastname, email, phoneNumber } = response.user;
-
-        this.profileForm.patchValue({
-          firstname: firstname,
-          lastname: lastname,
-          email: email,
-          phoneNumber: phoneNumber,
-          bio: bio ?? '',
-        });
-      },
-      complete: () => {
-        this.isLoading.set(false);
-      },
-    });
+  public ngOnInit() {
+    this.getCurrentUser();
   }
 
-  saveProfile() {
-    if (this.isSaving()) return;
+  private getCurrentUser() {
+    this.isLoading.set(true);
+    firstValueFrom(this.userService.getCurrentUser())
+      .then(({ user }) => {
+        this.profileForm.setValue({
+          firstname: user.firstname,
+          lastname: user.lastname,
+          email: user.email,
+          phoneNumber: user.phoneNumber || '',
+          bio: user.bio || '',
+        });
+        this.bioText = user.bio || '';
+      })
+      .finally(() => {
+        this.isLoading.set(false);
+      });
+  }
 
+  public saveProfile() {
+    if (this.isSaving()) return;
     this.isSaving.set(true);
     this.saveStatus = 'SAVING...';
 
     const { firstname, lastname, email, phoneNumber, bio } = this.profileForm.getRawValue();
 
-    this.userService
-      .updateCurrentUser({
+    firstValueFrom(
+      this.userService.updateCurrentUser({
         firstname,
         lastname,
         email,
         phoneNumber,
         bio: bio || undefined,
       })
-      .subscribe({
-        next: () => {
-          this.isSaving.set(false);
-          this.saveStatus = 'SUCCESS ✓';
-
-          setTimeout(() => {
-            this.saveStatus = 'SAVE CHANGES';
-          }, 1500);
-        },
-        error: () => {
-          this.isSaving.set(false);
-          this.saveStatus = 'SAVE CHANGES';
-        },
+    )
+      .then(({ user }) => {
+        this.saveStatus = 'SAVED!';
+        this.isSaving.set(false);
+        this.profileForm.setValue({
+          firstname: user.firstname,
+          lastname: user.lastname,
+          email: user.email,
+          phoneNumber: user.phoneNumber || '',
+          bio: user.bio || '',
+        });
+        this.bioText = user.bio || '';
+      })
+      .catch(() => {
+        this.isSaving.set(false);
+        this.saveStatus = 'SAVE CHANGES';
       });
   }
 }
