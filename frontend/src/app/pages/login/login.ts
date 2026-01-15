@@ -9,6 +9,7 @@ import {
 } from '@angular/forms';
 import { AuthService } from '../../services/auth';
 import { Router, RouterLink } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -42,7 +43,7 @@ export class Login {
     });
   }
 
-  submit() {
+  public onSubmit() {
     if (this.form.invalid) return;
 
     const { email, password, rememberMe } = this.form.getRawValue();
@@ -50,15 +51,14 @@ export class Login {
     this.isSubmitting.set(true);
     this.error.set(null);
 
-    this.authService.login({ email, password, rememberMe }).subscribe({
-      next: () => {
+    firstValueFrom(this.authService.login({ email, password, rememberMe }))
+      .then(() => {
         this.isSubmitting.set(false);
         this.router.navigate(['/explore']);
-      },
-      error: (err) => {
+      })
+      .catch((err) => {
         this.isSubmitting.set(false);
         this.error.set(err.error?.message || 'An error occurred. Please try again.');
-      },
-    });
+      });
   }
 }
