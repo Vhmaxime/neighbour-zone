@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DateTime, Info } from 'luxon';
+import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
   selector: 'app-calendar',
@@ -10,6 +11,9 @@ import { DateTime, Info } from 'luxon';
   styleUrl: './calendar.css'
 })
 export class Calendar implements OnInit {
+
+   @Input() events: any[] = [];
+
   public viewDate: DateTime = DateTime.now();
   public days: DateTime[] = [];
   public weekDays: string[] = [];
@@ -22,13 +26,10 @@ export class Calendar implements OnInit {
   private setupCalendar(): void {
     const startOfMonth = this.viewDate.startOf('month');
     
-    // Always start from the beginning of the week containing the 1st
     let day = startOfMonth.startOf('week');
 
     this.days = [];
     
-    // Loop exactly 42 times to fill 6 rows (6 weeks * 7 days)
-    // This makes every month look identical in structure
     for (let i = 0; i < 42; i++) {
       this.days.push(day);
       day = day.plus({ days: 1 });
