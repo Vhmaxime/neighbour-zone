@@ -41,11 +41,11 @@ export class Feed implements OnInit {
       .then((response) => {
         // Grab the arrays from the envelopes
         const events = response.eventsReq.events || [];
-        const items = response.marketplaceReq.marketplace || [];
+        const items = response.marketplaceReq || [];
         const posts = response.postsReq.posts || [];
 
         //  Combine them into one "activity" array
-        const combined = [...events, ...items];
+        const combined = [...events, ...items, ...posts];
 
         // Sort by date (Newest first) and take the last 10
         const sorted = combined
