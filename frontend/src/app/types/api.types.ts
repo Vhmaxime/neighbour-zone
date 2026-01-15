@@ -55,6 +55,8 @@ export interface Event {
   description: string;
   placeDisplayName: string;
   placeId: number;
+  lat: string;
+  lon: string;
   dateTime: string;
   endAt: string | null;
   createdAt: string;

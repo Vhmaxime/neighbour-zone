@@ -81,8 +81,16 @@ eventRouter.post(
     }
   }),
   async (c) => {
-    const { title, dateTime, description, placeDisplayName, placeId, endAt } =
-      c.req.valid("json");
+    const {
+      title,
+      dateTime,
+      description,
+      placeDisplayName,
+      placeId,
+      lat,
+      lon,
+      endAt,
+    } = c.req.valid("json");
 
     const { sub: userId } = c.get("jwtPayload");
 
@@ -95,6 +103,8 @@ eventRouter.post(
         description,
         placeDisplayName,
         placeId,
+        lat,
+        lon,
         endAt,
       })
       .returning();
