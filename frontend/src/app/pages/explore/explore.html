@@ -10,7 +10,7 @@
 
     <div class="right">
       <div class="map-wrapper">
-        <app-map></app-map>
+        <app-map *ngIf="events$ | async as events" [events]="events"></app-map>
       </div>
     </div>
   </div>
