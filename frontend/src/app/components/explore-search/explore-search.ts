@@ -1,18 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { debounceTime, distinctUntilChanged, switchMap, catchError, map } from 'rxjs/operators';
-import { Observable, forkJoin, of } from 'rxjs';
-
-import {
-  EventsResponse,
-  MarketplaceItemsResponse,
-  SearchResponse,
-  EventSearchResult,
-  MarketplaceItemSearchResult,
-} from '../../types/api.types';
+import { debounceTime, firstValueFrom } from 'rxjs';
+import { SearchService } from '../../services/search';
+import { Event, MarketplaceItem, Post, SearchResponse, UserPublic } from '../../types/api.types';
 
 @Component({
   selector: 'app-explore-search',
@@ -22,52 +14,45 @@ import {
   styleUrl: './explore-search.css',
 })
 export class ExploreSearch {
-  searchControl = new FormControl('');
-  results$!: Observable<SearchResponse>;
-  private apiUrl = 'https://neighbour-zone.vercel.app/api';
+  private router = inject(Router);
+  private searchService = inject(SearchService);
+  public searchControl = new FormControl('');
+  public isSearching = signal(false);
+  public searchResults = signal<SearchResponse | null>(null);
 
-  constructor(private http: HttpClient, private router: Router) {
-    this.results$ = this.searchControl.valueChanges.pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
-      switchMap((term) => {
-        if (!term || !term.trim()) {
-          return of({ users: [], posts: [], events: [], marketplaceItems: [] });
-        }
-        return this.performSearch(term);
+  public ngOnInit() {
+    this.searchControl.valueChanges
+      .pipe(debounceTime(300))
+      .subscribe((term) => this.performSearch(term || ''));
+  }
+
+  private performSearch(term: string) {
+    if (this.isSearching()) {
+      return;
+    }
+    this.isSearching.set(true);
+    firstValueFrom(this.searchService.search(term))
+      .then((results) => {
+        this.searchResults.set(results);
       })
-    );
+      .finally(() => {
+        this.isSearching.set(false);
+      });
   }
 
-  private performSearch(term: string): Observable<SearchResponse> {
-    const events$ = this.http.get<EventsResponse>(`${this.apiUrl}/event`, {
-      params: { search: term },
-    });
-    const market$ = this.http.get<MarketplaceItemsResponse>(`${this.apiUrl}/marketplace`, {
-      params: { search: term },
-    });
-
-    return forkJoin([events$, market$]).pipe(
-      map(([eventsRes, marketRes]) => {
-        return {
-          users: [],
-          posts: [],
-          events: eventsRes.events,
-          marketplaceItems: marketRes.marketplace,
-        };
-      }),
-      catchError((err) => {
-        console.error(err);
-        return of({ users: [], posts: [], events: [], marketplaceItems: [] });
-      })
-    );
+  onSelectUser(userId: string) {
+    this.router.navigate(['/user', userId]);
   }
 
-  onSelectEvent(event: EventSearchResult) {
-    this.router.navigate(['/events', event.id]);
+  onSelectPost(postId: string) {
+    this.router.navigate(['/posts', postId]);
   }
 
-  onSelectMarketplace(item: MarketplaceItemSearchResult) {
-    this.router.navigate(['/marketplace', item.id]);
+  onSelectEvent(eventId: string) {
+    this.router.navigate(['/events', eventId]);
+  }
+
+  onSelectMarketplace(itemId: string) {
+    this.router.navigate(['/marketplace', itemId]);
   }
 }
