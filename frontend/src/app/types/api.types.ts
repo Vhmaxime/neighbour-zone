@@ -53,7 +53,8 @@ export interface Event {
   id: string;
   title: string;
   description: string;
-  location: string;
+  placeDisplayName: string;
+  placeId: number;
   dateTime: string;
   endAt: string | null;
   createdAt: string;
