@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FriendsResponse } from '../../types/api.types';
 import { FriendService } from '../../services/friend';
+import { firstValueFrom } from 'rxjs';
 
 interface State {
   tabs: 'Friends' | 'Requests' | 'Sent';
@@ -18,33 +19,32 @@ export class FriendList {
   private friendService = inject(FriendService);
   public tabs: State['tabs'][] = ['Friends', 'Requests', 'Sent'];
   public friends = signal<FriendsResponse | null>(null);
-  public badge = signal<number[]>([]);
   public isLoading = signal<boolean>(false);
   public actionState = signal<State['actions']>(null);
   public targetUserId = signal<string | null>(null);
   public error = signal<string | null>(null);
   public activeTab = signal<State['tabs']>('Friends');
-  public badges = signal<string[]>([]);
+  public badgeCounts = signal<number[]>([]);
 
   public ngOnInit() {
-    this.loadData();
+    this.getFriends();
   }
 
-  private loadData() {
+  public getFriends() {
     this.isLoading.set(true);
     this.error.set(null);
-    this.friendService.getFriends().subscribe({
-      next: (response) => {
-        this.friends.set(response);
-        this.badge.set([response.friends.length, response.requests.length, response.sent.length]);
-        this.isLoading.set(false);
-      },
-      error: (error) => {
+    firstValueFrom(this.friendService.getFriends())
+      .then((data) => {
+        this.friends.set(data);
+        this.badgeCounts.set([data.friends.length, data.requests.length, data.sent.length]);
+      })
+      .catch((error) => {
         console.error('Error fetching friends:', error);
         this.error.set('Something went wrong. Please try again later.');
+      })
+      .finally(() => {
         this.isLoading.set(false);
-      },
-    });
+      });
   }
 
   public setActiveTab(tab: (typeof this.tabs)[number]) {
@@ -54,60 +54,66 @@ export class FriendList {
   public deleteFriend(friendId: string) {
     this.actionState.set('deleting');
     this.targetUserId.set(friendId);
-    this.friendService.deleteFriend(friendId).subscribe({
-      next: () => {
-        this.loadData();
-        this.actionState.set(null);
-      },
-      error: (error) => {
+    firstValueFrom(this.friendService.deleteFriend(friendId))
+      .then(() => {
+        this.getFriends();
+      })
+      .catch((error) => {
         console.error(error);
         this.error.set('Something went wrong. Please try again later.');
-      },
-    });
+      })
+      .finally(() => {
+        this.actionState.set(null);
+      });
   }
 
   public acceptRequest(requestId: string) {
     this.actionState.set('accepting');
     this.targetUserId.set(requestId);
-    this.friendService.acceptFriendRequest(requestId).subscribe({
-      next: () => {
-        this.loadData();
-        this.actionState.set(null);
-      },
-      error: (error) => {
+    firstValueFrom(this.friendService.acceptFriendRequest(requestId))
+      .then(() => {
+        this.getFriends();
+      })
+      .catch((error) => {
         console.error(error);
         this.error.set('Something went wrong. Please try again later.');
-      },
-    });
+      })
+      .finally(() => {
+        this.actionState.set(null);
+      });
   }
 
   public rejectRequest(requestId: string) {
     this.actionState.set('rejecting');
     this.targetUserId.set(requestId);
-    this.friendService.rejectFriendRequest(requestId).subscribe({
-      next: () => {
-        this.loadData();
+    firstValueFrom(this.friendService.rejectFriendRequest(requestId))
+      .then(() => {
+        this.getFriends();
         this.actionState.set(null);
-      },
-      error: (error) => {
+      })
+      .catch((error) => {
         console.error(error);
         this.error.set('Something went wrong. Please try again later.');
-      },
-    });
+      })
+      .finally(() => {
+        this.actionState.set(null);
+      });
   }
 
   public cancelSentRequest(requestId: string) {
     this.actionState.set('cancelling');
     this.targetUserId.set(requestId);
-    this.friendService.cancelFriendRequest(requestId).subscribe({
-      next: () => {
-        this.loadData();
+    firstValueFrom(this.friendService.cancelFriendRequest(requestId))
+      .then(() => {
+        this.getFriends();
         this.actionState.set(null);
-      },
-      error: (error) => {
+      })
+      .catch((error) => {
         console.error(error);
         this.error.set('Something went wrong. Please try again later.');
-      },
-    });
+      })
+      .finally(() => {
+        this.actionState.set(null);
+      });
   }
 }
