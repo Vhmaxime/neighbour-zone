@@ -13,7 +13,7 @@ export class NominatimService {
     return this.http.get<NominatimLocation[]>(this.nominatimUrl, {
       params: {
         q: query,
-        format: 'jsonv2',
+        format: 'json',
         limit: '5',
       },
     });

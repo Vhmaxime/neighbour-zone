@@ -1,0 +1,18 @@
+<div class="search-container">
+  <input [formControl]="searchControl" type="text" placeholder="Search for a location..." />
+
+  @if (searchControl.value) {
+  <div>
+    @if (isSearching()) {
+    <div>Searching...</div>
+    } @else if (searchResults(); as searchResults) { @if (searchResults.length > 0) { @for (place of
+    searchResults; track place.place_id) {
+    <div (click)="onSelectLocation(place)">
+      <span>{{ place.display_name }}</span>
+    </div>
+    } } @if ( searchResults.length === 0 && !isSearching() ) {
+    <div>No matches found.</div>
+    } }
+  </div>
+  }
+</div>
