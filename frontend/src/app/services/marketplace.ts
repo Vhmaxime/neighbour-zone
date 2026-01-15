@@ -25,9 +25,9 @@ export class MarketplaceService {
       .pipe(map((response) => response.marketplace || []));
   }
 
-  public getMarketplaceItemsByUser(itemBy: string) {
+  public getMarketplaceItemsByUser(userId: string) {
     return this.http.get<MarketplaceItemsResponse>(`${this.apiUrl}/marketplace`, {
-      params: { itemBy },
+      params: { itemBy: userId },
     });
   }
 

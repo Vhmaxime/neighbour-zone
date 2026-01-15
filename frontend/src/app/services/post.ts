@@ -14,7 +14,7 @@ export class PostService {
   }
 
   public getPostsByUser(userId: string) {
-    return this.http.get<PostsResponse>(`${this.apiUrl}/post`, { params: { userId } });
+    return this.http.get<PostsResponse>(`${this.apiUrl}/post`, { params: { postBy: userId } });
   }
 
   public getPost(postId: string) {

@@ -8,7 +8,6 @@ import { postSchema } from "../schemas/post.js";
 import { idSchema } from "../schemas/index.js";
 import authMiddleware from "../middleware/auth.js";
 import { z } from "zod/v4";
-import { count } from "node:console";
 
 const postRouter = new Hono<{ Variables: Variables }>();
 
