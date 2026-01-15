@@ -20,6 +20,7 @@
       [class.has-event]="hasEventOnDate(date)"
     >
       <span class="day-number">{{ date.day }}</span>
+      <span class="event-dot" *ngIf="hasEventOnDate(date)"></span>
     </div>
   </div>
 </div>
