@@ -11,8 +11,8 @@ export interface MapEvent {
   id: string;
   title: string;
   placeDisplayName: string;
-  lat: string; // jouw huidige shape
-  lon: string; // jouw huidige shape
+  lat: string;
+  lon: string;
 }
 
 @Component({
@@ -26,7 +26,7 @@ export class MapComponent implements AfterViewInit, OnChanges {
   @Input() events: MapEvent[] = [];
 
   private map!: L.Map;
-  private markers: L.Marker[] = [];
+  private markers: L.Layer[] = [];
 
   ngAfterViewInit(): void {
     this.initMap();
@@ -40,7 +40,10 @@ export class MapComponent implements AfterViewInit, OnChanges {
   }
 
   private initMap(): void {
-    this.map = L.map('map', { center: [50.965, 5.500], zoom: 12 });
+    this.map = L.map('map', {
+      center: [50.965, 5.500],
+      zoom: 12,
+    });
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap contributors',
@@ -56,9 +59,20 @@ export class MapComponent implements AfterViewInit, OnChanges {
 
       if (!Number.isFinite(lat) || !Number.isFinite(lon)) continue;
 
-      const marker = L.marker([lat, lon])
+      const marker = L.circleMarker([lat, lon], {
+        radius: 7,
+        fillColor: '#D97757', 
+        color: '#ffffff',
+        weight: 2,
+        fillOpacity: 1,
+      })
         .addTo(this.map)
-        .bindPopup(`<strong>${event.title}</strong><br/>${event.placeDisplayName}`);
+        .bindPopup(`
+          <div class="event-popup">
+            <h3>${event.title}</h3>
+            <p class="place">${event.placeDisplayName}</p>
+          </div>
+        `);
 
       this.markers.push(marker);
     }
