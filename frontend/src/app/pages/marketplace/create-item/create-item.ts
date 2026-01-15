@@ -23,7 +23,7 @@ export class CreateItem {
     description: ['', [Validators.required, Validators.minLength(10)]],
     price: [0, [Validators.min(0)]],
     category: ['offered', [Validators.required]], // Default to 'offered'
-    location: ['Neighborhood', [Validators.required]]
+    location: ['Neighbourhood', [Validators.required]]
   });
   
   onSubmit() {

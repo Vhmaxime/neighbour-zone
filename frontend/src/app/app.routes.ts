@@ -59,9 +59,24 @@ export const routes: Routes = [
       { path: 'settings', title: 'Settings | Neighbour Zone', component: Settings },
       { path: 'user/:id', component: User },
       {
-        path: 'events/:id',
-        loadComponent: () =>
-          import('./pages/event-details/event-details').then((m) => m.EventDetails),
+        path: 'events',
+        children: [
+          { 
+            path: '', 
+            title: 'Events | Neighbour Zone',
+            loadComponent: () => import('./pages/events/events').then(m => m.Events) 
+          },
+          { 
+            path: 'create', 
+            title: 'Organize an Event | Neighbour Zone',
+            loadComponent: () => import('./pages/events/create-event/create-event').then(m => m.CreateEvent) 
+          },
+          { 
+            path: ':id', 
+            title: 'Event Details | Neighbour Zone',
+            loadComponent: () => import('./pages/event-details/event-details').then(m => m.EventDetails) 
+          },
+        ]
       },
       { 
         path: 'marketplace', // The main marketplace page
