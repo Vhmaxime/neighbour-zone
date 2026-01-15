@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, output } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, firstValueFrom } from 'rxjs';
 import { NominatimService } from '../../services/nominatim';
@@ -16,6 +16,7 @@ export class LocationSearchBar {
   public searchControl = new FormControl('');
   public isSearching = signal(false);
   public searchResults = signal<NominatimLocation[] | null>(null);
+  public locationSelected = output<NominatimLocation>();
 
   public ngOnInit() {
     this.searchControl.valueChanges
@@ -38,6 +39,6 @@ export class LocationSearchBar {
   }
 
   public onSelectLocation(location: NominatimLocation) {
-    console.log('Selected location:', location);
+    this.locationSelected.emit(location);
   }
 }
