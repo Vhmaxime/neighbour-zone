@@ -2,6 +2,7 @@
 <div class="loading">Loading event details...</div>
 } @else if (event(); as event) {
 <div class="event-container">
+  <a routerLink="/events" class="text-blue-600 hover:underline text-sm mb-2 inline-block">&larr; Back to Events</a>
   <div class="header">
     <h1>{{ event.title }}</h1>
     <span class="badge">Event</span>

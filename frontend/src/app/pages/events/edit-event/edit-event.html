@@ -2,6 +2,7 @@
   @if (isLoading()) {
     <div class="loading">Loading event data...</div>
   } @else {
+    <a routerLink="/events" class="text-blue-600 hover:underline text-sm mb-2 inline-block">&larr; Back to Events</a>
     <h2>Edit Event</h2>
 
     <form (ngSubmit)="onSubmit()" #editForm="ngForm">
