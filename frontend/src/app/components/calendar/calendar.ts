@@ -1,15 +1,18 @@
-import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DateTime, Info } from 'luxon';
+import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
 
 @Component({
   selector: 'app-calendar',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './calendar.html',
-  styleUrl: './calendar.css'
+  styleUrls: ['./calendar.css']
 })
-export class Calendar implements OnInit {
+export class Calendar implements OnInit, OnChanges {
+
+  @Input() events: any[] = [];
+
   public viewDate: DateTime = DateTime.now();
   public days: DateTime[] = [];
   public weekDays: string[] = [];
@@ -19,16 +22,18 @@ export class Calendar implements OnInit {
     this.setupCalendar();
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['events']) {
+      this.days = [...this.days];
+    }
+  }
+
   private setupCalendar(): void {
     const startOfMonth = this.viewDate.startOf('month');
-    
-    // Always start from the beginning of the week containing the 1st
     let day = startOfMonth.startOf('week');
 
     this.days = [];
-    
-    // Loop exactly 42 times to fill 6 rows (6 weeks * 7 days)
-    // This makes every month look identical in structure
+
     for (let i = 0; i < 42; i++) {
       this.days.push(day);
       day = day.plus({ days: 1 });
@@ -37,6 +42,24 @@ export class Calendar implements OnInit {
 
   public isToday(date: DateTime): boolean {
     return date.hasSame(DateTime.now(), 'day');
+  }
+
+  public hasEventOnDate(date: DateTime): boolean {
+  return this.events.some(event => {
+    if (!event.dateTime) return false;
+
+    const eventDate = DateTime.fromISO(event.dateTime).startOf('day');
+    return eventDate.equals(date.startOf('day'));
+  });
+}
+
+ public getEventsForDate(date: DateTime): any[] {
+    return this.events.filter(event => {
+      if (!event.dateTime) return false;
+
+      const eventDate = DateTime.fromISO(event.dateTime).startOf('day');
+      return eventDate.equals(date.startOf('day'));
+    });
   }
 
   public prevMonth(): void {
