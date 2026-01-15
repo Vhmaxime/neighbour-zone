@@ -8,7 +8,6 @@ import { tap } from 'rxjs/operators';
 export interface JwtPayload {
   sub: string;
   username: string;
-  name?: string; // This may exist, but it doesn't crash or throw a nerror if it's missing
   email: string;
   roles: string;
   exp: number;
@@ -17,7 +16,7 @@ export interface JwtPayload {
 @Injectable({
   providedIn: 'root',
 })
-export class Auth {
+export class AuthService {
   private router = inject(Router);
   private http = inject(HttpClient);
 
@@ -26,7 +25,7 @@ export class Auth {
   private readonly accessToken = 'accessToken';
 
   private readonly user = signal<JwtPayload | null>(null);
-  isAuthenticated = signal<boolean>(!!this.getToken());
+  public isAuthenticated = signal<boolean>(!!this.getToken());
 
   constructor() {
     if (this.isAuthenticated()) {
@@ -73,25 +72,25 @@ export class Auth {
   // =================================================================
 
   public register(data: RegisterRequest) {
-      return this.http.post<AuthResponse>(`${this.apiUrl}/auth/register`, data).pipe(
-        tap((response) => {
-          this.authenticate(response.accessToken);
-        })
-      );
+    return this.http.post<AuthResponse>(`${this.apiUrl}/auth/register`, data).pipe(
+      tap((response) => {
+        this.authenticate(response.accessToken);
+      })
+    );
   }
 
   public login(data: LoginRequest) {
-      return this.http.post<AuthResponse>(`${this.apiUrl}/auth/login`, data).pipe(
-        tap((response)=> {
-          this.authenticate(response.accessToken, data.rememberMe);
-        }) 
-      );
+    return this.http.post<AuthResponse>(`${this.apiUrl}/auth/login`, data).pipe(
+      tap((response) => {
+        this.authenticate(response.accessToken, data.rememberMe);
+      })
+    );
   }
 
   public resetPassword(email: string) {
     // We expect the backend to return 200 OK (and maybe a message),
     // but we don't necessarily need the response body here.
-      return this.http.post<void>(`${this.apiUrl}/auth/reset-password`, { email });
+    return this.http.post<void>(`${this.apiUrl}/auth/reset-password`, { email });
   }
 
   public logout(): void {

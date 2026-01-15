@@ -17,20 +17,23 @@
   <p class="date-display">{{ today | date : 'fullDate' }}</p>
 
   <div class="flex-1 px-4 py-8 flex flex-col gap-4 overflow-y-auto">
+    @if(authService.isAuthenticated()) {
+
     <a routerLink="/explore" class="nav-link">Explore</a>
     <a routerLink="/feed" class="nav-link">Feed</a>
     <a routerLink="/profile" class="nav-link">Profile</a>
     <a routerLink="/settings" class="nav-link">Settings</a>
+    }
   </div>
 
   <div
     class="w-full border-t border-gray-100 p-6 flex flex-col items-center gap-4 bg-white flex-shrink-0 overflow-hidden"
   >
-    @if (auth.isAuthenticated()) {
+    @if (authService.isAuthenticated()) {
     <div class="user-info mb-2 text-center">
       <span class="welcome-text block text-sm text-gray-500">Welcome,</span>
       <span class="user-email block font-bold text-gray-900 truncate max-w-[180px]">
-        {{ auth.getUser()?.username || auth.getUser()?.sub }}
+        {{ authService.getUser()?.username || authService.getUser()?.sub }}
       </span>
     </div>
 

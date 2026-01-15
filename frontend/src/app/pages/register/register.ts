@@ -9,7 +9,7 @@ import {
   AbstractControl,
   ValidationErrors,
 } from '@angular/forms';
-import { Auth } from '../../services/auth';
+import { AuthService } from '../../services/auth';
 import { Router, RouterLink } from '@angular/router';
 
 @Component({
@@ -23,17 +23,17 @@ export class Register {
   error = signal<string | null>(null);
 
   form: FormGroup<{
-    username: FormControl<string>
-    firstname: FormControl<string>
-    lastname: FormControl<string>
-    email: FormControl<string>
-    phoneNumber: FormControl<string>
-    password: FormControl<string>
-    confirmPassword: FormControl<string>
+    username: FormControl<string>;
+    firstname: FormControl<string>;
+    lastname: FormControl<string>;
+    email: FormControl<string>;
+    phoneNumber: FormControl<string>;
+    password: FormControl<string>;
+    confirmPassword: FormControl<string>;
   }>;
 
   private fb = inject(FormBuilder);
-  private auth = inject(Auth);
+  private authService = inject(AuthService);
   private router = inject(Router);
   isSubmitting = signal(false);
 
@@ -82,15 +82,17 @@ export class Register {
     this.isSubmitting.set(true);
     this.error.set(null);
 
-    this.auth.register({ username, firstname, lastname, email, phoneNumber, password }).subscribe({
-      next: () => {
-        this.isSubmitting.set(false);
-        this.router.navigate(['/explore']);
-      },
-      error: (err) => {
-        this.isSubmitting.set(false);
-        this.error.set(err.error?.message || 'An error occurred. Please try again.');
-      },
-    });
+    this.authService
+      .register({ username, firstname, lastname, email, phoneNumber, password })
+      .subscribe({
+        next: () => {
+          this.isSubmitting.set(false);
+          this.router.navigate(['/explore']);
+        },
+        error: (err) => {
+          this.isSubmitting.set(false);
+          this.error.set(err.error?.message || 'An error occurred. Please try again.');
+        },
+      });
   }
 }

@@ -7,7 +7,7 @@ import {
   Validators,
   FormGroup,
 } from '@angular/forms';
-import { Auth } from '../../services/auth';
+import { AuthService } from '../../services/auth';
 import { Router, RouterLink } from '@angular/router';
 
 @Component({
@@ -28,7 +28,7 @@ export class Login {
   }>;
 
   private fb = inject(FormBuilder);
-  private auth = inject(Auth);
+  private authService = inject(AuthService);
   private router = inject(Router);
 
   constructor() {
@@ -50,7 +50,7 @@ export class Login {
     this.isSubmitting.set(true);
     this.error.set(null);
 
-    this.auth.login({ email, password, rememberMe }).subscribe({
+    this.authService.login({ email, password, rememberMe }).subscribe({
       next: () => {
         this.isSubmitting.set(false);
         this.router.navigate(['/explore']);

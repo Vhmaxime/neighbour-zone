@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, switchMap, catchError, of, tap, map } from 'rxjs';
 import { MarketplaceItem } from '../../types/api.types';
-import { Api } from '../../services/api';
 import { Title } from '@angular/platform-browser';
+import { MarketplaceService } from '../../services/marketplace';
 
 @Component({
   selector: 'app-marketplace-details',
@@ -17,26 +17,26 @@ export class MarketplaceDetails {
   item$: Observable<MarketplaceItem | null>;
 
   private route = inject(ActivatedRoute);
-  private api = inject(Api);
+  private marketplaceService = inject(MarketplaceService);
   private titleService = inject(Title);
 
   constructor() {
     this.item$ = this.route.paramMap.pipe(
-      switchMap(params => {
+      switchMap((params) => {
         const id = params.get('id');
         if (!id) return of(null);
 
-        return this.api.getMarketplaceItem(id).pipe(
-          map((response: any) => response.marketplace ? response.marketplace : response)
-        );
+        return this.marketplaceService
+          .getMarketplaceItem(id)
+          .pipe(map((response: any) => (response.marketplace ? response.marketplace : response)));
       }),
-      tap(data => {
+      tap((data) => {
         if (data) {
           // Set dynamic title with Price
           this.titleService.setTitle(`${data.title} - ${data.price}€ | Neighbour Zone`);
         }
       }),
-      catchError(error => {
+      catchError((error) => {
         console.error('Error loading item:', error);
         return of(null);
       })

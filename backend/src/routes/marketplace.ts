@@ -109,6 +109,110 @@ marketplaceRouter.post(
   }
 );
 
+// Get marketplace items by user ID (specifieke route - moet voor /:id komen)
+marketplaceRouter.get(
+  "/user/:id",
+  zValidator("param", idSchema, (result, c) => {
+    if (!result.success) {
+      console.error(result.error);
+      return c.json({ message: "Bad request" }, 400);
+    }
+  }),
+  async (c) => {
+    const { id: userId } = c.req.valid("param");
+
+    const user = await db.query.usersTable.findFirst({
+      where: {
+        id: { eq: userId },
+      },
+    });
+
+    if (!user) {
+      return c.json({ message: "Not found" }, 404);
+    }
+
+    const marketplace = await db.query.marketplaceItemsTable.findMany({
+      where: {
+        userId: { eq: userId },
+      },
+      columns: {
+        userId: false,
+      },
+      with: {
+        provider: {
+          columns: {
+            id: true,
+            username: true,
+          },
+        },
+      },
+    });
+
+    const count = await db.$count(
+      marketplaceItemsTable,
+      eq(marketplaceItemsTable.userId, userId)
+    );
+
+    return c.json({ marketplace, count }, 200);
+  }
+);
+
+// Apply to a marketplace item (specifieke route - moet voor /:id komen)
+marketplaceRouter.post(
+  "/:id/apply",
+  zValidator("param", idSchema, (result, c) => {
+    if (!result.success) {
+      console.error("Validation error:", result.error);
+      return c.json({ message: "Bad request" }, 400);
+    }
+  }),
+  zValidator("json", marketplaceApplicationSchema, (result, c) => {
+    if (!result.success) {
+      console.error("Validation error:", result.error);
+      return c.json({ message: "Bad request" }, 400);
+    }
+  }),
+  async (c) => {
+    const { id: marketplaceItemId } = c.req.valid("param");
+
+    const { sub: userId } = c.get("jwtPayload");
+
+    const { message } = c.req.valid("json");
+
+    const existing = await db.query.marketplaceItemsTable.findFirst({
+      where: {
+        id: { eq: marketplaceItemId },
+      },
+    });
+
+    if (!existing) {
+      return c.json({ message: "Not found" }, 404);
+    }
+
+    const alreadyApplied =
+      await db.query.marketplaceApplicationsTable.findFirst({
+        where: {
+          AND: [
+            { marketplaceItemId: { eq: marketplaceItemId } },
+            { userId: { eq: userId } },
+          ],
+        },
+      });
+
+    if (alreadyApplied) {
+      return c.json({ message: "Already applied" }, 400);
+    }
+
+    await db.insert(marketplaceApplicationsTable).values({
+      marketplaceItemId,
+      userId,
+      message,
+    });
+
+    return c.json({ message: "ok" }, 200);
+  }
+);
+
 // Get a specific marketplace item by ID
 marketplaceRouter.get(
   "/:id",
@@ -285,109 +389,6 @@ marketplaceRouter.delete(
       .where(eq(marketplaceItemsTable.id, id));
 
     return c.json({ message: "ok" }, 200);
-  }
-);
-
-// Apply to a marketplace item
-marketplaceRouter.post(
-  "/:id/apply",
-  zValidator("param", idSchema, (result, c) => {
-    if (!result.success) {
-      console.error("Validation error:", result.error);
-      return c.json({ message: "Bad request" }, 400);
-    }
-  }),
-  zValidator("json", marketplaceApplicationSchema, (result, c) => {
-    if (!result.success) {
-      console.error("Validation error:", result.error);
-      return c.json({ message: "Bad request" }, 400);
-    }
-  }),
-  async (c) => {
-    const { id: marketplaceItemId } = c.req.valid("param");
-
-    const { sub: userId } = c.get("jwtPayload");
-
-    const { message } = c.req.valid("json");
-
-    const existing = await db.query.marketplaceItemsTable.findFirst({
-      where: {
-        id: { eq: marketplaceItemId },
-      },
-    });
-
-    if (!existing) {
-      return c.json({ message: "Not found" }, 404);
-    }
-
-    const alreadyApplied =
-      await db.query.marketplaceApplicationsTable.findFirst({
-        where: {
-          AND: [
-            { marketplaceItemId: { eq: marketplaceItemId } },
-            { userId: { eq: userId } },
-          ],
-        },
-      });
-
-    if (alreadyApplied) {
-      return c.json({ message: "Already applied" }, 400);
-    }
-
-    await db.insert(marketplaceApplicationsTable).values({
-      marketplaceItemId,
-      userId,
-      message,
-    });
-
-    return c.json({ message: "ok" }, 200);
-  }
-);
-
-marketplaceRouter.get(
-  "/user/:id",
-  zValidator("param", idSchema, (result, c) => {
-    if (!result.success) {
-      console.error("Validation error:", result.error);
-      return c.json({ message: "Bad request" }, 400);
-    }
-  }),
-  async (c) => {
-    const { id: userId } = c.req.valid("param");
-
-    const user = await db.query.usersTable.findFirst({
-      where: {
-        id: { eq: userId },
-      },
-    });
-
-    if (!user) {
-      return c.json({ message: "Not found" }, 404);
-    }
-
-    const marketplace = await db.query.marketplaceItemsTable.findMany({
-      where: {
-        userId: { eq: userId },
-      },
-      columns: {
-        userId: false,
-      },
-      with: {
-        provider: {
-          columns: {
-            id: true,
-            username: true,
-          },
-        },
-      },
-    });
-
-    const count = await db.$count(
-      marketplaceItemsTable,
-      eq(marketplaceItemsTable.userId, userId)
-    );
-
-    return c.json({ marketplace, count }, 200);
   }
 );
 

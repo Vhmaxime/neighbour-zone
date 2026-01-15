@@ -1,0 +1,122 @@
+.calendar-container {
+  width: 100%;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(217, 119, 87, 0.1);
+  overflow: hidden;
+  font-family: 'Inter', system-ui, sans-serif;
+  border: 1px solid #f3f4f6;
+}
+
+.calendar-header {
+  display: grid;
+  /* Fixed 3-column grid: buttons stay at the ends, text stays in the middle */
+  grid-template-columns: 45px 1fr 45px; 
+  align-items: center;
+  padding: 14px 10px;
+  background-color: #D97757;
+  min-height: 60px; /* Ensures the header height never changes */
+}
+
+.calendar-header h2 {
+  font-size: 0.85rem;
+  margin: 0;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  text-align: center;
+  /* Prevents the text from wrapping or pushing buttons */
+  white-space: nowrap; 
+}
+
+.nav-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: #ffffff;
+  width: 38px; /* Slightly wider buttons like in your screenshot */
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: background 0.2s ease;
+  justify-self: center;
+}
+
+.nav-btn:hover {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.weekdays-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  background-color: #fffaf9;
+  padding: 8px 0;
+  border-bottom: 1px solid #fef2f2;
+}
+
+.weekday {
+  text-align: center;
+  font-weight: 700;
+  font-size: 0.6rem;
+  color: #D97757;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+.days-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-template-rows: repeat(6, 1fr); 
+  padding: 8px;
+  height: 220px; 
+}
+
+.day-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
+}
+
+.day-number {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #4b5563;
+  z-index: 2;
+}
+
+.day-cell::after {
+  content: '';
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #D97757;
+  opacity: 0;
+  transition: all 0.2s ease;
+  z-index: 1;
+}
+
+.day-cell:hover::after {
+  opacity: 0.1;
+}
+
+.different-month .day-number {
+  color: #d1d5db;
+  opacity: 0.5;
+}
+
+.today .day-number {
+  color: #ffffff !important;
+  font-weight: 700;
+}
+
+.today::after {
+  opacity: 1 !important;
+  box-shadow: 0 4px 10px rgba(217, 119, 87, 0.3);
+}

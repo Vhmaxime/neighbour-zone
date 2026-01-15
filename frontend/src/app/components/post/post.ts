@@ -2,7 +2,7 @@ import { Component, inject, input } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Post as P } from '../../types/api.types';
-import { Api } from '../../services/api';
+import { PostService } from '../../services/post';
 
 @Component({
   selector: 'app-post',
@@ -11,7 +11,7 @@ import { Api } from '../../services/api';
   styleUrl: './post.css',
 })
 export class Post {
-  private api = inject(Api);
+  private postService = inject(PostService);
   public post = input.required<P>();
 
   public toggleLike() {
@@ -25,7 +25,7 @@ export class Post {
       this.post().likes += 1;
     }
 
-    this.api.tooglePostLike(this.post().id).subscribe({
+    this.postService.likePost(this.post().id).subscribe({
       error: () => {
         this.post().liked = liked;
         if (liked) {

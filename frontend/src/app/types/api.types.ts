@@ -24,6 +24,19 @@ export interface UserPublic {
   bio: string | null;
 }
 
+export interface CurrentUser {
+  id: string;
+  firstname: string;
+  lastname: string;
+  username: string;
+  email: string;
+  role: UserRole;
+  bio: string | null;
+  phoneNumber: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface Post {
   id: string;
   title: string;
@@ -134,6 +147,15 @@ export interface CreateMarketplaceApplicationRequest {
   message?: string;
 }
 
+export interface CreateUserRequest {
+  firstname: string;
+  lastname: string;
+  username: string;
+  email: string;
+  phoneNumber: string;
+  bio?: string;
+}
+
 // Response
 export interface AuthResponse {
   accessToken: string;
@@ -141,6 +163,10 @@ export interface AuthResponse {
 
 export interface UserResponse {
   user: UserPublic;
+}
+
+export interface CurrentUserResponse {
+  user: CurrentUser;
 }
 
 export interface UserMeResponse {
@@ -180,6 +206,16 @@ export interface FriendsResponse {
   sent: UserPublic[];
 }
 
+export interface FriendshipResponse {
+  friendship: {
+    id: string;
+    createdAt: Date;
+    userId1: string;
+    userId2: string;
+    status: 'pending' | 'accepted';
+  };
+}
+
 export interface ErrorResponse {
   message: string;
 }
@@ -206,9 +242,9 @@ export interface MarketplaceItemSearchResult {
   description: string;
 }
 
-export interface SearchResult {
-  users: UserSearchResult[];
-  posts: PostSearchResult[];
-  events: EventSearchResult[];
-  marketplaceItems: MarketplaceItemSearchResult[];
+export interface SearchResponse {
+  users: UserPublic[];
+  posts: Post[];
+  events: Event[];
+  marketplaceItems: MarketplaceItem[];
 }

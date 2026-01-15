@@ -2,7 +2,8 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
-import { Api } from '../../services/api';
+import { UserService } from '../../services/user';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-profile-page',
@@ -12,13 +13,12 @@ import { Api } from '../../services/api';
   styleUrls: ['./profile-page.css'],
 })
 export class ProfilePage {
-  private api = inject(Api);
-
-  isLoading = signal(true);
-  isSaving = signal(false);
-  saveStatus = 'SAVE CHANGES';
-  bioText: string = '';
-  maxChars = 250;
+  private userService = inject(UserService);
+  public isLoading = signal(true);
+  public isSaving = signal(false);
+  public saveStatus = 'SAVE CHANGES';
+  public bioText: string = '';
+  public maxChars = 250;
 
   profileForm = new FormGroup({
     firstname: new FormControl('', { nonNullable: true }),
@@ -28,54 +28,59 @@ export class ProfilePage {
     bio: new FormControl(''),
   });
 
-  ngOnInit() {
-    this.api.getUserMe().subscribe({
-      next: (response) => {
-        const user = response.user;
+  public ngOnInit() {
+    this.getCurrentUser();
+  }
 
-        this.profileForm.patchValue({
+  private getCurrentUser() {
+    this.isLoading.set(true);
+    firstValueFrom(this.userService.getCurrentUser())
+      .then(({ user }) => {
+        this.profileForm.setValue({
           firstname: user.firstname,
           lastname: user.lastname,
           email: user.email,
-          phoneNumber: user.phoneNumber,
-          bio: user.bio ?? '',
+          phoneNumber: user.phoneNumber || '',
+          bio: user.bio || '',
         });
-      },
-      complete: () => {
+        this.bioText = user.bio || '';
+      })
+      .finally(() => {
         this.isLoading.set(false);
-      },
-    });
+      });
   }
 
-  saveProfile() {
+  public saveProfile() {
     if (this.isSaving()) return;
-
     this.isSaving.set(true);
     this.saveStatus = 'SAVING...';
 
     const { firstname, lastname, email, phoneNumber, bio } = this.profileForm.getRawValue();
 
-    this.api
-      .updateMyProfile({
+    firstValueFrom(
+      this.userService.updateCurrentUser({
         firstname,
         lastname,
         email,
         phoneNumber,
         bio: bio || undefined,
       })
-      .subscribe({
-        next: () => {
-          this.isSaving.set(false);
-          this.saveStatus = 'SUCCESS ✓';
-
-          setTimeout(() => {
-            this.saveStatus = 'SAVE CHANGES';
-          }, 1500);
-        },
-        error: () => {
-          this.isSaving.set(false);
-          this.saveStatus = 'SAVE CHANGES';
-        },
+    )
+      .then(({ user }) => {
+        this.saveStatus = 'SAVED!';
+        this.isSaving.set(false);
+        this.profileForm.setValue({
+          firstname: user.firstname,
+          lastname: user.lastname,
+          email: user.email,
+          phoneNumber: user.phoneNumber || '',
+          bio: user.bio || '',
+        });
+        this.bioText = user.bio || '';
+      })
+      .catch(() => {
+        this.isSaving.set(false);
+        this.saveStatus = 'SAVE CHANGES';
       });
   }
 }

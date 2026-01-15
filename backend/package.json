@@ -19,7 +19,7 @@
     "drizzle-orm": "^1.0.0-beta.9-e89174b",
     "hono": "^4.11.3",
     "postgres": "^3.4.7",
-    "vercel": "^50.1.6"
+    "vercel": "^28.18.5"
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",

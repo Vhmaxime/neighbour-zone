@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Observable, switchMap, catchError, of, tap, map } from 'rxjs';
 import { Event } from '../../types/api.types';
-import { Api } from '../../services/api';
 import { Title } from '@angular/platform-browser';
+import { EventService } from '../../services/event';
 
 @Component({
   selector: 'app-event-details',
@@ -17,7 +17,7 @@ export class EventDetails {
   event$: Observable<Event | null>;
 
   private route = inject(ActivatedRoute);
-  private api = inject(Api);
+  private event = inject(EventService);
   private titleService = inject(Title);
 
   constructor() {
@@ -26,7 +26,7 @@ export class EventDetails {
         const id = params.get('id');
         if (!id) return of(null);
 
-        return this.api
+        return this.event
           .getEvent(id)
           .pipe(map((response: any) => (response.event ? response.event : response)));
       }),

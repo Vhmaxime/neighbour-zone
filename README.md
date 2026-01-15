@@ -9,13 +9,12 @@ Neighbour Zone, built by three Full Stack **NgIneers**, aims to bring neighbours
 
 The focus is on clean architecture, security, and long-term scalability.
 
-## ✨ Pages ##
+## ✨ Core features ##
 
-- **Explore**: Overview of existing listings in the surrounding area, with the ability to swap between people, events and goods.
-- **Register & login**: Create an account and login.
-- **Friends**: Dedicated to finding other people and making friends.
-- **Profile**: Manage what other people see when they visit your profile.
-- **Settings**: Manage your password and privacy settings.
+- **Explore**: Discover the neighbourhood with a versatile view that toggles between local people, upcoming events and goods.
+- **Feed**: A real-time stream of local activity, keeping you connected to what's happening in your community.
+- **Global Friends List**: Persistent widget anchored across the entire web app, ensuring your social circle is always accessible.
+- **Profile**: Personalize your digital presence and control how you appear to the community.
 
 ## 🛠 Tech Stack ##
 

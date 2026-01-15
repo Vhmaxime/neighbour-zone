@@ -1,9 +1,9 @@
 import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { Auth } from '../../services/auth';
-import { Api } from '../../services/api';
 import { User } from '../../types/api.types';
+import { AuthService } from '../../services/auth';
+import { UserService } from '../../services/user';
 
 @Component({
   selector: 'app-dashboard',
@@ -13,8 +13,8 @@ import { User } from '../../types/api.types';
   styleUrls: ['./dashboard.css'],
 })
 export class Dashboard implements OnInit {
-  private auth = inject(Auth);
-  private api = inject(Api);
+  private authService = inject(AuthService);
+  private userService = inject(UserService);
 
   // We initialize it with the token value (which might be the ID),
   // but because it's a signal, when we update it later, the UI will snap to the new value instantly
@@ -41,7 +41,7 @@ export class Dashboard implements OnInit {
   ngOnInit() {
     this.isLoading.set(true);
 
-    this.api.getUserMe().subscribe({
+    this.userService.getCurrentUser().subscribe({
       next: (response) => {
         this.user.set(response.user);
         this.userInitial.set(response.user.username.charAt(0).toUpperCase());
@@ -53,6 +53,6 @@ export class Dashboard implements OnInit {
   }
 
   logout() {
-    this.auth.logout();
+    this.authService.logout();
   }
 }

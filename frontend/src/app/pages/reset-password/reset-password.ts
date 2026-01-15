@@ -1,7 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
-import { Auth } from '../../services/auth';
+import { AuthService } from '../../services/auth';
 import { RouterModule } from '@angular/router';
 
 @Component({
@@ -9,7 +9,7 @@ import { RouterModule } from '@angular/router';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './reset-password.html',
-  styleUrls: ['./reset-password.css']
+  styleUrls: ['./reset-password.css'],
 })
 export class ResetPassword {
   error = signal<string | null>(null);
@@ -19,17 +19,17 @@ export class ResetPassword {
   form: FormGroup;
 
   private fb = inject(FormBuilder);
-  private auth = inject(Auth);
+  private authService = inject(AuthService);
 
   constructor() {
     this.form = this.fb.group({
-      email: ['', [Validators.required, Validators.email]]
+      email: ['', [Validators.required, Validators.email]],
     });
   }
 
   submit() {
     if (this.form.invalid) return;
-    
+
     const { email } = this.form.value;
 
     // Reset states
@@ -37,17 +37,16 @@ export class ResetPassword {
     this.error.set(null);
     this.success.set(null);
 
-    this.auth.resetPassword(email).subscribe({
+    this.authService.resetPassword(email).subscribe({
       next: () => {
         this.isSubmitting.set(false);
-        this.success.set('Check your email for reset instructions')
+        this.success.set('Check your email for reset instructions');
       },
       // Error handling
       error: (err) => {
         this.isSubmitting.set(false);
         this.error.set(err.error?.message || 'Failed to send reset email.');
-      }
+      },
     });
   }
 }
-
