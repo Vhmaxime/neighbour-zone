@@ -13,8 +13,8 @@ export class PostService {
     return this.http.get<PostsResponse>(`${this.apiUrl}/post`);
   }
 
-  public getUserPosts(userId: string) {
-    return this.http.get<PostsResponse>(`${this.apiUrl}/post/user/${userId}`);
+  public getPostsByUser(userId: string) {
+    return this.http.get<PostsResponse>(`${this.apiUrl}/post`, { params: { userId } });
   }
 
   public getPost(postId: string) {

@@ -18,8 +18,10 @@ export class MarketplaceService {
     return this.http.get<MarketplaceItemsResponse>(`${this.apiUrl}/marketplace`);
   }
 
-  public getUserMarketplaceItems(userId: string) {
-    return this.http.get<MarketplaceItemsResponse>(`${this.apiUrl}/marketplace/user/${userId}`);
+  public getMarketplaceItemsByUser(userId: string) {
+    return this.http.get<MarketplaceItemsResponse>(`${this.apiUrl}/marketplace`, {
+      params: { userId },
+    });
   }
 
   public getMarketplaceItem(itemId: string) {
