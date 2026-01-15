@@ -76,6 +76,11 @@ export const routes: Routes = [
             title: 'Event Details | Neighbour Zone',
             loadComponent: () => import('./pages/event-details/event-details').then(m => m.EventDetails) 
           },
+          { 
+          path: ':id/edit', 
+          title: 'Edit Event | Neighbour Zone',
+          loadComponent: () => import('./pages/events/edit-event/edit-event').then(m => m.EditEvent) 
+      },
         ]
       },
       { 

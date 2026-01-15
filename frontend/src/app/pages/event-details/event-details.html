@@ -18,8 +18,16 @@
     <div class="organizer">
       <small
         >Organized by:
-        <a [routerLink]="['/user', event.organizer.id]">{{ event.organizer.username }}</a></small
-      >
+        <a [routerLink]="['/user', event.organizer.id]">{{ event.organizer.username }}</a>
+      </small>
+    </div>
+
+    <div class="actions-wrapper mt-4">
+      <app-event-actions 
+        [eventId]="event.id" 
+        [organizerId]="event.organizer.id" 
+        [eventTitle]="event.title">
+      </app-event-actions>
     </div>
   </div>
 </div>
