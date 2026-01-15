@@ -49,9 +49,10 @@
              📍 {{ item.location }}
           </div>
 
-          <button class="w-full mt-auto border border-gray-200 text-gray-600 py-2 rounded-lg hover:bg-gray-50 text-sm font-medium transition">
-            View Details
-          </button>
+          <a [routerLink]="['/marketplace', item.id]" 
+            class="block text-center w-full mt-auto border border-gray-200 text-gray-600 py-2 rounded-lg hover:bg-gray-50 text-sm font-medium transition cursor-pointer">
+            View Item Details
+            </a>
         </div>
       </div>
     } @empty {
