@@ -1,9 +1,3 @@
-@if (error()) {
-<div class="text-center py-4 bg-red-100 text-red-700 rounded-xl mb-4">
-  <p>{{ error() }}</p>
-</div>
-}
-
 <div class="w-full bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
   <div class="flex flex-col border-b border-gray-100">
     @for (tab of tabs; track tab) {
@@ -14,16 +8,38 @@
     >
       <div class="flex items-center justify-between w-full">
         <span class="font-bold text-base">{{ tab }}</span>
-        <span>{{ badge()[tabs.indexOf(tab)] }}</span>
+        <span>{{ badgeCounts()[tabs.indexOf(tab)] }}</span>
       </div>
     </button>
     }
   </div>
 
   <div class="p-6">
-    @if (activeTab() === 'Friends') {
+    @if (isLoading()) {
+    <div class="flex items-center justify-center gap-2 py-12">
+      <span
+        class="animate-spin inline-block w-5 h-5 border-2 border-transparent border-t-gray-600 rounded-full"
+      ></span>
+      <span class="text-gray-500">Loading...</span>
+    </div>
+    } @else if (error()) {
+    <div class="text-center py-8">
+      <div class="text-red-500 mb-4">
+        <svg class="w-12 h-12 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+          ></path>
+        </svg>
+        <p class="text-lg font-semibold">{{ error() }}</p>
+      </div>
+    </div>
+    } @else { @if (activeTab() === 'Friends') {
     <div class="space-y-4">
-      @if (friends()?.friends) { @for (friend of friends()?.friends; track friend.id) {
+      @if (friends()?.friends && friends()!.friends.length > 0) { @for (friend of
+      friends()?.friends; track friend.id) {
       <div class="friend-item">
         <div class="flex items-center justify-between gap-3">
           <span class="font-semibold text-gray-900">{{ friend.username }}</span>
@@ -32,32 +48,24 @@
           } @else {
           <button
             (click)="deleteFriend(friend.id)"
-            class="text-xs text-red-500 hover:underline !p-2 !bg-transparent !text-[var(--accent)]"
+            class="text-xs! hover:underline! p-1! m-1! bg-transparent! text-red-500!"
           >
             remove
           </button>
           }
         </div>
       </div>
-      } @empty {
+      } } @else {
       <div class="text-center py-8 text-gray-500">
         <p class="text-lg font-semibold mb-2">No friends yet</p>
         <p class="text-sm">Start adding friends to see them here</p>
       </div>
-      } } @else {
-      <div>
-        <div class="flex items-center justify-center gap-2 py-12">
-          <span
-            class="animate-spin inline-block w-5 h-5 border-2 border-transparent border-t-gray-600 rounded-full"
-          ></span
-          >Loading friends...
-        </div>
-      </div>
       }
     </div>
-    } @if (activeTab() === "Requests") {
+    } @else if (activeTab() === "Requests") {
     <div class="space-y-4">
-      @if (friends()?.requests) { @for (request of friends()?.requests; track request.id) {
+      @if (friends()?.requests && friends()!.requests.length > 0) { @for (request of
+      friends()?.requests; track request.id) {
       <div class="friend-item">
         <div class="flex items-center justify-between gap-3">
           <span class="font-semibold text-gray-900">{{ request.username }}</span>
@@ -69,13 +77,13 @@
             } @else {
             <button
               (click)="acceptRequest(request.id)"
-              class="text-xs text-green-500 hover:underline !p-2 !bg-transparent !text-[var(--accent)]"
+              class="text-xs! hover:underline! p-1! m-1! bg-transparent! text-green-500!"
             >
               accept
             </button>
             <button
               (click)="rejectRequest(request.id)"
-              class="text-xs text-red-500 hover:underline !p-2 !bg-transparent !text-[var(--accent)]"
+              class="text-xs! hover:underline! p-1! m-1! bg-transparent! text-red-500!"
             >
               reject
             </button>
@@ -83,24 +91,16 @@
           </div>
         </div>
       </div>
-      } @empty {
+      } } @else {
       <div class="text-center py-8 text-gray-500">
         <p class="text-lg font-semibold mb-2">No requests</p>
       </div>
-      } } @else {
-      <div>
-        <div class="flex items-center justify-center gap-2 py-12">
-          <span
-            class="animate-spin inline-block w-5 h-5 border-2 border-transparent border-t-gray-600 rounded-full"
-          ></span
-          >Loading requests...
-        </div>
-      </div>
       }
     </div>
-    }@if (activeTab() === "Sent") {
+    } @else if (activeTab() === "Sent") {
     <div class="space-y-4">
-      @if (friends()?.sent) { @for (request of friends()?.sent; track request.id) {
+      @if (friends()?.sent && friends()!.sent.length > 0) { @for (request of friends()?.sent; track
+      request.id) {
       <div class="friend-item">
         <div class="flex items-center justify-between gap-3">
           <span class="font-semibold text-gray-900">{{ request.username }}</span>
@@ -109,28 +109,19 @@
           } @else {
           <button
             (click)="cancelSentRequest(request.id)"
-            class="text-xs text-green-500 hover:underline !p-2 !bg-transparent !text-[var(--accent)]"
+            class="text-xs! hover:underline! p-1! m-1! bg-transparent! text-red-500!"
           >
             cancel
           </button>
           }
         </div>
       </div>
-      } @empty {
+      } } @else {
       <div class="text-center py-8 text-gray-500">
         <p class="text-lg font-semibold mb-2">No sent requests</p>
       </div>
-      } } @else {
-      <div>
-        <div class="flex items-center justify-center gap-2 py-12">
-          <span
-            class="animate-spin inline-block w-5 h-5 border-2 border-transparent border-t-gray-600 rounded-full"
-          ></span
-          >Loading sent requests...
-        </div>
-      </div>
       }
     </div>
-    }
+    } }
   </div>
 </div>

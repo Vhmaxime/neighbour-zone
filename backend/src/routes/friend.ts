@@ -21,6 +21,25 @@ friendRouter.get("/", async (c) => {
   return c.json({ friends, requests, sent }, 200);
 });
 
+friendRouter.get("/friendship/:id", async (c) => {
+  const { sub: userId } = c.get("jwtPayload");
+  const { id: friendId } = c.req.param();
+  const friendship = await db.query.friendshipsTable.findFirst({
+    where: {
+      OR: [
+        { AND: [{ userId1: { eq: userId } }, { userId2: { eq: friendId } }] },
+        { AND: [{ userId1: { eq: friendId } }, { userId2: { eq: userId } }] },
+      ],
+    },
+  });
+
+  if (!friendship) {
+    return c.json({ message: "not found" }, 404);
+  }
+
+  return c.json({ friendship }, 200);
+});
+
 friendRouter.post(
   "/request/:id",
   zValidator("param", idSchema, (result, c) => {
