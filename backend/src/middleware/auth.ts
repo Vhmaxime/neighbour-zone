@@ -5,6 +5,7 @@ import { constants } from "../config/index.js";
 const authMiddleware = createMiddleware(async (c, next) => {
   const jwtMiddleware = jwt({
     secret: constants.jwtSecret,
+    alg: "HS256",
   });
 
   try {

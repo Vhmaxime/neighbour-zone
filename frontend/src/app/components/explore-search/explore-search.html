@@ -1,32 +1,58 @@
 <div class="search-container">
-      <input 
-        [formControl]="searchControl" 
-        type="text" 
-        placeholder="Search events or items..." 
-        class="search-input"
-      />
+  <input
+    [formControl]="searchControl"
+    type="text"
+    placeholder="Search events or items..."
+    class="search-input"
+  />
 
-      <div *ngIf="results$ | async as results" class="results-dropdown">
-        
-        <div *ngIf="results.events.length > 0">
-          <div class="section-header">Events</div>
-          <div *ngFor="let event of results.events" class="result-item" (click)="onSelectEvent(event)">
-            <span class="title">{{ event.title }}</span>
-            <span class="meta">{{ event.dateTime | date:'shortDate' }}</span>
-          </div>
-        </div>
-
-        <div *ngIf="results.marketplaceItems.length > 0">
-          <div class="section-header">Marketplace</div>
-          <div *ngFor="let item of results.marketplaceItems" class="result-item" (click)="onSelectMarketplace(item)">
-            <span class="title">{{ item.title }}</span>
-            <span class="meta">{{ item.description.slice(0, 30) }}...</span>
-          </div>
-        </div>
-
-        <div *ngIf="results.events.length === 0 && results.marketplaceItems.length === 0 && searchControl.value" 
-             class="no-results">
-          No matches found.
-        </div>
+  @if (searchControl.value && searchResults(); as searchResults) {
+  <div class="results-dropdown">
+    @if (searchResults.users.length > 0) {
+    <div>
+      <div class="section-header">Users</div>
+      @for (user of searchResults.users; track user.id) {
+      <div class="result-item" (click)="onSelectUser(user.id)">
+        <span class="title">{{ user.username }}</span>
       </div>
+      }
     </div>
+    } @if (searchResults.posts.length > 0) {
+    <div>
+      <div class="section-header">Posts</div>
+      @for (post of searchResults.posts; track post.id) {
+      <div class="result-item" (click)="onSelectPost(post.id)">
+        <span class="title">{{ post.title }}</span>
+      </div>
+      }
+    </div>
+    } @if (searchResults.events.length > 0) {
+    <div>
+      <div class="section-header">Events</div>
+      @for (event of searchResults.events; track event.id) {
+      <div class="result-item" (click)="onSelectEvent(event.id)">
+        <span class="title">{{ event.title }}</span>
+        <span class="meta">{{ event.dateTime }}</span>
+      </div>
+      }
+    </div>
+    } @if (searchResults.marketplaceItems.length > 0) {
+    <div>
+      <div class="section-header">Marketplace</div>
+      @for (item of searchResults.marketplaceItems; track item.id) {
+      <div class="result-item" (click)="onSelectMarketplace(item.id)">
+        <span class="title">{{ item.title }}</span>
+        <span class="meta">{{ item.description.slice(0, 30) }}...</span>
+      </div>
+      }
+    </div>
+    } @if ( searchResults.users.length === 0 && searchResults.posts.length === 0 &&
+    searchResults.events.length === 0 && searchResults.marketplaceItems.length === 0 &&
+    !isSearching() ) {
+    <div class="no-results">No matches found.</div>
+    } @if (isSearching()) {
+    <div class="no-results">Searching...</div>
+    }
+  </div>
+  }
+</div>

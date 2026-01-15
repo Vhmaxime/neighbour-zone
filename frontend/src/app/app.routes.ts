@@ -63,8 +63,18 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./pages/event-details/event-details').then((m) => m.EventDetails),
       },
+      { 
+        path: 'marketplace', // The main marketplace page
+        title: 'Marketplace | Neighbour Zone', 
+        loadComponent: () => import('./pages/marketplace/marketplace').then(m => m.Marketplace) 
+      },
+      { 
+        path: 'marketplace/create', 
+        title: 'List an Item | Neighbour Zone', 
+        loadComponent: () => import('./pages/marketplace/create-item/create-item').then(m => m.CreateItem) 
+      },
       {
-        path: 'marketplace/:id',
+        path: 'marketplace/:id',  // Visit specific items
         loadComponent: () =>
           import('./pages/marketplace-details/marketplace-details').then(
             (m) => m.MarketplaceDetails

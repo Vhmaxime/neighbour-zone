@@ -1,4 +1,3 @@
-// import { datetime } from "drizzle-orm/mssql-core";
 import {
   pgTable,
   text,
@@ -8,6 +7,7 @@ import {
   unique,
   primaryKey,
   real,
+  integer,
 } from "drizzle-orm/pg-core";
 import { send } from "node:process";
 
@@ -65,7 +65,8 @@ export const eventsTable = pgTable("events", {
     .references(() => usersTable.id, { onDelete: "cascade" }),
   title: text("title").notNull(),
   description: text("description").notNull(),
-  location: text("location").notNull(),
+  placeDisplayName: text("place_display_name").notNull(),
+  placeId: integer("place_id").notNull(),
   dateTime: timestamp("date_time", { mode: "date" }).notNull(),
   endAt: timestamp("end_at", { mode: "date" }),
   createdAt: timestamp("created_at").defaultNow().notNull(),

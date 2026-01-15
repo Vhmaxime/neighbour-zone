@@ -1,8 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import {
   CreateMarketplaceApplicationRequest,
   CreateMarketplaceItemRequest,
+  MarketplaceItem,
   MarketplaceItemResponse,
   MarketplaceItemsResponse,
 } from '../types/api.types';
@@ -11,15 +14,21 @@ import {
   providedIn: 'root',
 })
 export class MarketplaceService {
+  // Localhost for development
   private readonly apiUrl = 'https://neighbour-zone.vercel.app/api';
+
   private http = inject(HttpClient);
 
-  public getMarketplaceItems() {
-    return this.http.get<MarketplaceItemsResponse>(`${this.apiUrl}/marketplace`);
+  public getMarketplaceItems(): Observable<MarketplaceItem[]> {
+    return this.http
+      .get<MarketplaceItemsResponse>(`${this.apiUrl}/marketplace`)
+      .pipe(map((response) => response.marketplace || []));
   }
 
-  public getUserMarketplaceItems(userId: string) {
-    return this.http.get<MarketplaceItemsResponse>(`${this.apiUrl}/marketplace/user/${userId}`);
+  public getMarketplaceItemsByUser(itemBy: string) {
+    return this.http.get<MarketplaceItemsResponse>(`${this.apiUrl}/marketplace`, {
+      params: { itemBy },
+    });
   }
 
   public getMarketplaceItem(itemId: string) {

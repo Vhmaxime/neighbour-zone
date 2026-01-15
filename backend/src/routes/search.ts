@@ -45,6 +45,7 @@ async function usersSearch(query: string) {
       id: true,
       username: true,
     },
+    limit: 5,
   });
 }
 
@@ -68,6 +69,7 @@ async function postsSearch(query: string) {
       id: true,
       title: true,
     },
+    limit: 5,
   });
 }
 
@@ -83,6 +85,7 @@ async function eventsSearch(query: string) {
       title: true,
       dateTime: true,
     },
+    limit: 5,
   });
 }
 
@@ -107,6 +110,7 @@ async function marketplaceSearch(query: string) {
       title: true,
       description: true,
     },
+    limit: 5,
   });
 }
 

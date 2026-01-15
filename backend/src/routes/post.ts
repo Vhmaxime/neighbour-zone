@@ -7,50 +7,71 @@ import { zValidator } from "@hono/zod-validator";
 import { postSchema } from "../schemas/post.js";
 import { idSchema } from "../schemas/index.js";
 import authMiddleware from "../middleware/auth.js";
+import { z } from "zod/v4";
+import { count } from "node:console";
 
 const postRouter = new Hono<{ Variables: Variables }>();
 
 postRouter.use(authMiddleware);
 
 // Get all posts
-postRouter.get("/", async (c) => {
-  const { sub: userId } = c.get("jwtPayload");
+postRouter.get(
+  "/",
+  zValidator(
+    "query",
+    z.object({ postBy: z.string().optional() }),
+    (result, c) => {
+      if (!result.success) {
+        console.error("Validation error:", result.error);
+        return c.json({ message: "Bad request" }, 400);
+      }
+    }
+  ),
+  async (c) => {
+    const { sub: userId } = c.get("jwtPayload");
 
-  const posts = await db.query.postsTable.findMany({
-    columns: {
-      authorId: false,
-    },
-    with: {
-      author: {
-        columns: {
-          id: true,
-          username: true,
+    const { postBy } = c.req.valid("query");
+
+    const posts = await db.query.postsTable.findMany({
+      where: postBy ? { authorId: { eq: postBy } } : undefined,
+      columns: {
+        authorId: false,
+      },
+      with: {
+        author: {
+          columns: {
+            id: true,
+            username: true,
+          },
         },
       },
-    },
-    extras: {
-      likes: (table) =>
-        db.$count(postLikesTable, eq(table.id, postLikesTable.postId)),
-    },
-  });
+      extras: {
+        likes: (table) =>
+          db.$count(postLikesTable, eq(table.id, postLikesTable.postId)),
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
 
-  const likedPostIds = await db.query.postLikesTable.findMany({
-    where: { userId: { eq: userId } },
-    columns: {
-      postId: true,
-    },
-  });
+    const likedPostIds = await db.query.postLikesTable.findMany({
+      where: { userId: { eq: userId } },
+      columns: {
+        postId: true,
+      },
+    });
 
-  const postSet = posts.map((post) => {
-    const liked = likedPostIds.some((like) => like.postId === post.id);
-    return {
-      ...post,
-      liked,
-    };
-  });
+    const postSet = posts.map((post) => {
+      const liked = likedPostIds.some((like) => like.postId === post.id);
+      return {
+        ...post,
+        liked,
+      };
+    });
 
-  return c.json({ posts: postSet }, 200);
-});
+    return c.json({ posts: postSet, count: postSet.length }, 200);
+  }
+);
 
 // Create a new post
 postRouter.post(
@@ -92,71 +113,6 @@ postRouter.post(
     });
 
     return c.json({ post }, 201);
-  }
-);
-
-// Get posts by user ID (specifieke route - moet voor /:id komen)
-postRouter.get(
-  "/user/:id",
-
-  zValidator("param", idSchema, (result, c) => {
-    if (!result.success) {
-      console.error(result.error);
-      return c.json({ message: "Bad request" }, 400);
-    }
-  }),
-  async (c) => {
-    const { id: userId } = c.req.valid("param");
-
-    const user = await db.query.usersTable.findFirst({
-      where: {
-        id: { eq: userId },
-      },
-    });
-
-    if (!user) {
-      return c.json({ message: "Not found" }, 404);
-    }
-
-    const posts = await db.query.postsTable.findMany({
-      where: {
-        authorId: { eq: userId },
-      },
-      columns: {
-        authorId: false,
-      },
-      with: {
-        author: {
-          columns: {
-            id: true,
-            username: true,
-          },
-        },
-      },
-      extras: {
-        likes: (table) =>
-          db.$count(postLikesTable, eq(table.id, postLikesTable.postId)),
-      },
-    });
-
-    const count = await db.$count(postsTable, eq(postsTable.authorId, userId));
-
-    const likedPostIds = await db.query.postLikesTable.findMany({
-      where: { userId: { eq: userId } },
-      columns: {
-        postId: true,
-      },
-    });
-
-    const postSet = posts.map((post) => {
-      const liked = likedPostIds.some((like) => like.postId === post.id);
-      return {
-        ...post,
-        liked,
-      };
-    });
-
-    return c.json({ posts: postSet, count }, 200);
   }
 );
 

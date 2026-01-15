@@ -7,50 +7,69 @@ import { zValidator } from "@hono/zod-validator";
 import { idSchema } from "../schemas/index.js";
 import authMiddleware from "../middleware/auth.js";
 import { eventSchema } from "../schemas/event.js";
+import { z } from "zod/v4";
 
 const eventRouter = new Hono<{ Variables: Variables }>();
 
 eventRouter.use(authMiddleware);
 
 // Get all events
-eventRouter.get("/", async (c) => {
-  const { sub: userId } = c.get("jwtPayload");
+eventRouter.get(
+  "/",
+  zValidator(
+    "query",
+    z.object({ eventBy: z.string().optional() }),
+    (result, c) => {
+      if (!result.success) {
+        console.error("Validation error:", result.error);
+        return c.json({ message: "Bad request" }, 400);
+      }
+    }
+  ),
+  async (c) => {
+    const { sub: userId } = c.get("jwtPayload");
+    const { eventBy } = c.req.valid("query");
 
-  const events = await db.query.eventsTable.findMany({
-    columns: {
-      userId: false,
-    },
-    with: {
-      organizer: {
-        columns: {
-          id: true,
-          username: true,
+    const events = await db.query.eventsTable.findMany({
+      where: eventBy ? { userId: { eq: eventBy } } : undefined,
+      columns: {
+        userId: false,
+      },
+      with: {
+        organizer: {
+          columns: {
+            id: true,
+            username: true,
+          },
         },
       },
-    },
-    extras: {
-      likes: (table) =>
-        db.$count(eventLikesTable, eq(table.id, eventLikesTable.eventId)),
-    },
-  });
+      extras: {
+        likes: (table) =>
+          db.$count(eventLikesTable, eq(table.id, eventLikesTable.eventId)),
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
 
-  const likedEventIds = await db.query.eventLikesTable.findMany({
-    where: { userId: { eq: userId } },
-    columns: {
-      eventId: true,
-    },
-  });
+    const likedEventIds = await db.query.eventLikesTable.findMany({
+      where: { userId: { eq: userId } },
+      columns: {
+        eventId: true,
+      },
+    });
 
-  const eventSet = events.map((event) => {
-    const liked = likedEventIds.some((like) => like.eventId === event.id);
-    return {
-      ...event,
-      liked,
-    };
-  });
+    const eventSet = events.map((event) => {
+      const liked = likedEventIds.some((like) => like.eventId === event.id);
+      return {
+        ...event,
+        liked,
+      };
+    });
 
-  return c.json({ events: eventSet }, 200);
-});
+    return c.json({ events: eventSet, count: eventSet.length }, 200);
+  }
+);
 
 // Create a new event
 eventRouter.post(
@@ -62,7 +81,7 @@ eventRouter.post(
     }
   }),
   async (c) => {
-    const { title, dateTime, description, location, endAt } =
+    const { title, dateTime, description, placeDisplayName, placeId, endAt } =
       c.req.valid("json");
 
     const { sub: userId } = c.get("jwtPayload");
@@ -74,7 +93,8 @@ eventRouter.post(
         title,
         dateTime,
         description,
-        location,
+        placeDisplayName,
+        placeId,
         endAt,
       })
       .returning();
@@ -95,51 +115,6 @@ eventRouter.post(
     });
 
     return c.json({ event }, 201);
-  }
-);
-
-// Get events by user ID (specifieke route - moet voor /:id komen)
-eventRouter.get(
-  "/user/:id",
-  zValidator("param", idSchema, (result, c) => {
-    if (!result.success) {
-      console.error(result.error);
-      return c.json({ message: "Bad request" }, 400);
-    }
-  }),
-  async (c) => {
-    const { id: userId } = c.req.valid("param");
-
-    const user = await db.query.usersTable.findFirst({
-      where: { id: { eq: userId } },
-    });
-
-    if (!user) {
-      return c.json({ message: "Not found" }, 404);
-    }
-
-    const events = await db.query.eventsTable.findMany({
-      where: { userId: { eq: userId } },
-      columns: {
-        userId: false,
-      },
-      with: {
-        organizer: {
-          columns: {
-            id: true,
-            username: true,
-          },
-        },
-      },
-      extras: {
-        likes: (table) =>
-          db.$count(eventLikesTable, eq(table.id, eventLikesTable.eventId)),
-      },
-    });
-
-    const count = await db.$count(eventsTable, eq(eventsTable.userId, userId));
-
-    return c.json({ events, count }, 200);
   }
 );
 
@@ -200,10 +175,10 @@ eventRouter.get(
         },
       });
 
-      return c.json({ ...event, liked, likedBy }, 200);
+      return c.json({ event, liked, likedBy }, 200);
     }
 
-    return c.json({ ...event, liked }, 200);
+    return c.json({ event, liked }, 200);
   }
 );
 

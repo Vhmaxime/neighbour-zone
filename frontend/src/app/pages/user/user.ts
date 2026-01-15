@@ -16,7 +16,6 @@ import { PostService } from '../../services/post';
 import { EventService } from '../../services/event';
 import { MarketplaceService } from '../../services/marketplace';
 import { FriendButton } from '../../components/fiend-button/friend-button';
-import { FriendList } from '../../components/friend-list/friend-list';
 
 @Component({
   selector: 'app-user',
@@ -68,7 +67,7 @@ export class User {
 
   private loadUserPosts() {
     this.isLoading.set(true);
-    firstValueFrom(this.postService.getUserPosts(this.userId))
+    firstValueFrom(this.postService.getPostsByUser(this.userId))
       .then((data) => {
         this.posts.set(data);
       })
@@ -82,7 +81,7 @@ export class User {
 
   private loadUserEvents() {
     this.isLoading.set(true);
-    firstValueFrom(this.eventService.getUserEvents(this.userId))
+    firstValueFrom(this.eventService.getEventsByUser(this.userId))
       .then((data) => {
         this.events.set(data);
       })
@@ -96,7 +95,7 @@ export class User {
 
   private loadUserMarketplaceItems() {
     this.isLoading.set(true);
-    firstValueFrom(this.marketplaceService.getUserMarketplaceItems(this.userId))
+    firstValueFrom(this.marketplaceService.getMarketplaceItemsByUser(this.userId))
       .then((data) => {
         this.marketplaceItems.set(data);
       })

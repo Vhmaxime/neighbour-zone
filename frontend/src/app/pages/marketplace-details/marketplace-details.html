@@ -1,26 +1,19 @@
-<div *ngIf="item$ | async as item; else loading" class="details-container">
-  
-  <div class="header">
-    <h1>{{ item.title }}</h1>
-    <span class="badge">Marketplace</span>
-  </div>
-
-  <div class="content">
-    <p class="price" *ngIf="item.price">
-      💰 {{ item.price | currency:'EUR' }}
-    </p>
-
-    <hr />
+@if (isLoading()) {
+  <div class="loading">Loading item details...</div>
+} @else if (item()) {
+  @let data = item()!; 
+  <div class="details-container">
+    <a routerLink="/marketplace" class="back-link">← Back to Marketplace</a>
     
-    <p class="description">{{ item.description }}</p>
+    <h1>{{ data.title }}</h1>
+    <p class="price">💰 {{ data.price | currency : 'EUR' }}</p>
+    <p class="description">{{ data.description }}</p>
     
     <div class="seller">
-      <small>Sold by: {{ item.provider.username || 'Unknown Seller' }}</small>
+       <small>Sold by: {{ data.provider.username }}</small>
     </div>
   </div>
+} @else {
+  <div class="error">Item not found.</div>
+}
 
-</div>
-
-<ng-template #loading>
-  <div class="loading">Loading item details...</div>
-</ng-template>
