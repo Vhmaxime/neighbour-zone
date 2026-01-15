@@ -8,14 +8,14 @@
   border: 1px solid #f3f4f6;
 }
 
+
 .calendar-header {
   display: grid;
-  /* Fixed 3-column grid: buttons stay at the ends, text stays in the middle */
-  grid-template-columns: 45px 1fr 45px; 
+  grid-template-columns: 45px 1fr 45px;
   align-items: center;
   padding: 14px 10px;
   background-color: #D97757;
-  min-height: 60px; /* Ensures the header height never changes */
+  min-height: 60px;
 }
 
 .calendar-header h2 {
@@ -26,8 +26,7 @@
   letter-spacing: 0.03em;
   text-transform: uppercase;
   text-align: center;
-  /* Prevents the text from wrapping or pushing buttons */
-  white-space: nowrap; 
+  white-space: nowrap;
 }
 
 .nav-btn {
@@ -36,7 +35,7 @@
   cursor: pointer;
   font-size: 0.9rem;
   color: #ffffff;
-  width: 38px; /* Slightly wider buttons like in your screenshot */
+  width: 38px;
   height: 28px;
   display: flex;
   align-items: center;
@@ -49,6 +48,7 @@
 .nav-btn:hover {
   background: rgba(255, 255, 255, 0.35);
 }
+
 
 .weekdays-grid {
   display: grid;
@@ -67,12 +67,13 @@
   opacity: 0.8;
 }
 
+
 .days-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  grid-template-rows: repeat(6, 1fr); 
+  grid-template-rows: repeat(6, 1fr);
   padding: 8px;
-  height: 220px; 
+  height: 220px;
 }
 
 .day-cell {
@@ -87,18 +88,22 @@
   font-size: 0.75rem;
   font-weight: 500;
   color: #4b5563;
+  position: relative;
   z-index: 2;
 }
 
 .day-cell::after {
   content: '';
   position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   width: 28px;
   height: 28px;
   border-radius: 50%;
   background: #D97757;
   opacity: 0;
-  transition: all 0.2s ease;
+  transition: opacity 0.2s ease;
   z-index: 1;
 }
 
@@ -106,9 +111,9 @@
   opacity: 0.1;
 }
 
-.different-month .day-number {
-  color: #d1d5db;
-  opacity: 0.5;
+.today::after {
+  opacity: 1;
+  box-shadow: 0 4px 10px rgba(217, 119, 87, 0.3);
 }
 
 .today .day-number {
@@ -116,7 +121,21 @@
   font-weight: 700;
 }
 
-.today::after {
-  opacity: 1 !important;
-  box-shadow: 0 4px 10px rgba(217, 119, 87, 0.3);
+
+.different-month .day-number {
+  color: #d1d5db;
+  opacity: 0.5;
+}
+
+
+.event-dot {
+  position: absolute;
+  bottom: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #D97757;
+  z-index: 3;
 }
