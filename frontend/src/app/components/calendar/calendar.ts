@@ -1,4 +1,3 @@
-import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DateTime, Info } from 'luxon';
 import { Component, OnInit, Input } from '@angular/core';
@@ -8,7 +7,7 @@ import { Component, OnInit, Input } from '@angular/core';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './calendar.html',
-  styleUrl: './calendar.css'
+  styleUrls: ['./calendar.css']
 })
 export class Calendar implements OnInit {
 
