@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { DateTime, Info } from 'luxon';
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
 
 @Component({
   selector: 'app-calendar',
@@ -9,7 +9,7 @@ import { Component, OnInit, Input } from '@angular/core';
   templateUrl: './calendar.html',
   styleUrls: ['./calendar.css']
 })
-export class Calendar implements OnInit {
+export class Calendar implements OnInit, OnChanges {
 
   @Input() events: any[] = [];
 
@@ -20,6 +20,12 @@ export class Calendar implements OnInit {
   ngOnInit(): void {
     this.weekDays = Info.weekdays('short', { locale: 'en' });
     this.setupCalendar();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['events']) {
+      this.days = [...this.days];
+    }
   }
 
   private setupCalendar(): void {
@@ -39,10 +45,13 @@ export class Calendar implements OnInit {
   }
 
   public hasEventOnDate(date: DateTime): boolean {
-    return this.events.some(event =>
-      DateTime.fromISO(event.dateTime).hasSame(date, 'day')
-    );
-  }
+  return this.events.some(event => {
+    if (!event.dateTime) return false;
+
+    const eventDate = DateTime.fromISO(event.dateTime).startOf('day');
+    return eventDate.equals(date.startOf('day'));
+  });
+}
 
   public prevMonth(): void {
     this.viewDate = this.viewDate.minus({ months: 1 });
