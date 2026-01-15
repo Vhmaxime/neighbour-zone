@@ -13,51 +13,74 @@ import {
   marketplaceItemSchema,
 } from "../schemas/marketplace.js";
 import authMiddleware from "../middleware/auth.js";
+import { z } from "zod/v4";
 
 const marketplaceRouter = new Hono<{ Variables: Variables }>();
 
 marketplaceRouter.use(authMiddleware);
 
 // Get all marketplace items
-marketplaceRouter.get("", async (c) => {
-  const { sub: userId } = c.get("jwtPayload");
+marketplaceRouter.get(
+  "",
+  zValidator(
+    "query",
+    z.object({
+      itemBy: z.string().optional(),
+    }),
+    (result, c) => {
+      if (!result.success) {
+        console.error("Validation error:", result.error);
+        return c.json({ message: "Bad request" }, 400);
+      }
+    }
+  ),
+  async (c) => {
+    const { sub: userId } = c.get("jwtPayload");
+    const { itemBy } = c.req.valid("query");
 
-  const marketplace = await db.query.marketplaceItemsTable.findMany({
-    columns: {
-      userId: false,
-    },
-    with: {
-      provider: {
-        columns: {
-          id: true,
-          username: true,
+    const marketplace = await db.query.marketplaceItemsTable.findMany({
+      where: itemBy ? { userId: { eq: itemBy } } : undefined,
+      columns: {
+        userId: false,
+      },
+      with: {
+        provider: {
+          columns: {
+            id: true,
+            username: true,
+          },
         },
       },
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
 
-  const appliedItemIds = await db.query.marketplaceApplicationsTable.findMany({
-    where: { userId: { eq: userId } },
-    columns: {
-      marketplaceItemId: true,
-    },
-  });
-
-  const marketplaceSet = marketplace.map((item) => {
-    const applied = appliedItemIds.some(
-      (application) => application.marketplaceItemId === item.id
+    const appliedItemIds = await db.query.marketplaceApplicationsTable.findMany(
+      {
+        where: { userId: { eq: userId } },
+        columns: {
+          marketplaceItemId: true,
+        },
+      }
     );
-    return {
-      ...item,
-      applied,
-    };
-  });
 
-  return c.json({ marketplace: marketplaceSet }, 200);
-});
+    const marketplaceSet = marketplace.map((item) => {
+      const applied = appliedItemIds.some(
+        (application) => application.marketplaceItemId === item.id
+      );
+      return {
+        ...item,
+        applied,
+      };
+    });
+
+    return c.json(
+      { marketplace: marketplaceSet, count: marketplaceSet.length },
+      200
+    );
+  }
+);
 
 // Create a new marketplace item
 marketplaceRouter.post(
@@ -106,57 +129,6 @@ marketplaceRouter.post(
     });
 
     return c.json({ marketplace: marketplaceItem }, 201);
-  }
-);
-
-// Get marketplace items by user ID
-marketplaceRouter.get(
-  "/user/:id",
-  zValidator("param", idSchema, (result, c) => {
-    if (!result.success) {
-      console.error(result.error);
-      return c.json({ message: "Bad request" }, 400);
-    }
-  }),
-  async (c) => {
-    const { id: userId } = c.req.valid("param");
-
-    const user = await db.query.usersTable.findFirst({
-      where: {
-        id: { eq: userId },
-      },
-    });
-
-    if (!user) {
-      return c.json({ message: "Not found" }, 404);
-    }
-
-    const marketplace = await db.query.marketplaceItemsTable.findMany({
-      where: {
-        userId: { eq: userId },
-      },
-      columns: {
-        userId: false,
-      },
-      with: {
-        provider: {
-          columns: {
-            id: true,
-            username: true,
-          },
-        },
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
-
-    const count = await db.$count(
-      marketplaceItemsTable,
-      eq(marketplaceItemsTable.userId, userId)
-    );
-
-    return c.json({ marketplace, count }, 200);
   }
 );
 
