@@ -5,11 +5,12 @@ import { Observable, switchMap, catchError, of, tap, map, firstValueFrom } from 
 import { Event, EventResponse } from '../../types/api.types';
 import { Title } from '@angular/platform-browser';
 import { EventService } from '../../services/event';
+import { EventActions } from '../events/event-actions/event-actions';
 
 @Component({
   selector: 'app-event-details',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, EventActions],
   templateUrl: './event-details.html',
   styleUrl: './event-details.css',
 })

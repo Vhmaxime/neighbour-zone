@@ -1,0 +1,12 @@
+@if (isOwner()) {
+  <div class="flex gap-2">
+    <a [routerLink]="['/events', eventId(), 'edit']" 
+       class="px-3 py-1 bg-blue-50 text-blue-600 rounded-md text-sm font-medium hover:bg-blue-100 transition">
+      ✏️ Edit
+    </a>
+    <button (click)="onDelete()" 
+            class="px-3 py-1 bg-red-50 text-red-600 rounded-md text-sm font-medium hover:bg-red-100 transition">
+      🗑️ Delete
+    </button>
+  </div>
+}
