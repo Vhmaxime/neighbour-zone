@@ -23,7 +23,7 @@ export class ExploreSearch {
   public ngOnInit() {
     this.searchControl.valueChanges
       .pipe(debounceTime(300))
-      .subscribe((term) => this.performSearch(term || ''));
+      .subscribe((query) => (query ? this.performSearch(query) : undefined));
   }
 
   private performSearch(term: string) {

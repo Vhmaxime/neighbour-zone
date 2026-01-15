@@ -1,4 +1,8 @@
 <div class="search-container">
+  @if (searchControl.value) {
+  <div class="backdrop"></div>
+  }
+
   <input
     [formControl]="searchControl"
     type="text"
@@ -6,9 +10,11 @@
     class="search-input"
   />
 
-  @if (searchControl.value && searchResults(); as searchResults) {
+  @if (searchControl.value) {
   <div class="results-dropdown">
-    @if (searchResults.users.length > 0) {
+    @if (isSearching()) {
+    <div class="loading-state">Searching...</div>
+    } @else if (searchResults(); as searchResults) { @if (searchResults.users.length > 0) {
     <div>
       <div class="section-header">Users</div>
       @for (user of searchResults.users; track user.id) {
@@ -32,7 +38,7 @@
       @for (event of searchResults.events; track event.id) {
       <div class="result-item" (click)="onSelectEvent(event.id)">
         <span class="title">{{ event.title }}</span>
-        <span class="meta">{{ event.dateTime }}</span>
+        <span class="meta">{{ event.dateTime | date : 'short' }}</span>
       </div>
       }
     </div>
@@ -50,9 +56,7 @@
     searchResults.events.length === 0 && searchResults.marketplace.length === 0 && !isSearching() )
     {
     <div class="no-results">No matches found.</div>
-    } @if (isSearching()) {
-    <div class="no-results">Searching...</div>
-    }
+    } }
   </div>
   }
 </div>
