@@ -1,6 +1,6 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink} from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { MarketplaceItem, MarketplaceItemResponse } from '../../types/api.types';
 import { Title } from '@angular/platform-browser';
@@ -13,7 +13,7 @@ import { MarketplaceService } from '../../services/marketplace';
   templateUrl: './marketplace-details.html',
   styleUrl: './marketplace-details.css',
 })
-export class MarketplaceDetails {
+export class MarketplaceDetails implements OnInit {
   private activatedRoute = inject(ActivatedRoute);
   private router = inject(Router);
   private marketplaceService = inject(MarketplaceService);

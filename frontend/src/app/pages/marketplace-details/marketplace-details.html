@@ -3,12 +3,14 @@
 } @else if (item()) {
   @let data = item()!; 
   <div class="details-container">
+    <a routerLink="/marketplace" class="back-link">← Back to Marketplace</a>
+    
     <h1>{{ data.title }}</h1>
     <p class="price">💰 {{ data.price | currency : 'EUR' }}</p>
     <p class="description">{{ data.description }}</p>
     
     <div class="seller">
-       <small>Sold by: {{ data.provider?.username || 'Unknown User' }}</small>
+       <small>Sold by: {{ data.provider.username }}</small>
     </div>
   </div>
 } @else {
