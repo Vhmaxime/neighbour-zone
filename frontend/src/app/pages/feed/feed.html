@@ -2,16 +2,35 @@
   <h1 class="text-2xl font-bold text-gray-900 mb-6">Latest in the Neighbourhood</h1>
 
   @if (isLoading()) {
-  <p class="text-center py-10">Loading neighbours' activity...</p>
+    <p class="text-center py-10">Loading neighbours' activity...</p>
   } @else {
-  <div class="flex flex-col gap-6">
-    @for (item of feedItems(); track item.id) { @if (item.dateTime) {
-    <app-event-tile [event]="item" />
-    } @else {
-    <app-marketplace-tile [item]="item" />
-    } } @empty {
-    <p class="text-center py-10 text-gray-500">Nothing new happening today.</p>
-    }
-  </div>
+    <div class="flex flex-col gap-6">
+      @for (item of feedItems(); track item.id) {
+        
+        @if (item.dateTime) {
+          <app-event-tile 
+            [event]="item" 
+            (deleted)="handleItemDeleted($event)" 
+          />
+        } 
+        
+        @else if (item.type) {
+          <app-post 
+            [post]="item" 
+            (deleted)="handleItemDeleted($event)" 
+          />
+        }
+
+        @else {
+          <app-marketplace-tile 
+            [item]="item" 
+            (deleted)="handleItemDeleted($event)" 
+          />
+        }
+
+      } @empty {
+        <p class="text-center py-10 text-gray-500">No activity yet!</p>
+      }
+    </div>
   }
 </div>
