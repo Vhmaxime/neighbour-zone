@@ -12,19 +12,19 @@ import { firstValueFrom } from 'rxjs';
 export class LikeButton {
   private postService = inject(PostService);
   private eventService = inject(EventService);
-  public initLikeCount = input.required<number>();
-  public initIsLiked = input.required<boolean>();
+  public likes = input.required<number>();
+  public isLiked = input.required<boolean>();
   public type = input.required<'post' | 'event'>();
   public id = input.required<string>();
   public isLoading = signal<boolean>(false);
 
-  public counter = signal<number>(0);
-  public isLiked = signal<boolean>(false);
+  public likeCounter = signal<number>(0);
+  public likeState = signal<boolean>(false);
 
   constructor() {
     effect(() => {
-      this.counter.set(this.initLikeCount());
-      this.isLiked.set(this.initIsLiked());
+      this.likeCounter.set(this.likes());
+      this.likeState.set(this.isLiked());
     });
   }
 
@@ -33,16 +33,15 @@ export class LikeButton {
 
     this.isLoading.set(true);
 
-    const currentlyLiked = this.isLiked();
-    const currentCount = this.counter();
+    const currentlyLiked = this.likeState();
+    const currentCount = this.likeCounter();
 
-    // Optimistically update UI
-    if (this.isLiked()) {
-      this.counter.set(this.counter() - 1);
-      this.isLiked.set(false);
+    if (this.likeState()) {
+      this.likeCounter.set(this.likeCounter() - 1);
+      this.likeState.set(false);
     } else {
-      this.counter.set(this.counter() + 1);
-      this.isLiked.set(true);
+      this.likeCounter.set(this.likeCounter() + 1);
+      this.likeState.set(true);
     }
 
     try {
@@ -53,8 +52,8 @@ export class LikeButton {
       }
     } catch (error) {
       console.error('Failed to toggle like:', error);
-      this.counter.set(currentCount);
-      this.isLiked.set(currentlyLiked);
+      this.likeCounter.set(currentCount);
+      this.likeState.set(currentlyLiked);
     } finally {
       this.isLoading.set(false);
     }
