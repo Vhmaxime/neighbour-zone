@@ -15,20 +15,19 @@ import {
 })
 export class MarketplaceService {
   // Localhost for development
-  private readonly apiUrl = 'http://localhost:3000/api';
-  // private readonly apiUrl = 'https://neighbour-zone.vercel.app/api';
+  private readonly apiUrl = 'https://neighbour-zone.vercel.app/api';
 
   private http = inject(HttpClient);
 
   public getMarketplaceItems(): Observable<MarketplaceItem[]> {
-    return this.http.get<MarketplaceItemsResponse>(`${this.apiUrl}/marketplace`).pipe(
-      map(response => response.marketplace || [])
-    );
+    return this.http
+      .get<MarketplaceItemsResponse>(`${this.apiUrl}/marketplace`)
+      .pipe(map((response) => response.marketplace || []));
   }
 
-  public getMarketplaceItemsByUser(userId: string) {
+  public getMarketplaceItemsByUser(itemBy: string) {
     return this.http.get<MarketplaceItemsResponse>(`${this.apiUrl}/marketplace`, {
-      params: { userId },
+      params: { itemBy },
     });
   }
 
