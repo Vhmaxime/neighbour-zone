@@ -21,6 +21,15 @@
     >
       <span class="day-number">{{ date.day }}</span>
       <span class="event-dot" *ngIf="hasEventOnDate(date)"></span>
+      <div class="event-preview" *ngIf="hasEventOnDate(date)">
+        <div
+          class="event-preview-item"
+          *ngFor="let event of getEventsForDate(date)"
+        >
+          <strong>{{ event.title }}</strong>
+          <span>{{ event.placeDisplayName }}</span>
+        </div>
+      </div>
     </div>
   </div>
 </div>
