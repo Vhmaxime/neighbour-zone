@@ -16,7 +16,7 @@ export class LocationSearchBar {
   public searchControl = new FormControl('');
   public isSearching = signal(false);
   public searchResults = signal<NominatimLocation[] | null>(null);
-  public locationSelected = output<NominatimLocation>();
+  public selectedLocation = output<NominatimLocation>();
 
   public ngOnInit() {
     this.searchControl.valueChanges
@@ -39,6 +39,8 @@ export class LocationSearchBar {
   }
 
   public onSelectLocation(location: NominatimLocation) {
-    this.locationSelected.emit(location);
+    this.searchResults.set(null);
+    this.selectedLocation.emit(location);
+    this.searchControl.setValue(location.display_name, { emitEvent: false });
   }
 }

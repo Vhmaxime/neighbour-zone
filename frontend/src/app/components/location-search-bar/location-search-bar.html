@@ -1,7 +1,7 @@
 <div class="search-container">
   <input [formControl]="searchControl" type="text" placeholder="Search for a location..." />
 
-  @if (searchControl.value) {
+  @if (searchControl.value && searchResults() !== null) {
   <div>
     @if (isSearching()) {
     <div>Searching...</div>
