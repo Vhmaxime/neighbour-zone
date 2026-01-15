@@ -1,0 +1,74 @@
+<div class="max-w-2xl mx-auto py-8 px-4">
+  
+  <div class="mb-8">
+    <a routerLink="/marketplace" class="text-blue-600 hover:underline text-sm mb-2 inline-block">&larr; Back to Marketplace</a>
+    <h1 class="text-3xl font-bold text-gray-900">List an Item</h1>
+    <p class="text-gray-500">Share, sell, or trade with your neighbors.</p>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="bg-white p-6 rounded-xl border shadow-sm space-y-6">
+    
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+      <input 
+        type="text" 
+        formControlName="title"
+        class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+        placeholder="e.g. Vintage Bicycle"
+      >
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Type</label>
+        <select formControlName="category" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white">
+          <option value="offered">Offered (Selling/Giving)</option>
+          <option value="wanted">Wanted (Looking for)</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Price (€)</label>
+        <input 
+          type="number" 
+          formControlName="price"
+          class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+          placeholder="0.00"
+        >
+      </div>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">Location</label>
+      <input 
+        type="text" 
+        formControlName="location"
+        class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+        placeholder="e.g. Main St. or 'Pick up only'"
+      >
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+      <textarea 
+        formControlName="description"
+        rows="4"
+        class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+        placeholder="Describe the condition, size, etc..."
+      ></textarea>
+    </div>
+
+    <button 
+      type="submit" 
+      [disabled]="form.invalid || isSubmitting"
+      class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg shadow-sm transition disabled:opacity-50 disabled:cursor-not-allowed"
+    >
+      @if (isSubmitting) {
+        Publishing...
+      } @else {
+        Publish Item
+      }
+    </button>
+
+  </form>
+</div>
