@@ -12,8 +12,8 @@ The focus is on clean architecture, security, and long-term scalability.
 ## ✨ Core features ##
 
 - **Explore**: Discover the neighbourhood with a search bar and a map that displays the location of goods and events.
-- **Feed**: See the latest posts from people in the community.
-- **Marketplace**: A place where people can list items for sale or post requests for things they are looking for.
+- **Feed**: Create posts and see what people are posting.
+- **Marketplace**: List items that you want to get or sell and see an overview of listed items.
 - **Events**: A dedicated hub to create, discover and stay engaged with events.
 - **Global Friends List**: Persistent widget anchored across the entire web app, ensuring your social circle is always accessible.
 
