@@ -1,53 +1,60 @@
 import { Component, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { Observable, switchMap, catchError, of, tap, map, firstValueFrom } from 'rxjs';
-import { Event, EventResponse } from '../../types/api.types';
+import { firstValueFrom } from 'rxjs';
+import { Event } from '../../types/api.types';
 import { Title } from '@angular/platform-browser';
 import { EventService } from '../../services/event';
-import { EventActions } from '../events/event-actions/event-actions';
-import { Location } from '@angular/common';
+import { BackButton } from '../../components/back-button/back-button';
+import { EditButton } from '../../components/edit-button/edit-button';
+import { DeleteButton } from '../../components/delete-button/delete-button';
 
 @Component({
   selector: 'app-event-details',
   standalone: true,
-  imports: [CommonModule, RouterLink, EventActions],
+  imports: [CommonModule, RouterLink, DatePipe, BackButton, EditButton, DeleteButton],
   templateUrl: './event-details.html',
   styleUrl: './event-details.css',
 })
 export class EventDetails {
   private activatedRoute = inject(ActivatedRoute);
   private router = inject(Router);
-  private location = inject(Location);
   private eventService = inject(EventService);
   private titleService = inject(Title);
+
+  // Captures ID from route snapshot
   private eventId = this.activatedRoute.snapshot.paramMap.get('id') as string;
-  public isLoading = signal(false);
+
+  public isLoading = signal(true);
   public event = signal<Event | null>(null);
 
-  public ngOnInit() {
+  ngOnInit() {
     this.loadEvent();
   }
 
-  private loadEvent() {
-    this.isLoading.set(true);
-    firstValueFrom(this.eventService.getEvent(this.eventId))
-      .then(({ event }) => {
-        this.event.set(event);
-        this.titleService.setTitle(`${event.title} | Neighbour Zone`);
-      })
-      .catch((error) => {
-        if (error.status === 404) {
-          this.router.navigate(['/not-found']);
-        }
-        console.error('Error fetching event:', error);
-      })
-      .finally(() => {
-        this.isLoading.set(false);
-      });
+  private async loadEvent() {
+    try {
+      this.isLoading.set(true);
+      const response = await firstValueFrom(this.eventService.getEvent(this.eventId));
+      
+      // Safety: handles { event: {} } or direct {} responses
+      const eventData = response?.event || response;
+      this.event.set(eventData);
+      
+      if (eventData) {
+        this.titleService.setTitle(`${eventData.title} | Neighbour Zone`);
+      }
+    } catch (error: any) {
+      if (error.status === 404) {
+        this.router.navigate(['/not-found']);
+      }
+      console.error('Error fetching event:', error);
+    } finally {
+      this.isLoading.set(false);
+    }
   }
 
-  public goBack() {
-    this.location.back();
+  public onEventDeleted() {
+    this.router.navigate(['/events']);
   }
 }
