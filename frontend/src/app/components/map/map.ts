@@ -3,8 +3,13 @@ import {
   AfterViewInit,
   Input,
   OnChanges,
-  SimpleChanges
+  SimpleChanges,
+  ElementRef,
+  OnDestroy,
+  Inject,
+  PLATFORM_ID
 } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import * as L from 'leaflet';
 
 export interface MapEvent {
@@ -21,16 +26,25 @@ export interface MapEvent {
   templateUrl: './map.html',
   styleUrls: ['./map.css'],
 })
-export class MapComponent implements AfterViewInit, OnChanges {
+export class MapComponent implements AfterViewInit, OnChanges, OnDestroy {
 
   @Input() events: MapEvent[] = [];
 
   private map!: L.Map;
   private markers: L.Layer[] = [];
+  private resizeObserver: ResizeObserver | null = null;
+
+  constructor(
+    private elementRef: ElementRef,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) { }
 
   ngAfterViewInit(): void {
-    this.initMap();
-    this.renderMarkers();
+    if (isPlatformBrowser(this.platformId)) {
+      this.initMap();
+      this.renderMarkers();
+      this.initResizeObserver();
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -39,11 +53,33 @@ export class MapComponent implements AfterViewInit, OnChanges {
     }
   }
 
+  ngOnDestroy(): void {
+    if (this.resizeObserver) {
+      this.resizeObserver.disconnect();
+    }
+  }
+
+  private initResizeObserver(): void {
+    this.resizeObserver = new ResizeObserver(() => {
+      requestAnimationFrame(() => {
+        if (this.map) {
+          this.map.invalidateSize();
+        }
+      });
+    });
+    this.resizeObserver.observe(this.elementRef.nativeElement);
+  }
+
   private initMap(): void {
     this.map = L.map('map', {
       center: [50.965, 5.500],
       zoom: 12,
+      zoomControl: false
     });
+
+    L.control.zoom({
+      position: 'topright'
+    }).addTo(this.map);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap contributors',
@@ -61,7 +97,7 @@ export class MapComponent implements AfterViewInit, OnChanges {
 
       const marker = L.circleMarker([lat, lon], {
         radius: 7,
-        fillColor: '#D97757', 
+        fillColor: '#D97757',
         color: '#ffffff',
         weight: 2,
         fillOpacity: 1,
@@ -79,6 +115,7 @@ export class MapComponent implements AfterViewInit, OnChanges {
   }
 
   private clearMarkers(): void {
+    if (!this.map) return;
     for (const marker of this.markers) {
       this.map.removeLayer(marker);
     }

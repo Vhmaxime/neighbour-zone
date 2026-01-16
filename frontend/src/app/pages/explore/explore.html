@@ -1,20 +1,30 @@
-<div class="container">
-  <h1 class="title">EXPLORE</h1>
+<div class="split-layout">
+  <aside class="sidebar">
 
-  <div class="content">
-    <div class="left">
+    <div class="sidebar-header">
+      <h1 class="app-title">EXPLORE</h1>
       <app-explore-search></app-explore-search>
-      <app-calendar
-        *ngIf="events$ | async as events"
-        [events]="events">
-</app-calendar>
-      <app-friend-list></app-friend-list>
     </div>
 
-    <div class="right">
-      <div class="map-wrapper">
-        <app-map *ngIf="events$ | async as events" [events]="events"></app-map>
+  
+    <div class="sidebar-static-section">
+      <h2 class="section-title" style="padding: 0 24px; margin-top: 8px;">Calendar</h2>
+      <div style="padding: 0 24px 16px 24px;">
+        <app-calendar *ngIf="events$ | async as events" [events]="events">
+        </app-calendar>
       </div>
     </div>
-  </div>
+    <div class="sidebar-content custom-scrollbar">
+
+      <div class="section-block">
+        <h2 class="section-title">Friends</h2>
+        <app-friend-list></app-friend-list>
+      </div>
+
+    </div>
+  </aside>
+  <main class="map-panel">
+    <app-map *ngIf="events$ | async as events" [events]="events"></app-map>
+  </main>
+
 </div>
