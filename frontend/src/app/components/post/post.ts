@@ -15,4 +15,5 @@ import { output } from '@angular/core';
 })
 export class Post {
   public post = input.required<P>();
+  public deleted = output<string>();
 }
