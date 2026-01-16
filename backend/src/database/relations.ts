@@ -56,11 +56,11 @@ export const relations = defineRelations(schema, (r) => ({
       from: r.conversationsTable.id,
       to: r.messagesTable.conversationId,
     }),
-    participant1Id: r.one.usersTable({
+    participant1: r.one.usersTable({
       from: r.conversationsTable.participant1Id,
       to: r.usersTable.id,
     }),
-    participant2Id: r.one.usersTable({
+    participant2: r.one.usersTable({
       from: r.conversationsTable.participant2Id,
       to: r.usersTable.id,
     }),
