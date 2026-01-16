@@ -12,7 +12,7 @@
         <app-edit-button 
           [itemId]="e.id" 
           [authorId]="e.organizer.id" 
-          [routePath]="'event'" 
+          [routePath]="'events'" 
         />
         <app-delete-button 
           [itemId]="e.id" 
@@ -58,6 +58,7 @@
           </a>
         </small>
       </div>
+      <pre>{{ e.organizer | json }}</pre>
     </article>
   </div>
 } @else {
