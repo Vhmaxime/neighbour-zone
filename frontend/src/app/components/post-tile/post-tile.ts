@@ -1,19 +1,27 @@
-import { Component, inject, output, input } from '@angular/core';
+import { Component, output, input, inject } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router} from '@angular/router';
 import { Post as P } from '../../types/api.types';
 import { LikeButton } from '../like-button/like-button';
-import { PostActions } from '../post-actions/post-actions';
+import { EditButton } from '../../components/edit-button/edit-button'; 
+import { DeleteButton } from '../../components/delete-button/delete-button';
 
 @Component({
   selector: 'app-post-tile',
-  imports: [DatePipe, RouterLink, LikeButton, PostActions],
+  imports: [DatePipe, RouterLink, LikeButton, EditButton, DeleteButton],
   templateUrl: './post-tile.html',
   styleUrl: './post-tile.css',
 })
 export class PostTile {
   public post = input.required<P>();
   public deleted = output<string>();
+
+  private router = inject(Router);
+
+  public viewPost() {
+    console.log('Navigating to post:', this.post().id);
+    this.router.navigate(['/post', this.post().id]);
+  }
 
   // Helper method to bridge the action from the child component to the feed
   public onPostDeleted(id: string) {
