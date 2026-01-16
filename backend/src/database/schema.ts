@@ -98,14 +98,28 @@ export const friendshipsTable = pgTable(
   (table) => [unique().on(table.userId1, table.userId2)]
 );
 
+export const conversationsTable = pgTable("conversations", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  participant1Id: uuid("participant_1_id")
+    .notNull()
+    .references(() => usersTable.id, { onDelete: "cascade" }),
+  participant2Id: uuid("participant_2_id")
+    .notNull()
+    .references(() => usersTable.id, { onDelete: "cascade" }),
+  marketplaceItemId: uuid("marketplace_item_id")
+    .notNull()
+    .references(() => marketplaceItemsTable.id, { onDelete: "cascade" }),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 export const messagesTable = pgTable("messages", {
   id: uuid("id").primaryKey().defaultRandom(),
   senderId: uuid("sender_id").references(() => usersTable.id, {
     onDelete: "cascade",
   }),
-  receiverId: uuid("receiver_id").references(() => usersTable.id, {
-    onDelete: "cascade",
-  }),
+  conversationId: uuid("conversation_id")
+    .notNull()
+    .references(() => conversationsTable.id, { onDelete: "cascade" }),
   content: text("content").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });

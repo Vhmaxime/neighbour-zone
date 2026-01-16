@@ -51,14 +51,32 @@ export const relations = defineRelations(schema, (r) => ({
       alias: "user2Friendships",
     }),
   },
+  conversationsTable: {
+    messages: r.many.messagesTable({
+      from: r.conversationsTable.id,
+      to: r.messagesTable.conversationId,
+    }),
+    participant1Id: r.one.usersTable({
+      from: r.conversationsTable.participant1Id,
+      to: r.usersTable.id,
+    }),
+    participant2Id: r.one.usersTable({
+      from: r.conversationsTable.participant2Id,
+      to: r.usersTable.id,
+    }),
+    marketplaceItem: r.one.marketplaceItemsTable({
+      from: r.conversationsTable.marketplaceItemId,
+      to: r.marketplaceItemsTable.id,
+    }),
+  },
   messagesTable: {
     sender: r.one.usersTable({
       from: r.messagesTable.senderId,
       to: r.usersTable.id,
     }),
-    receiver: r.one.usersTable({
-      from: r.messagesTable.receiverId,
-      to: r.usersTable.id,
+    conversation: r.one.conversationsTable({
+      from: r.messagesTable.conversationId,
+      to: r.conversationsTable.id,
     }),
   },
   postLikesTable: {
