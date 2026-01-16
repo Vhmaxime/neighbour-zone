@@ -7,13 +7,12 @@ import { PostActions } from '../post-actions/post-actions';
 import { output } from '@angular/core';
 
 @Component({
-  selector: 'app-post',
-  standalone: true,
-  imports: [DatePipe, RouterLink, LikeButton, PostActions],
-  templateUrl: './post.html',
-  styleUrl: './post.css',
+  selector: 'app-post-tile',
+  imports: [DatePipe, RouterLink, LikeButton],
+  templateUrl: './post-tile.html',
+  styleUrl: './post-tile.css',
 })
-export class Post {
+export class PostTile {
   public post = input.required<P>();
   public deleted = output<string>();
 }

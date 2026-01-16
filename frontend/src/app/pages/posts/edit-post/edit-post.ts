@@ -1,4 +1,4 @@
-import { Component, inject, input, OnInit, signal } from '@angular/core';
+import { Component, inject, input, signal, effect} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -12,7 +12,7 @@ import { firstValueFrom } from 'rxjs';
   templateUrl: './edit-post.html',
   styleUrl: './edit-post.css',
 })
-export class EditPost implements OnInit {
+export class EditPost {
   // Automatically captured from :id in the route
   id = input.required<string>();
 
@@ -29,22 +29,32 @@ private fb = inject(FormBuilder);
     type: ['news', [Validators.required]]
   });
 
-  async ngOnInit() {
-    try {
-      const response = await firstValueFrom(this.postService.getPost(this.id()));
-      const post = response.post;
+  constructor() {
+    // Reactive watcher: waits for id() to be ready
+    effect(async () => {
+      const postId = this.id();
+      
+      try {
+        this.isLoading.set(true);
+        const response = await firstValueFrom(this.postService.getPost(postId));
+        
+        // Handle potential nesting (same as details page)
+        const post = response.post || response;
 
-      this.editForm.patchValue({
-        title: post.title,
-        content: post.content,
-        type: post.type
-      });
-    } catch (err) {
-      console.error('Error loading post:', err);
-      this.router.navigate(['/feed']);
-    } finally {
-      this.isLoading.set(false);
-    }
+        if (post) {
+          this.editForm.patchValue({
+            title: post.title,
+            content: post.content,
+            type: post.type
+          });
+        }
+      } catch (err) {
+        console.error('Error loading post:', err);
+        this.router.navigate(['/feed']);
+      } finally {
+        this.isLoading.set(false);
+      }
+    });
   }
 
   async onSubmit() {

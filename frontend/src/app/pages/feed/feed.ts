@@ -7,12 +7,12 @@ import { MarketplaceTile } from '../../components/marketplace-tile/marketplace-t
 import { EventService } from '../../services/event';
 import { MarketplaceService } from '../../services/marketplace';
 import { PostService } from '../../services/post';
-import { Post } from '../../components/post/post';
+import { PostTile } from '../../components/post-tile/post-tile';
 
 @Component({
   selector: 'app-feed',
   standalone: true,
-  imports: [CommonModule, EventTile, MarketplaceTile, Post],
+  imports: [CommonModule, EventTile, MarketplaceTile, PostTile],
   templateUrl: './feed.html',
   styleUrl: './feed.css',
 })
@@ -31,7 +31,7 @@ export class Feed implements OnInit {
   }
 
   public handleItemDeleted(id: string) {
-    this.feedItems.update(items => items.filter(item => item.id !== id));
+    this.feedItems.update((items) => items.filter((item) => item.id !== id));
   }
 
   private loadFeed() {
