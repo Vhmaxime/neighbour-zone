@@ -105,6 +105,10 @@ export const routes: Routes = [
         path: 'post',
         children: [
           {
+            path: '',
+            redirectTo: 'feed',
+          },
+          {
             path: 'create',
             title: 'Create Post | Neighbour Zone',
             component: CreatePost,
