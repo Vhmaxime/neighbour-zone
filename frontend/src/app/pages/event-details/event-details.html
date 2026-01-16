@@ -2,7 +2,9 @@
 <div class="loading">Loading event details...</div>
 } @else if (event(); as event) {
 <div class="event-container">
-  <a routerLink="/events" class="text-blue-600 hover:underline text-sm mb-2 inline-block">&larr; Back to Events</a>
+  <a (click)="goBack()" class="text-blue-600 hover:underline text-sm mb-2 inline-block"
+    >&larr; Back</a
+  >
   <div class="header">
     <h1>{{ event.title }}</h1>
     <span class="badge">Event</span>
@@ -24,10 +26,11 @@
     </div>
 
     <div class="actions-wrapper mt-4">
-      <app-event-actions 
-        [eventId]="event.id" 
-        [organizerId]="event.organizer.id" 
-        [eventTitle]="event.title">
+      <app-event-actions
+        [eventId]="event.id"
+        [organizerId]="event.organizer.id"
+        [eventTitle]="event.title"
+      >
       </app-event-actions>
     </div>
   </div>
