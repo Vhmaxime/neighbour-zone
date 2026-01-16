@@ -7,7 +7,7 @@ import {
   MarketplaceItemsResponse,
 } from '../../types/api.types';
 import { firstValueFrom } from 'rxjs';
-import { Post as PostComponent } from '../../components/post/post';
+import { PostTile as PostComponent } from '../../components/post-tile/post-tile';
 import { EventTile } from '../../components/event-tile/event-tile';
 import { MarketplaceTile } from '../../components/marketplace-tile/marketplace-tile';
 import { Title } from '@angular/platform-browser';
