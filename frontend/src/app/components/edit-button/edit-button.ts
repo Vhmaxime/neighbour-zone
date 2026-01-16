@@ -17,7 +17,8 @@ export class EditButton {
 
   itemId = input.required<string>();
   authorId = input.required<string>();
-  itemType = input.required<ItemType>();
+
+  routePath = input.required<string>();
 
   isAuthor(): boolean {
     const user = this.authService.getUser();
@@ -28,7 +29,6 @@ export class EditButton {
     event.preventDefault();
     event.stopPropagation();
 
-    const routePart = this.itemType() === 'marketplace' ? 'marketplace' : `${this.itemType()}s`;
-    this.router.navigate([`/${routePart}`, this.itemId(), 'edit']);
+    this.router.navigate([`/${this.routePath}`, this.itemId(), 'edit']);
   }
 }
