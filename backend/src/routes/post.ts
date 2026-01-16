@@ -111,7 +111,7 @@ postRouter.post(
       },
     });
 
-    return c.json({ post }, 201);
+    return c.json(post, 201);
   }
 );
 
@@ -172,10 +172,10 @@ postRouter.get(
         },
       });
 
-      return c.json({ post, liked, likedBy }, 200);
+      return c.json({ ...post, liked, likedBy }, 200);
     }
 
-    return c.json({ post, liked }, 200);
+    return c.json({ ...post, liked }, 200);
   }
 );
 
@@ -234,7 +234,7 @@ postRouter.patch(
       },
     });
 
-    return c.json({ post }, 200);
+    return c.json(post, 200);
   }
 );
 
