@@ -98,6 +98,12 @@ export const routes: Routes = [
                 (m) => m.MarketplaceDetails
               ),
           },
+          // inside the marketplace children array in app.routes.ts
+          { 
+            path: ':id/edit', 
+            title: 'Edit Item | Neighbour Zone', 
+            loadComponent: () => import('./pages/marketplace/edit-marketplace/edit-marketplace').then((m) => m.EditMarketplace) 
+          },
         ],
       },
       {
