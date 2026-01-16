@@ -5,11 +5,11 @@ import { Post as P } from '../../types/api.types';
 import { LikeButton } from '../like-button/like-button';
 
 @Component({
-  selector: 'app-post',
+  selector: 'app-post-tile',
   imports: [DatePipe, RouterLink, LikeButton],
-  templateUrl: './post.html',
-  styleUrl: './post.css',
+  templateUrl: './post-tile.html',
+  styleUrl: './post-tile.css',
 })
-export class Post {
+export class PostTile {
   public post = input.required<P>();
 }
