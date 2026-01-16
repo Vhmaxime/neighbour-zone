@@ -41,6 +41,12 @@ export class DeleteButton {
     
     if (!confirm(`Are you sure you want to delete "${this.itemTitle()}"?`)) return;
 
+    console.log('Delete button clicked for:', this.itemType(), this.itemId());
+
+    if (!confirm(`Are you sure you want to delete "${this.itemTitle()}"?`)) {
+      return;
+    }
+
     const id = this.itemId();
 
     try {

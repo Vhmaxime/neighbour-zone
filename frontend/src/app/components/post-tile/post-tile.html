@@ -24,7 +24,7 @@
           {{ post().type }}
         </span>
         
-        <app-edit-button [itemId]="post().id" [authorId]="post().author.id" [itemType]="'post'" />
+        <app-edit-button [itemId]="post().id" [authorId]="post().author.id" [routePath]="'post'" />
         <app-delete-button 
           [itemId]="post().id" 
           [authorId]="post().author.id" 

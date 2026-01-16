@@ -1,6 +1,6 @@
 <div
-  class="flex items-center gap-4 p-4 bg-white rounded-lg shadow hover:shadow-md transition-shadow cursor-pointer"
-  (click)="navigateToEventDetails()"
+  class="flex items-center gap-4 p-4 bg-white rounded-lg shadow hover:shadow-md transition-shadow cursor-pointer border border-transparent hover:border-blue-100"
+  (click)="viewEvent()"
 >
   <div
     class="flex flex-col items-center justify-center bg-linear-to-br from-blue-500 to-blue-600 text-white rounded-lg px-4 py-3 min-w-20"
@@ -12,23 +12,34 @@
       {{ eventDate() | date : 'd' }}
     </span>
   </div>
+
   <div class="flex-1 min-w-0">
     <h3 class="text-lg font-semibold text-gray-900 mb-1 text-ellipsis overflow-hidden whitespace-nowrap">
       {{ event().title }}
     </h3>
     <div class="flex items-center gap-2 text-sm text-gray-600">
       <span>{{ eventDate() | date : 'HH:mm' }}</span>
+      <span>•</span>
       <span>{{ event().placeDisplayName }}</span>
     </div>
   </div>
 
-  <div class="flex items-center gap-4">
-    <app-event-actions 
-      [eventId]="event().id" 
-      [organizerId]="event().organizer.id" 
-      [eventTitle]="event().title"
-      (deleted)="deleted.emit($event)" 
-    />
+  <div class="flex items-center gap-3">
+    
+    <div class="flex items-center gap-2" (click)="$event.stopPropagation()">
+      <app-edit-button 
+        [itemId]="event().id" 
+        [authorId]="event().organizer.id" 
+        [routePath]="'events'" 
+      />
+      <app-delete-button 
+        [itemId]="event().id" 
+        [authorId]="event().organizer.id" 
+        [itemTitle]="event().title"
+        [itemType]="'event'"
+        (deleted)="deleted.emit($event)" 
+      />
+    </div>
 
     <app-like-button
       [type]="'event'"
