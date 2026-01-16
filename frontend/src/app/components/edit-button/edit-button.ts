@@ -29,6 +29,6 @@ export class EditButton {
     event.preventDefault();
     event.stopPropagation();
 
-    this.router.navigate([`/${this.routePath}`, this.itemId(), 'edit']);
+    this.router.navigate([`/${this.routePath()}`, this.itemId(), 'edit']);
   }
 }
