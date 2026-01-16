@@ -30,7 +30,7 @@ marketplaceRouter.get(
     (result, c) => {
       if (!result.success) {
         console.error("Validation error:", result.error);
-        return c.json({ message: "Bad request" }, 400);
+        return c.json({ message: "Invalid request data" }, 400);
       }
     }
   ),
@@ -88,7 +88,7 @@ marketplaceRouter.post(
   zValidator("json", marketplaceItemSchema, (result, c) => {
     if (!result.success) {
       console.error("Validation error:", result.error);
-      return c.json({ message: "Bad request" }, 400);
+      return c.json({ message: "Invalid request data" }, 400);
     }
   }),
   async (c) => {
@@ -143,19 +143,19 @@ marketplaceRouter.post(
   }
 );
 
-// Apply to a marketplace item (specifieke route - moet voor /:id komen)
+// Apply to a marketplace item
 marketplaceRouter.post(
   "/:id/apply",
   zValidator("param", idSchema, (result, c) => {
     if (!result.success) {
       console.error("Validation error:", result.error);
-      return c.json({ message: "Bad request" }, 400);
+      return c.json({ message: "Invalid request data" }, 400);
     }
   }),
   zValidator("json", marketplaceApplicationSchema, (result, c) => {
     if (!result.success) {
       console.error("Validation error:", result.error);
-      return c.json({ message: "Bad request" }, 400);
+      return c.json({ message: "Invalid request data" }, 400);
     }
   }),
   async (c) => {
@@ -172,7 +172,7 @@ marketplaceRouter.post(
     });
 
     if (!existing) {
-      return c.json({ message: "Not found" }, 404);
+      return c.json({ message: "Marketplace item not found" }, 404);
     }
 
     const alreadyApplied =
@@ -205,7 +205,7 @@ marketplaceRouter.get(
   zValidator("param", idSchema, (result, c) => {
     if (!result.success) {
       console.error("Validation error:", result.error);
-      return c.json({ message: "Bad request" }, 400);
+      return c.json({ message: "Invalid request data" }, 400);
     }
   }),
 
@@ -232,7 +232,7 @@ marketplaceRouter.get(
     });
 
     if (!marketplace) {
-      return c.json({ message: "Not found" }, 404);
+      return c.json({ message: "Marketplace item not found" }, 404);
     }
 
     const applied = !!(await db.query.marketplaceApplicationsTable.findFirst({
@@ -277,13 +277,13 @@ marketplaceRouter.patch(
   zValidator("param", idSchema, (result, c) => {
     if (!result.success) {
       console.error("Validation error:", result.error);
-      return c.json({ message: "Bad request" }, 400);
+      return c.json({ message: "Invalid request data" }, 400);
     }
   }),
   zValidator("json", marketplaceItemSchema.partial(), (result, c) => {
     if (!result.success) {
       console.error("Validation error:", result.error);
-      return c.json({ message: "Bad request" }, 400);
+      return c.json({ message: "Invalid request data" }, 400);
     }
   }),
   async (c) => {
@@ -309,7 +309,7 @@ marketplaceRouter.patch(
     });
 
     if (!existing) {
-      return c.json({ message: "Not found" }, 404);
+      return c.json({ message: "Marketplace item not found" }, 404);
     }
 
     if (existing.userId !== userId) {
@@ -360,7 +360,7 @@ marketplaceRouter.delete(
   zValidator("param", idSchema, (result, c) => {
     if (!result.success) {
       console.error("Validation error:", result.error);
-      return c.json({ message: "Bad request" }, 400);
+      return c.json({ message: "Invalid request data" }, 400);
     }
   }),
   async (c) => {
@@ -375,7 +375,7 @@ marketplaceRouter.delete(
       .limit(1);
 
     if (!existingItem) {
-      return c.json({ message: "Not found" }, 404);
+      return c.json({ message: "Marketplace item not found" }, 404);
     }
 
     if (existingItem.userId !== userId) {

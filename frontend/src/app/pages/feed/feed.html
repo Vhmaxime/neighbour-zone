@@ -24,6 +24,28 @@
         <div class="text-center py-16 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
           <p class="text-gray-500">Nothing new happening today.</p>
         </div>
+          <app-event-tile 
+            [event]="item" 
+            (deleted)="handleItemDeleted($event)" 
+          />
+        } 
+        
+        @else if (item.type) {
+          <app-post 
+            [post]="item" 
+            (deleted)="handleItemDeleted($event)" 
+          />
+        }
+
+        @else {
+          <app-marketplace-tile 
+            [item]="item" 
+            (deleted)="handleItemDeleted($event)" 
+          />
+        }
+
+      } @empty {
+        <p class="text-center py-10 text-gray-500">No activity yet!</p>
       }
     </div>
   }

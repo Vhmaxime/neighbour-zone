@@ -6,6 +6,7 @@ import { Event, EventResponse } from '../../types/api.types';
 import { Title } from '@angular/platform-browser';
 import { EventService } from '../../services/event';
 import { EventActions } from '../events/event-actions/event-actions';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-event-details',
@@ -17,6 +18,7 @@ import { EventActions } from '../events/event-actions/event-actions';
 export class EventDetails {
   private activatedRoute = inject(ActivatedRoute);
   private router = inject(Router);
+  private location = inject(Location);
   private eventService = inject(EventService);
   private titleService = inject(Title);
   private eventId = this.activatedRoute.snapshot.paramMap.get('id') as string;
@@ -43,5 +45,9 @@ export class EventDetails {
       .finally(() => {
         this.isLoading.set(false);
       });
+  }
+
+  public goBack() {
+    this.location.back();
   }
 }

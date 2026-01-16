@@ -40,12 +40,13 @@ userRouter.get("/me", async (c) => {
   return c.json({ user }, 200);
 });
 
+// Update current user info
 userRouter.patch(
   "/me",
   zValidator("json", userSchema.partial(), (result, c) => {
     if (!result.success) {
       console.error(result.error);
-      return c.json({ message: "Bad request" }, 400);
+      return c.json({ message: "Invalid request data" }, 400);
     }
   }),
   async (c) => {
@@ -86,6 +87,7 @@ userRouter.patch(
   }
 );
 
+// Delete current user account
 userRouter.delete("/me", async (c) => {
   const { sub: id } = c.get("jwtPayload");
 
@@ -94,12 +96,13 @@ userRouter.delete("/me", async (c) => {
   return c.json({ message: "ok" }, 200);
 });
 
+// Update current user's password
 userRouter.patch(
   "/me/password",
   zValidator("json", passwordUpdateSchema, (result, c) => {
     if (!result.success) {
       console.error(result.error);
-      return c.json({ message: "Bad request" }, 400);
+      return c.json({ message: "Invalid request data" }, 400);
     }
   }),
   async (c) => {
@@ -136,12 +139,13 @@ userRouter.patch(
   }
 );
 
+// Get user info by ID
 userRouter.get(
   "/:id",
   zValidator("param", idSchema, (result, c) => {
     if (!result.success) {
       console.error(result.error);
-      return c.json({ message: "Bad request" }, 400);
+      return c.json({ message: "Invalid request data" }, 400);
     }
   }),
   async (c) => {

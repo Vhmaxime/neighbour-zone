@@ -12,11 +12,24 @@
   </div>
 
   <div class="days-grid">
-    <div *ngFor="let date of days" 
-         class="day-cell" 
-         [class.different-month]="date.month !== viewDate.month"
-         [class.today]="isToday(date)">
+    <div
+      *ngFor="let date of days"
+      class="day-cell"
+      [class.different-month]="date.month !== viewDate.month"
+      [class.today]="isToday(date)"
+      [class.has-event]="hasEventOnDate(date)"
+    >
       <span class="day-number">{{ date.day }}</span>
+      <span class="event-dot" *ngIf="hasEventOnDate(date)"></span>
+      <div class="event-preview" *ngIf="hasEventOnDate(date)">
+        <div
+          class="event-preview-item"
+          *ngFor="let event of getEventsForDate(date)"
+        >
+          <strong>{{ event.title }}</strong>
+          <span>{{ event.placeDisplayName }}</span>
+        </div>
+      </div>
     </div>
   </div>
 </div>

@@ -99,21 +99,24 @@ export const routes: Routes = [
           import('./pages/marketplace-details/marketplace-details').then(
             (m) => m.MarketplaceDetails
           ),
+ 
       },
       {
-    path: 'posts/:id/edit',
-    loadComponent: () => import('./pages/posts/edit-post/edit-post').then(m => m.EditPost)
-    },
-    // Inside app.routes.ts -> children array
-{
-  path: 'posts/create',
-  title: 'Create Post | Neighbour Zone',
-  loadComponent: () => import('./pages/posts/create-post/create-post').then(m => m.CreatePost)
-},
-
+        path: 'posts/create',
+        title: 'Create Post | Neighbour Zone',
+        loadComponent: () => import('./pages/posts/create-post/create-post').then(m => m.CreatePost)
+      },
+      {
+        path: 'posts/:id',
+        title: 'Post Details | Neighbour Zone',
+        loadComponent: () => import('./pages/posts/post-details/post-details').then(m => m.PostDetails)
+      },
+      {
+        path: 'posts/:id/edit',
+        title: 'Edit Post | Neighbour Zone',
+        loadComponent: () => import('./pages/posts/edit-post/edit-post').then(m => m.EditPost)
+      },
     ],
   },
-
-  // Fallback for unknown routes (404)
   { path: '**', redirectTo: 'not-found' },
 ];

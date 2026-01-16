@@ -5,15 +5,15 @@
   <div
     class="flex flex-col items-center justify-center bg-linear-to-br from-blue-500 to-blue-600 text-white rounded-lg px-4 py-3 min-w-20"
   >
-    <span class="text-xs font-semibold uppercase tracking-wide">{{
-      eventDate() | date : 'MMM'
-    }}</span>
-    <span class="text-3xl font-bold leading-none">{{ eventDate() | date : 'd' }}</span>
+    <span class="text-xs font-semibold uppercase tracking-wide">
+      {{ eventDate() | date : 'MMM' }}
+    </span>
+    <span class="text-3xl font-bold leading-none">
+      {{ eventDate() | date : 'd' }}
+    </span>
   </div>
   <div class="flex-1 min-w-0">
-    <h3
-      class="text-lg font-semibold text-gray-900 mb-1 text-ellipsis overflow-hidden whitespace-nowrap"
-    >
+    <h3 class="text-lg font-semibold text-gray-900 mb-1 text-ellipsis overflow-hidden whitespace-nowrap">
       {{ event().title }}
     </h3>
     <div class="flex items-center gap-2 text-sm text-gray-600">
@@ -21,7 +21,15 @@
       <span>{{ event().placeDisplayName }}</span>
     </div>
   </div>
-  <div>
+
+  <div class="flex items-center gap-4">
+    <app-event-actions 
+      [eventId]="event().id" 
+      [organizerId]="event().organizer.id" 
+      [eventTitle]="event().title"
+      (deleted)="deleted.emit($event)" 
+    />
+
     <app-like-button
       [type]="'event'"
       [id]="event().id"
