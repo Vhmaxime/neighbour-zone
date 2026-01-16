@@ -4,9 +4,10 @@ import authMiddleware from "../middleware/auth.js";
 import { db } from "../database/index.js";
 import { zValidator } from "@hono/zod-validator";
 import { conversationSchema } from "../schemas/conversationSchema.js";
-import { conversationsTable } from "../database/schema.js";
+import { conversationsTable, messagesTable } from "../database/schema.js";
 import { idSchema } from "../schemas/index.js";
 import { eq } from "drizzle-orm";
+import { messageSchema } from "../schemas/message.js";
 
 const conversationRouter = new Hono<{ Variables: Variables }>();
 
@@ -232,21 +233,50 @@ conversationRouter.delete(
   }
 );
 
-// conversationRouter.post(
-//   "/:id/message",
-//   zValidator("param", idSchema, (result, c) => {
-//     if (!result.success) {
-//       console.error("Validation error:", result.error);
-//       return c.json({ message: "Invalid request data" }, 400);
-//     }
-//   }),
-//   zValidator("json", conversationSchema, (result, c) => {
-//   ,
-//   async (c) => {
-//     const { id: conversationId } = c.req.param();
-//     const { sub: userId } = c.get("jwtPayload");
-//     const { content } = await c.req.json();
-//   }
-// );
+conversationRouter.post(
+  "/:id/message",
+  zValidator("param", idSchema, (result, c) => {
+    if (!result.success) {
+      console.error("Validation error:", result.error);
+      return c.json({ message: "Invalid request data" }, 400);
+    }
+  }),
+  zValidator("json", messageSchema, (result, c) => {
+    if (!result.success) {
+      console.error("Validation error:", result.error);
+      return c.json({ message: "Invalid request data" }, 400);
+    }
+  }),
+  async (c) => {
+    const { id: conversationId } = c.req.valid("param");
+    const { sub: userId } = c.get("jwtPayload");
+    const { message } = await c.req.valid("json");
+
+    const conversation = await db.query.conversationsTable.findFirst({
+      where: {
+        id: { eq: conversationId },
+      },
+    });
+
+    if (!conversation) {
+      return c.json({ message: "Conversation not found" }, 404);
+    }
+
+    if (
+      conversation.participant1Id !== userId &&
+      conversation.participant2Id !== userId
+    ) {
+      return c.json({ message: "Forbidden" }, 403);
+    }
+
+    await db.insert(messagesTable).values({
+      conversationId,
+      senderId: userId,
+      content: message,
+    });
+
+    return c.json({ message: "ok" }, 201);
+  }
+);
 
 export default conversationRouter;
