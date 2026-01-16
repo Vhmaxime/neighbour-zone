@@ -172,10 +172,10 @@ postRouter.get(
         },
       });
 
-      return c.json({ ...post, liked, likedBy }, 200);
+      return c.json({ post, liked, likedBy }, 200);
     }
 
-    return c.json({ ...post, liked }, 200);
+    return c.json({ post, liked }, 200);
   }
 );
 
