@@ -23,18 +23,6 @@ searchRouter.get("/", async (c) => {
   return c.json({ users, posts, events, marketplace: marketplaceItems });
 });
 
-searchRouter.get("/users", async (c) => {
-  const query = c.req.query("q");
-
-  if (!query || query.trim() === "") {
-    return c.json({ users: [] });
-  }
-
-  const users = await usersSearch(query);
-
-  return c.json({ users });
-});
-
 async function usersSearch(query: string) {
   return db.query.usersTable.findMany({
     where: {

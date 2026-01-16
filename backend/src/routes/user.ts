@@ -37,7 +37,7 @@ userRouter.get("/me", async (c) => {
     },
   });
 
-  return c.json({ user }, 200);
+  return c.json(user, 200);
 });
 
 // Update current user info
@@ -83,7 +83,7 @@ userRouter.patch(
       },
     });
 
-    return c.json({ user }, 200);
+    return c.json(user, 200);
   }
 );
 
@@ -155,22 +155,18 @@ userRouter.get(
       where: {
         id: { eq: id },
       },
+      columns: {
+        id: true,
+        username: true,
+        bio: true,
+      },
     });
 
     if (!user) {
       return c.json({ message: "Not found" }, 404);
     }
 
-    return c.json(
-      {
-        user: {
-          id: user.id,
-          username: user.username,
-          bio: user.bio,
-        },
-      },
-      200
-    );
+    return c.json(user, 200);
   }
 );
 

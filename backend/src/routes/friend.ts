@@ -37,7 +37,7 @@ friendRouter.get("/friendship/:id", async (c) => {
     return c.json({ message: "Friendship not found" }, 404);
   }
 
-  return c.json({ friendship }, 200);
+  return c.json(friendship, 200);
 });
 
 friendRouter.post(
