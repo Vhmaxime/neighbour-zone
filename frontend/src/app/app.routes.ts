@@ -99,6 +99,7 @@ export const routes: Routes = [
           import('./pages/marketplace-details/marketplace-details').then(
             (m) => m.MarketplaceDetails
           ),
+ 
       },
       {
         path: 'posts/create',

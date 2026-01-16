@@ -7,12 +7,13 @@ import { MarketplaceTile } from '../../components/marketplace-tile/marketplace-t
 import { EventService } from '../../services/event';
 import { MarketplaceService } from '../../services/marketplace';
 import { PostService } from '../../services/post';
+import { CreatePostButton } from '../../components/create-post-button/create-post-button';
 import { PostTile } from '../../components/post-tile/post-tile';
 
 @Component({
   selector: 'app-feed',
   standalone: true,
-  imports: [CommonModule, EventTile, MarketplaceTile, PostTile],
+  imports: [CommonModule, EventTile, MarketplaceTile, CreatePostButton ,PostTile],
   templateUrl: './feed.html',
   styleUrl: './feed.css',
 })
