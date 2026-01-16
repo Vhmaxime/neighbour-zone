@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   ReactiveFormsModule,
@@ -7,9 +7,9 @@ import {
   FormGroup,
   FormControl,
 } from '@angular/forms';
-import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth';
 import { UserService } from '../../services/user';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-settings',
@@ -18,24 +18,39 @@ import { UserService } from '../../services/user';
   templateUrl: './settings.html',
   styleUrls: ['./settings.css'],
 })
-export class Settings {
+export class Settings implements OnInit {
   private fb = inject(FormBuilder);
   private userService = inject(UserService);
-  private router = inject(Router);
   private authService = inject(AuthService);
 
+  // -- PROFILE STATE --
+  public isLoadingProfile = signal(true);
+  public isSavingProfile = signal(false);
+  public saveProfileStatus = 'SAVE CHANGES';
+  public maxChars = 250;
+
+  // -- SECURITY STATE --
   error = signal<string | null>(null);
   isUpdatingPassword = signal(false);
   isDeletingAccount = signal(false);
 
-  form: FormGroup<{
+  // -- FORMS --
+  profileForm = new FormGroup({
+    firstname: new FormControl('', { nonNullable: true }),
+    lastname: new FormControl('', { nonNullable: true }),
+    email: new FormControl({ value: '', disabled: true }, { nonNullable: true }),
+    phoneNumber: new FormControl('', { nonNullable: true }),
+    bio: new FormControl(''),
+  });
+
+  securityForm: FormGroup<{
     currentPassword: FormControl<string>;
     newPassword: FormControl<string>;
     confirmPassword: FormControl<string>;
   }>;
 
   constructor() {
-    this.form = this.fb.group(
+    this.securityForm = this.fb.group(
       {
         currentPassword: ['', [Validators.required]],
         newPassword: [
@@ -52,6 +67,62 @@ export class Settings {
     );
   }
 
+  ngOnInit() {
+    this.loadProfile();
+  }
+
+  private loadProfile() {
+    this.isLoadingProfile.set(true);
+    firstValueFrom(this.userService.getCurrentUser())
+      .then(({ user }) => {
+        this.profileForm.setValue({
+          firstname: user.firstname,
+          lastname: user.lastname,
+          email: user.email,
+          phoneNumber: user.phoneNumber || '',
+          bio: user.bio || '',
+        });
+      })
+      .finally(() => {
+        this.isLoadingProfile.set(false);
+      });
+  }
+
+  public saveProfile() {
+    if (this.isSavingProfile()) return;
+    this.isSavingProfile.set(true);
+    this.saveProfileStatus = 'SAVING...';
+
+    const { firstname, lastname, phoneNumber, bio } = this.profileForm.getRawValue();
+
+    firstValueFrom(
+      this.userService.updateCurrentUser({
+        firstname,
+        lastname,
+        phoneNumber,
+        bio: bio || undefined,
+      })
+    )
+      .then(({ user }) => {
+        this.saveProfileStatus = 'SAVED!';
+        this.isSavingProfile.set(false);
+        this.profileForm.setValue({
+          firstname: user.firstname,
+          lastname: user.lastname,
+          email: user.email,
+          phoneNumber: user.phoneNumber || '',
+          bio: user.bio || '',
+        });
+
+        setTimeout(() => this.saveProfileStatus = 'SAVE CHANGES', 3000);
+      })
+      .catch(() => {
+        this.isSavingProfile.set(false);
+        this.saveProfileStatus = 'SAVE CHANGES';
+      });
+  }
+
+
   passwordsMatch(group: FormGroup) {
     const password = group.get('newPassword')?.value;
     const confirm = group.get('confirmPassword')?.value;
@@ -59,7 +130,7 @@ export class Settings {
   }
 
   private passwordValue(): string {
-    return this.form.get('newPassword')?.value || '';
+    return this.securityForm.get('newPassword')?.value || '';
   }
 
   hasUppercase() {
@@ -83,14 +154,14 @@ export class Settings {
   }
 
   updatePassword() {
-    if (this.form.invalid) {
+    if (this.securityForm.invalid) {
       this.error.set(
         'Password must be at least 8 characters and include uppercase, lowercase, number and special character.'
       );
       return;
     }
 
-    const { currentPassword, newPassword } = this.form.getRawValue();
+    const { currentPassword, newPassword } = this.securityForm.getRawValue();
 
     this.isUpdatingPassword.set(true);
     this.error.set(null);
@@ -98,7 +169,7 @@ export class Settings {
     this.userService.updateCurrentUserPassword({ currentPassword, newPassword }).subscribe({
       next: () => {
         this.isUpdatingPassword.set(false);
-        this.form.reset();
+        this.securityForm.reset();
         alert('Password updated successfully!');
       },
       error: (err) => {
