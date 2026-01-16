@@ -19,12 +19,14 @@ export class EditPost {
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
 
+
   private postId = this.activatedRoute.snapshot.paramMap.get('id') as string;
 
-  isLoading = signal(true);
-  isSaving = signal(false);
+  public isLoading = signal(true);
+  public isSaving = signal(false);
 
-  editForm = this.fb.group({
+  // Added 'question' to types just in case
+  public editForm = this.fb.group({
     title: ['', [Validators.required, Validators.minLength(3)]],
     content: ['', [Validators.required, Validators.minLength(10)]],
     type: ['news', [Validators.required]]
@@ -35,11 +37,26 @@ export class EditPost {
   }
 
   private async loadPost() {
+    // Safety Check
+    if (!this.postId) {
+      console.error('❌ Error: No Post ID found in URL');
+      this.router.navigate(['/feed']);
+      return;
+    }
+
     try {
       this.isLoading.set(true);
-      // Use the snapshot ID, not an input signal
-      const response = await firstValueFrom(this.postService.getPost(this.postId));
+
+      // TIMEOUT FIX: If backend takes > 3s, stop spinning
+      const fetchPromise = firstValueFrom(this.postService.getPost(this.postId));
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Timeout')), 3000)
+      );
+
+      // Race the fetch against the clock
+      const response: any = await Promise.race([fetchPromise, timeoutPromise]);
       
+      // Handle { post: ... } vs raw response
       const post = response.post || response;
 
       if (post) {
@@ -50,9 +67,9 @@ export class EditPost {
         });
       }
     } catch (err) {
-      console.error('Error loading post:', err);
-      this.router.navigate(['/feed']);
+      console.error('❌ Error loading post:', err);
     } finally {
+      // Stop loading no matter what
       this.isLoading.set(false);
     }
   }
