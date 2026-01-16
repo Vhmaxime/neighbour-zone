@@ -22,7 +22,7 @@ eventRouter.get(
     (result, c) => {
       if (!result.success) {
         console.error("Validation error:", result.error);
-        return c.json({ message: "Bad request" }, 400);
+        return c.json({ message: "Invalid request data" }, 400);
       }
     }
   ),
@@ -77,7 +77,7 @@ eventRouter.post(
   zValidator("json", eventSchema, (result, c) => {
     if (!result.success) {
       console.error("Validation error:", result.error);
-      return c.json({ message: "Bad request" }, 400);
+      return c.json({ message: "Invalid request data" }, 400);
     }
   }),
   async (c) => {
@@ -134,7 +134,7 @@ eventRouter.get(
   zValidator("param", idSchema, (result, c) => {
     if (!result.success) {
       console.error("Validation error:", result.error);
-      return c.json({ message: "Bad request" }, 400);
+      return c.json({ message: "Invalid request data" }, 400);
     }
   }),
   async (c) => {
@@ -162,7 +162,7 @@ eventRouter.get(
     });
 
     if (!event) {
-      return c.json({ message: "Not found" }, 404);
+      return c.json({ message: "Event not found" }, 404);
     }
 
     const liked = !!(await db.query.eventLikesTable.findFirst({
@@ -198,13 +198,13 @@ eventRouter.patch(
   zValidator("param", idSchema, (result, c) => {
     if (!result.success) {
       console.error("Validation error:", result.error);
-      return c.json({ message: "Bad request" }, 400);
+      return c.json({ message: "Invalid request data" }, 400);
     }
   }),
   zValidator("json", eventSchema.partial(), (result, c) => {
     if (!result.success) {
       console.error("Validation error:", result.error);
-      return c.json({ message: "Bad request" }, 400);
+      return c.json({ message: "Invalid request data" }, 400);
     }
   }),
   async (c) => {
@@ -219,7 +219,7 @@ eventRouter.patch(
     });
 
     if (!existing) {
-      return c.json({ message: "Not found" }, 404);
+      return c.json({ message: "Event not found" }, 404);
     }
 
     if (existing.userId !== userId) {
@@ -257,7 +257,7 @@ eventRouter.delete(
   zValidator("param", idSchema, (result, c) => {
     if (!result.success) {
       console.error("Validation error:", result.error);
-      return c.json({ message: "Bad request" }, 400);
+      return c.json({ message: "Invalid request data" }, 400);
     }
   }),
   async (c) => {
@@ -270,7 +270,7 @@ eventRouter.delete(
     });
 
     if (!existing) {
-      return c.json({ message: "Not found" }, 404);
+      return c.json({ message: "Event not found" }, 404);
     }
 
     if (existing.userId !== userId) {
@@ -289,7 +289,7 @@ eventRouter.post(
   zValidator("param", idSchema, (result, c) => {
     if (!result.success) {
       console.error("Validation error:", result.error);
-      return c.json({ message: "Bad request" }, 400);
+      return c.json({ message: "Invalid request data" }, 400);
     }
   }),
   async (c) => {
@@ -302,7 +302,7 @@ eventRouter.post(
     });
 
     if (!event) {
-      return c.json({ message: "Not found" }, 404);
+      return c.json({ message: "Event not found" }, 404);
     }
 
     const existing = await db.query.eventLikesTable.findFirst({

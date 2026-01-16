@@ -7,6 +7,7 @@ const searchRouter = new Hono<{ Variables: Variables }>();
 
 searchRouter.use(authMiddleware);
 
+// General search across users, posts, events, and marketplace items
 searchRouter.get("/", async (c) => {
   const query = c.req.query("q");
 

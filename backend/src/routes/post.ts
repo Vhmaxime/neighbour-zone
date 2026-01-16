@@ -22,7 +22,7 @@ postRouter.get(
     (result, c) => {
       if (!result.success) {
         console.error("Validation error:", result.error);
-        return c.json({ message: "Bad request" }, 400);
+        return c.json({ message: "Invalid request data" }, 400);
       }
     }
   ),
@@ -78,7 +78,7 @@ postRouter.post(
   zValidator("json", postSchema, (result, c) => {
     if (!result.success) {
       console.error("Validation error:", result.error);
-      return c.json({ message: "Bad request" }, 400);
+      return c.json({ message: "Invalid request data" }, 400);
     }
   }),
   async (c) => {
@@ -121,7 +121,7 @@ postRouter.get(
   zValidator("param", idSchema, (result, c) => {
     if (!result.success) {
       console.error("Validation error:", result.error);
-      return c.json({ message: "Bad request" }, 400);
+      return c.json({ message: "Invalid request data" }, 400);
     }
   }),
   async (c) => {
@@ -149,7 +149,7 @@ postRouter.get(
     });
 
     if (!post) {
-      return c.json({ message: "Not found" }, 404);
+      return c.json({ message: "Post not found" }, 404);
     }
 
     const liked = !!(await db.query.postLikesTable.findFirst({
@@ -185,13 +185,13 @@ postRouter.patch(
   zValidator("param", idSchema, (result, c) => {
     if (!result.success) {
       console.error("Validation error:", result.error);
-      return c.json({ message: "Bad request" }, 400);
+      return c.json({ message: "Invalid request data" }, 400);
     }
   }),
   zValidator("json", postSchema.partial(), (result, c) => {
     if (!result.success) {
       console.error("Validation error:", result.error);
-      return c.json({ message: "Bad request" }, 400);
+      return c.json({ message: "Invalid request data" }, 400);
     }
   }),
   async (c) => {
@@ -206,7 +206,7 @@ postRouter.patch(
     });
 
     if (!existing) {
-      return c.json({ message: "Not found" }, 404);
+      return c.json({ message: "Post not found" }, 404);
     }
 
     if (existing.authorId !== authorId) {
@@ -244,7 +244,7 @@ postRouter.delete(
   zValidator("param", idSchema, (result, c) => {
     if (!result.success) {
       console.error("Validation error:", result.error);
-      return c.json({ message: "Bad request" }, 400);
+      return c.json({ message: "Invalid request data" }, 400);
     }
   }),
   async (c) => {
@@ -257,7 +257,7 @@ postRouter.delete(
     });
 
     if (!existing) {
-      return c.json({ message: "Not found" }, 404);
+      return c.json({ message: "Post not found" }, 404);
     }
 
     if (existing.authorId !== authorId) {
@@ -270,13 +270,13 @@ postRouter.delete(
   }
 );
 
-// Like or unlike a post (specifieke route - moet voor algemene /:id routes komen)
+// Like or unlike a post
 postRouter.post(
   "/:id/like",
   zValidator("param", idSchema, (result, c) => {
     if (!result.success) {
       console.error("Validation error:", result.error);
-      return c.json({ message: "Bad request" }, 400);
+      return c.json({ message: "Invalid request data" }, 400);
     }
   }),
   async (c) => {
@@ -289,7 +289,7 @@ postRouter.post(
     });
 
     if (!post) {
-      return c.json({ message: "Not found" }, 404);
+      return c.json({ message: "Post not found" }, 404);
     }
 
     const existing = await db.query.postLikesTable.findFirst({

@@ -18,7 +18,7 @@ authRouter.post(
   zValidator("json", registerSchema, (result, c) => {
     if (!result.success) {
       console.error("Validation error:", result.error);
-      return c.json({ message: "Bad Request" }, 400);
+      return c.json({ message: "Invalid request data" }, 400);
     }
   }),
   async (c) => {
@@ -98,7 +98,7 @@ authRouter.post(
   zValidator("json", loginSchema, (result, c) => {
     if (!result.success) {
       console.error("Validation error:", result.error);
-      return c.json({ message: "Bad request" }, 400);
+      return c.json({ message: "Invalid request data" }, 400);
     }
   }),
   async (c) => {

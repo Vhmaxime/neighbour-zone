@@ -34,7 +34,7 @@ friendRouter.get("/friendship/:id", async (c) => {
   });
 
   if (!friendship) {
-    return c.json({ message: "not found" }, 404);
+    return c.json({ message: "Friendship not found" }, 404);
   }
 
   return c.json({ friendship }, 200);
@@ -45,7 +45,7 @@ friendRouter.post(
   zValidator("param", idSchema, (result, c) => {
     if (!result.success) {
       console.log(result.error);
-      return c.json({ message: "Bad Request" }, 400);
+      return c.json({ message: "Invalid request data" }, 400);
     }
   }),
   async (c) => {
@@ -84,7 +84,7 @@ friendRouter.delete(
   zValidator("param", idSchema, (result, c) => {
     if (!result.success) {
       console.log(result.error);
-      return c.json({ message: "Bad Request" }, 400);
+      return c.json({ message: "Invalid request data" }, 400);
     }
   }),
   async (c) => {
@@ -118,7 +118,7 @@ friendRouter.patch(
   zValidator("param", idSchema, (result, c) => {
     if (!result.success) {
       console.log(result.error);
-      return c.json({ message: "Bad Request" }, 400);
+      return c.json({ message: "Invalid request data" }, 400);
     }
   }),
   async (c) => {
@@ -152,7 +152,7 @@ friendRouter.delete(
   zValidator("param", idSchema, (result, c) => {
     if (!result.success) {
       console.log(result.error);
-      return c.json({ message: "Bad Request" }, 400);
+      return c.json({ message: "Invalid request data" }, 400);
     }
   }),
   async (c) => {
@@ -186,7 +186,7 @@ friendRouter.delete(
   zValidator("param", idSchema, (result, c) => {
     if (!result.success) {
       console.log(result.error);
-      return c.json({ message: "Bad Request" }, 400);
+      return c.json({ message: "Invalid request data" }, 400);
     }
   }),
   async (c) => {
@@ -202,7 +202,7 @@ friendRouter.delete(
       },
     });
     if (!friendship) {
-      return c.json({ message: "Not found" }, 404);
+      return c.json({ message: "Friendship not found" }, 404);
     }
 
     await db
