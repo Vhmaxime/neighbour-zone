@@ -21,7 +21,7 @@ marketplaceRouter.use(authMiddleware);
 
 // Get all marketplace items
 marketplaceRouter.get(
-  "/",
+  "",
   zValidator(
     "query",
     z.object({
@@ -139,7 +139,7 @@ marketplaceRouter.post(
       },
     });
 
-    return c.json(marketplaceItem, 201);
+    return c.json({ marketplace: marketplaceItem }, 201);
   }
 );
 
@@ -267,7 +267,7 @@ marketplaceRouter.get(
       return c.json({ ...marketplace, applied, applications }, 200);
     }
 
-    return c.json({ ...marketplace, applied }, 200);
+    return c.json({ marketplace, applied }, 200);
   }
 );
 
@@ -350,7 +350,7 @@ marketplaceRouter.patch(
       },
     });
 
-    return c.json(marketplace, 200);
+    return c.json({ marketplace }, 200);
   }
 );
 

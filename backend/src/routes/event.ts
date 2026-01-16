@@ -124,7 +124,7 @@ eventRouter.post(
       },
     });
 
-    return c.json(event, 201);
+    return c.json({ event }, 201);
   }
 );
 
@@ -171,7 +171,7 @@ eventRouter.get(
       },
     }));
 
-    if (event.organizer.id === userId) {
+    if (event.organizer?.id === userId) {
       const likedBy = await db.query.eventLikesTable.findMany({
         where: { eventId: { eq: eventId } },
         columns: {},
@@ -185,10 +185,10 @@ eventRouter.get(
         },
       });
 
-      return c.json({ ...event, liked, likedBy }, 200);
+      return c.json({ event, liked, likedBy }, 200);
     }
 
-    return c.json({ ...event, liked }, 200);
+    return c.json({ event, liked }, 200);
   }
 );
 
@@ -247,7 +247,7 @@ eventRouter.patch(
       },
     });
 
-    return c.json(event, 200);
+    return c.json({ event }, 200);
   }
 );
 
