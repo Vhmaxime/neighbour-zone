@@ -5,7 +5,6 @@ import { ProfilePage } from './pages/profile-page/profile-page';
 import { Settings } from './pages/settings/settings';
 import { authGuard } from './guards/auth-guard';
 import { guestGuard } from './guards/guest-guard';
-import { User } from './pages/user/user';
 import { NotFound } from './pages/not-found/not-found';
 import { Explore } from './pages/explore/explore';
 import { Feed } from './pages/feed/feed';
@@ -13,6 +12,11 @@ import { About } from './pages/about/about';
 import { Contact } from './pages/contact/contact';
 import { Privacy } from './pages/privacy/privacy';
 import { Terms } from './pages/terms/terms';
+import { Events } from './pages/events/events';
+import { CreateEvent } from './pages/events/create-event/create-event';
+import { Marketplace } from './pages/marketplace/marketplace';
+import { CreateItem } from './pages/marketplace/create-item/create-item';
+import { CreatePost } from './pages/posts/create-post/create-post';
 
 export const routes: Routes = [
   { path: 'not-found', title: '404 - Page Not Found | Neighbour Zone', component: NotFound },
@@ -47,20 +51,19 @@ export const routes: Routes = [
       { path: 'feed', title: 'Feed | Neighbour Zone', component: Feed },
       { path: 'profile', title: 'Profile | Neighbour Zone', component: ProfilePage },
       { path: 'settings', title: 'Settings | Neighbour Zone', component: Settings },
-      { path: 'user/:id', component: User },
+      { path: 'user/:id', loadComponent: () => import('./pages/user/user').then((m) => m.User) },
       {
         path: 'events',
         children: [
           {
             path: '',
             title: 'Events | Neighbour Zone',
-            loadComponent: () => import('./pages/events/events').then((m) => m.Events),
+            component: Events,
           },
           {
             path: 'create',
             title: 'Organize an Event | Neighbour Zone',
-            loadComponent: () =>
-              import('./pages/events/create-event/create-event').then((m) => m.CreateEvent),
+            component: CreateEvent,
           },
           {
             path: ':id',
@@ -77,41 +80,50 @@ export const routes: Routes = [
         ],
       },
       {
-        path: 'marketplace', // The main marketplace page
-        title: 'Marketplace | Neighbour Zone',
-        loadComponent: () => import('./pages/marketplace/marketplace').then((m) => m.Marketplace),
+        path: 'marketplace',
+        children: [
+          {
+            path: '',
+            title: 'Marketplace | Neighbour Zone',
+            component: Marketplace,
+          },
+          {
+            path: 'create',
+            title: 'List an Item | Neighbour Zone',
+            component: CreateItem,
+          },
+          {
+            path: ':id',
+            loadComponent: () =>
+              import('./pages/marketplace-details/marketplace-details').then(
+                (m) => m.MarketplaceDetails
+              ),
+          },
+        ],
       },
       {
-        path: 'marketplace/create',
-        title: 'List an Item | Neighbour Zone',
-        loadComponent: () =>
-          import('./pages/marketplace/create-item/create-item').then((m) => m.CreateItem),
+        path: 'post',
+        children: [
+          {
+            path: 'create',
+            title: 'Create Post | Neighbour Zone',
+            component: CreatePost,
+          },
+          {
+            path: ':id',
+            title: 'Post Details | Neighbour Zone',
+            loadComponent: () =>
+              import('./pages/posts/post-details/post-details').then((m) => m.PostDetails),
+          },
+          {
+            path: ':id/edit',
+            title: 'Edit Post | Neighbour Zone',
+            loadComponent: () =>
+              import('./pages/posts/edit-post/edit-post').then((m) => m.EditPost),
+          },
+        ],
       },
-      {
-        path: 'marketplace/:id', // Visit specific items
-        loadComponent: () =>
-          import('./pages/marketplace-details/marketplace-details').then(
-            (m) => m.MarketplaceDetails
-          ),
-      },
-      {
-        path: 'posts/create',
-        title: 'Create Post | Neighbour Zone',
-        loadComponent: () =>
-          import('./pages/posts/create-post/create-post').then((m) => m.CreatePost),
-      },
-      {
-        path: 'posts/:id',
-        title: 'Post Details | Neighbour Zone',
-        loadComponent: () =>
-          import('./pages/posts/post-details/post-details').then((m) => m.PostDetails),
-      },
-      {
-        path: 'posts/:id/edit',
-        title: 'Edit Post | Neighbour Zone',
-        loadComponent: () => import('./pages/posts/edit-post/edit-post').then((m) => m.EditPost),
-      },
+      { path: '**', redirectTo: 'not-found' },
     ],
   },
-  { path: '**', redirectTo: 'not-found' },
 ];
