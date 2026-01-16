@@ -4,7 +4,10 @@
   <div class="content">
     <div class="left">
       <app-explore-search></app-explore-search>
-      <app-calendar></app-calendar>
+      <app-calendar
+        *ngIf="events$ | async as events"
+        [events]="events">
+</app-calendar>
       <app-friend-list></app-friend-list>
     </div>
 

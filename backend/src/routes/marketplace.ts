@@ -92,8 +92,16 @@ marketplaceRouter.post(
     }
   }),
   async (c) => {
-    const { title, description, location, price, category } =
-      c.req.valid("json");
+    const {
+      title,
+      description,
+      placeDisplayName,
+      placeId,
+      lat,
+      lon,
+      price,
+      category,
+    } = c.req.valid("json");
 
     const { sub: userId } = c.get("jwtPayload");
 
@@ -102,7 +110,10 @@ marketplaceRouter.post(
       .values({
         title,
         description,
-        location,
+        placeDisplayName,
+        placeId,
+        lat,
+        lon,
         price: price ?? null,
         userId,
         category,
@@ -278,8 +289,16 @@ marketplaceRouter.patch(
   async (c) => {
     const { id } = c.req.valid("param");
 
-    const { title, description, location, price, category } =
-      c.req.valid("json");
+    const {
+      title,
+      description,
+      placeDisplayName,
+      placeId,
+      lat,
+      lon,
+      price,
+      category,
+    } = c.req.valid("json");
 
     const { sub: userId } = c.get("jwtPayload");
 
@@ -302,7 +321,10 @@ marketplaceRouter.patch(
       .set({
         title,
         description,
-        location,
+        placeDisplayName,
+        placeId,
+        lat,
+        lon,
         price: price ?? null,
         category,
       })

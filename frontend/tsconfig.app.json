@@ -8,7 +8,7 @@
   },
   "include": [
     "src/**/*.ts"
-  ],
+, "src/app/pages/posts/edit-post"  ],
   "exclude": [
     "src/**/*.spec.ts"
   ]

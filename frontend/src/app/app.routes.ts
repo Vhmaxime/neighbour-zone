@@ -100,6 +100,11 @@ export const routes: Routes = [
             (m) => m.MarketplaceDetails
           ),
       },
+      {
+    path: 'posts/:id/edit',
+    loadComponent: () => import('./pages/posts/edit-post/edit-post').then(m => m.EditPost)
+    },
+
     ],
   },
 
