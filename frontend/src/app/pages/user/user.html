@@ -1,4 +1,11 @@
-@if (user(); as user) {
+@if (isLoading()) {
+<div class="flex items-center justify-center gap-2 py-12">
+  <span
+    class="animate-spin inline-block w-5 h-5 border-2 border-transparent border-t-gray-600 rounded-full"
+  ></span
+  >Loading...
+</div>
+} @else { @if (user(); as user) {
 <section class="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
   <div class="flex items-start gap-6">
     <div
@@ -106,11 +113,4 @@
     </div>
   </section>
 </div>
-}@else{
-<div class="flex items-center justify-center gap-2 py-12">
-  <span
-    class="animate-spin inline-block w-5 h-5 border-2 border-transparent border-t-gray-600 rounded-full"
-  ></span
-  >Loading...
-</div>
-}
+} }

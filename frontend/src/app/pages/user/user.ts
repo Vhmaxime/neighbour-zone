@@ -33,25 +33,39 @@ export class User {
   private eventService = inject(EventService);
   private marketplaceService = inject(MarketplaceService);
   private titleService = inject(Title);
-  // Get user ID from route parameters
-  private userId = this.activatedRoute.snapshot.paramMap.get('id') as string;
   // Signals to hold user data and loading state
   public user = signal<UserPublic | null>(null);
   public posts = signal<PostsResponse | null>(null);
   public events = signal<EventsResponse | null>(null);
   public marketplaceItems = signal<MarketplaceItemsResponse | null>(null);
-  public isLoading = signal(false);
+  public isLoading = signal(true);
+  private userId: string = '';
 
   public ngOnInit() {
-    this.loadUser();
-    this.loadUserPosts();
-    this.loadUserEvents();
-    this.loadUserMarketplaceItems();
+    this.activatedRoute.paramMap.subscribe((params) => {
+      this.isLoading.set(true);
+      const userId = params.get('id');
+
+      if (!userId) {
+        this.router.navigate(['/not-found']);
+        return;
+      }
+
+      this.userId = userId;
+
+      Promise.all([
+        this.loadUser(),
+        this.loadUserPosts(),
+        this.loadUserEvents(),
+        this.loadUserMarketplaceItems(),
+      ]).finally(() => {
+        this.isLoading.set(false);
+      });
+    });
   }
 
   private loadUser() {
-    this.isLoading.set(true);
-    firstValueFrom(this.userService.getUser(this.userId))
+    return firstValueFrom(this.userService.getUser(this.userId))
       .then((data) => {
         this.user.set(data.user);
         this.titleService.setTitle(`${data.user.username} - Neighbour Zone`);
@@ -59,51 +73,36 @@ export class User {
       .catch((error) => {
         console.error('Error fetching user:', error);
         this.router.navigate(['/not-found']);
-      })
-      .finally(() => {
-        this.isLoading.set(false);
       });
   }
 
   private loadUserPosts() {
-    this.isLoading.set(true);
-    firstValueFrom(this.postService.getPostsByUser(this.userId))
+    return firstValueFrom(this.postService.getPostsByUser(this.userId))
       .then((data) => {
         this.posts.set(data);
       })
       .catch((error) => {
         console.error('Error loading user content:', error);
-      })
-      .finally(() => {
-        this.isLoading.set(false);
       });
   }
 
   private loadUserEvents() {
-    this.isLoading.set(true);
-    firstValueFrom(this.eventService.getEventsByUser(this.userId))
+    return firstValueFrom(this.eventService.getEventsByUser(this.userId))
       .then((data) => {
         this.events.set(data);
       })
       .catch((error) => {
         console.error('Error loading user content:', error);
-      })
-      .finally(() => {
-        this.isLoading.set(false);
       });
   }
 
   private loadUserMarketplaceItems() {
-    this.isLoading.set(true);
-    firstValueFrom(this.marketplaceService.getMarketplaceItemsByUser(this.userId))
+    return firstValueFrom(this.marketplaceService.getMarketplaceItemsByUser(this.userId))
       .then((data) => {
         this.marketplaceItems.set(data);
       })
       .catch((error) => {
         console.error('Error loading user content:', error);
-      })
-      .finally(() => {
-        this.isLoading.set(false);
       });
   }
 }
