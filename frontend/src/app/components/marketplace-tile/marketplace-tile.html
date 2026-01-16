@@ -1,25 +1,14 @@
-<div
-  class="flex flex-col bg-white rounded-lg shadow hover:shadow-md transition-shadow cursor-pointer overflow-hidden h-full"
->
+<div class="flex flex-col bg-white rounded-lg shadow hover:shadow-md transition-shadow cursor-pointer overflow-hidden h-full">
   <div class="flex-1 p-4">
     <div class="flex items-start justify-between mb-2">
       <h3 class="text-lg font-semibold text-gray-900 line-clamp-2">{{ item().title }}</h3>
       
       <div class="flex items-center gap-2">
-        <app-marketplace-actions 
-          [itemId]="item().id" 
-          [sellerId]="item().provider.id" 
-          [itemTitle]="item().title"
-          (deleted)="deleted.emit($event)" 
-        />
-
-        <span
-          class="px-2 py-1 text-xs font-medium rounded-full shrink-0"
-          [class.bg-green-100]="item().category === 'offered'"
-          [class.text-green-700]="item().category === 'offered'"
-          [class.bg-blue-100]="item().category === 'wanted'"
-          [class.text-blue-700]="item().category === 'wanted'"
-        >
+        <span class="px-2 py-1 text-xs font-medium rounded-full shrink-0"
+              [class.bg-green-100]="item().category === 'offered'"
+              [class.text-green-700]="item().category === 'offered'"
+              [class.bg-blue-100]="item().category === 'wanted'"
+              [class.text-blue-700]="item().category === 'wanted'">
           {{ item().category === 'offered' ? 'Offered' : 'Wanted' }}
         </span>
       </div>

@@ -2,9 +2,9 @@ import { Component, inject, signal, computed } from '@angular/core';
 import { DatePipe, Location } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { PostService } from '../../../services/post';
-import { Post } from '../../../types/api.types';
+import { Post as P} from '../../../types/api.types';
 import { firstValueFrom } from 'rxjs';
-import { AuthService } from '../../../services/auth';
+
 
 @Component({
   selector: 'app-post-details',
