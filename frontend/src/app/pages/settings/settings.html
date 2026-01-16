@@ -9,7 +9,59 @@
       {{ error() }}
     </div>
 
-    <section class="settings-card" [formGroup]="form">
+    <!-- 1. PROFILE SETTINGS -->
+    <section class="settings-card" [formGroup]="profileForm">
+      <div class="card-header">
+        <h2 class="card-title">Profile Details</h2>
+      </div>
+
+      <div class="form-grid">
+        <!-- First name -->
+        <div class="field">
+          <label class="input-label">First name</label>
+          <input class="input-field" type="text" formControlName="firstname" placeholder="First name" />
+        </div>
+
+        <!-- Last name -->
+        <div class="field">
+          <label class="input-label">Last name</label>
+          <input class="input-field" type="text" formControlName="lastname" placeholder="Last name" />
+        </div>
+
+        <!-- Email -->
+        <div class="field">
+          <label class="input-label">Email</label>
+          <input class="input-field" type="email" formControlName="email" placeholder="you@email.com" />
+        </div>
+
+        <!-- Phone number -->
+        <div class="field">
+          <label class="input-label">Phone number</label>
+          <input class="input-field" type="tel" formControlName="phoneNumber" placeholder="+32 4 00 00 00 00" />
+        </div>
+
+        <!-- Bio -->
+        <div class="field full" style="grid-column: 1 / -1;">
+          <label class="input-label">Bio</label>
+          <textarea class="input-field" style="min-height: 100px; resize: vertical;" rows="4" formControlName="bio"
+            [attr.maxlength]="maxChars" placeholder="Briefly describe yourself for your neighbours..."></textarea>
+
+          <div style="text-align: right; font-size: 0.75rem; color: #6b7280; margin-top: 4px;">
+            {{ profileForm.get('bio')?.value?.length || 0 }} / {{ maxChars }} characters
+          </div>
+        </div>
+      </div>
+
+      <div class="card-footer">
+        <button class="btn-primary" (click)="saveProfile()" [disabled]="isSavingProfile() || profileForm.invalid"
+          style="min-width: 140px;">
+          {{ saveProfileStatus }}
+        </button>
+      </div>
+    </section>
+
+    <!-- 2. SECURITY SETTINGS -->
+    <section class="settings-card" [formGroup]="securityForm">
       <div class="card-header">
         <h2 class="card-title">Security</h2>
       </div>
@@ -17,60 +69,39 @@
       <div class="form-grid">
         <div class="field">
           <label class="input-label">Current Password</label>
-          <input
-            type="password"
-            class="input-field"
-            formControlName="currentPassword"
-            placeholder="••••••••"
-          >
+          <input type="password" class="input-field" formControlName="currentPassword" placeholder="••••••••">
         </div>
 
         <div class="field">
           <label class="input-label">New Password</label>
-          <input
-            type="password"
-            class="input-field"
-            formControlName="newPassword"
-            placeholder="••••••••"
-          >
+          <input type="password" class="input-field" formControlName="newPassword" placeholder="••••••••">
 
           <small class="password-hint">
-  Password must contain:
-  <ul>
-    <li [class.valid]="hasMinLength()">At least 8 characters</li>
-    <li [class.valid]="hasUppercase()">1 uppercase letter (A–Z)</li>
-    <li [class.valid]="hasLowercase()">1 lowercase letter (a–z)</li>
-    <li [class.valid]="hasNumber()">1 number (0–9)</li>
-    <li [class.valid]="hasSpecial()">1 special character (!@#$%^&*)</li>
-  </ul>
-</small>
+            Password must contain:
+            <ul>
+              <li [class.valid]="hasMinLength()">At least 8 characters</li>
+              <li [class.valid]="hasUppercase()">1 uppercase letter (A–Z)</li>
+              <li [class.valid]="hasLowercase()">1 lowercase letter (a–z)</li>
+              <li [class.valid]="hasNumber()">1 number (0–9)</li>
+              <li [class.valid]="hasSpecial()">1 special character (!@#$%^&*)</li>
+            </ul>
+          </small>
 
         </div>
 
         <div class="field">
           <label class="input-label">Confirm New Password</label>
-          <input
-            type="password"
-            class="input-field"
-            formControlName="confirmPassword"
-            placeholder="••••••••"
-          >
-          <small
-            *ngIf="form.hasError('passwordMismatch') && form.get('confirmPassword')?.dirty"
-            class="error-text"
-          >
+          <input type="password" class="input-field" formControlName="confirmPassword" placeholder="••••••••">
+          <small *ngIf="securityForm.hasError('passwordMismatch') && securityForm.get('confirmPassword')?.dirty"
+            class="error-text">
             Passwords do not match.
           </small>
         </div>
       </div>
 
       <div class="card-footer">
-        <button
-          type="button"
-          class="btn-primary"
-          (click)="updatePassword()"
-          [disabled]="form.invalid || isUpdatingPassword()"
-        >
+        <button type="button" class="btn-primary" (click)="updatePassword()"
+          [disabled]="securityForm.invalid || isUpdatingPassword()">
           {{ isUpdatingPassword() ? 'Updating...' : 'Update Password' }}
         </button>
       </div>
@@ -79,12 +110,7 @@
     <section class="danger-area">
       <div class="danger-card">
         <div class="danger-text">
-          <button
-            type="button"
-            class="btn-danger"
-            (click)="deleteAccount()"
-            [disabled]="isDeletingAccount()"
-          >
+          <button type="button" class="btn-danger" (click)="deleteAccount()" [disabled]="isDeletingAccount()">
             Delete Account
           </button>
           <span class="danger-desc">
