@@ -1,18 +1,25 @@
-<div class="search-container">
-  <input [formControl]="searchControl" type="text" placeholder="Search for a location..." />
-
-  @if (searchControl.value && searchResults() !== null) {
-  <div>
-    @if (isSearching()) {
-    <div>Searching...</div>
-    } @else if (searchResults(); as searchResults) { @if (searchResults.length > 0) { @for (place of
-    searchResults; track place.place_id) {
-    <div (click)="onSelectLocation(place)">
-      <span>{{ place.display_name }}</span>
-    </div>
-    } } @if ( searchResults.length === 0 && !isSearching() ) {
-    <div>No matches found.</div>
-    } }
-  </div>
-  }
-</div>
+<input
+  [formControl]="searchControl"
+  type="text"
+  class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+  placeholder="e.g. Neighbourhood Community Center"
+/>
+@if (searchControl.value && searchResults() !== null) {
+<ul
+  class="absolute z-10 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto max-w-xl w-full"
+>
+  @if (isSearching()) {
+  <li class="px-4 py-2 text-gray-500">Searching...</li>
+  } @else if (searchResults(); as searchResults) { @if (searchResults.length > 0) { @for (place of
+  searchResults; track place.place_id) {
+  <li
+    (click)="onSelectLocation(place)"
+    class="px-4 py-2 cursor-pointer hover:bg-blue-100 transition-colors"
+  >
+    <span>{{ place.display_name }}</span>
+  </li>
+  } } @if (searchResults.length === 0 && !isSearching()) {
+  <li class="px-4 py-2 text-gray-500">No matches found.</li>
+  } }
+</ul>
+}
