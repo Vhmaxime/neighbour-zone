@@ -49,7 +49,6 @@ export const routes: Routes = [
       { path: '', redirectTo: 'explore', pathMatch: 'full' }, // Redirects root URL to /explore
       { path: 'explore', title: 'Explore | Neighbour Zone', component: Explore },
       { path: 'feed', title: 'Feed | Neighbour Zone', component: Feed },
-      { path: 'profile', title: 'Profile | Neighbour Zone', component: ProfilePage },
       { path: 'settings', title: 'Settings | Neighbour Zone', component: Settings },
       { path: 'user/:id', loadComponent: () => import('./pages/user/user').then((m) => m.User) },
       {
