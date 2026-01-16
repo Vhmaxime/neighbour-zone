@@ -1,10 +1,10 @@
-import { Component, inject, input, signal, computed, effect } from '@angular/core';
+import { Component, inject, input, signal, effect } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { PostService } from '../../../services/post';
-import { Post } from '../../../types/api.types';
+import { Post as P} from '../../../types/api.types';
 import { firstValueFrom } from 'rxjs';
-import { AuthService } from '../../../services/auth';
+
 
 @Component({
   selector: 'app-post-details',
@@ -18,37 +18,36 @@ export class PostDetails {
   id = input.required<string>();
 
   private postService = inject(PostService);
-  private authService = inject(AuthService);
+  private router = inject(Router);
   
-  public post = signal<Post | null>(null);
+  public post = signal<P | null>(null);
   public isLoading = signal(true);
-
-
-  public isAuthor = computed(() => {
-    const currentPost = this.post();
-    const currentUser = this.authService.getUser() as any;
-
-    if (!currentPost || !currentUser) return false;
-
-    return currentPost.author.id === currentUser.id;
-  });
+  public handleDeleted() {
+  this.router.navigate(['/feed']);
+  }
 
   constructor() {
-  effect(async () => {
-    const postId = this.id();
-    if (!postId) return;
+    effect(async () => {
+      const postId = this.id();
+      if (!postId) return;
 
-    try {
-      this.isLoading.set(true);
-      const response = await firstValueFrom(this.postService.getPost(postId));
-      this.post.set(response?.post || response);
-    } catch (error) {
-      console.error('API failed', error);
-      this.post.set(null); 
-    } finally {
-      // Ensures the spinner disappears no matter what
-      this.isLoading.set(false); 
-    }
-  });
+      try {
+        this.isLoading.set(true);
+        const response = await firstValueFrom(this.postService.getPost(postId));
+
+        // Handle potential nested response structures
+        this.post.set(response?.post || response);
+      } catch (error) {
+        console.error('API failed', error);
+        this.post.set(null); 
+      } finally {
+        // Ensures the spinner disappears no matter what
+        this.isLoading.set(false); 
+      }
+    });
+  }
+
+  public onPostDeleted() {
+    this.router.navigate(['/feed']);
   }
 }

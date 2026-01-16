@@ -3,19 +3,12 @@
     <a routerLink="/feed" class="text-blue-600 hover:text-blue-800 flex items-center gap-2 font-medium">
       ← Back to Feed
     </a>
-
-    @if (post()?.author?.id === 'current-user-id-here') {
-      <a [routerLink]="['/posts', id(), 'edit']" 
-         class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-sm font-bold transition-all">
-        Edit Post
-      </a>
-    }
   </div>
 
   @if (isLoading()) {
     <div class="flex flex-col items-center justify-center py-20 gap-4">
       <div class="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-      <p class="text-gray-500">Fetching post...</p>
+      <p class="text-gray-500 font-medium">Fetching post...</p>
     </div>
   } @else if (post(); as p) {
     <article class="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
