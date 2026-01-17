@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 import { Login } from './pages/login/login';
 import { Register } from './pages/register/register';
-import { ProfilePage } from './pages/profile-page/profile-page';
 import { Settings } from './pages/settings/settings';
 import { authGuard } from './guards/auth-guard';
 import { guestGuard } from './guards/guest-guard';
@@ -99,10 +98,13 @@ export const routes: Routes = [
               ),
           },
           // inside the marketplace children array in app.routes.ts
-          { 
-            path: ':id/edit', 
-            title: 'Edit Item | Neighbour Zone', 
-            loadComponent: () => import('./pages/marketplace/edit-marketplace/edit-marketplace').then((m) => m.EditMarketplace) 
+          {
+            path: ':id/edit',
+            title: 'Edit Item | Neighbour Zone',
+            loadComponent: () =>
+              import('./pages/marketplace/edit-marketplace/edit-marketplace').then(
+                (m) => m.EditMarketplace
+              ),
           },
         ],
       },
