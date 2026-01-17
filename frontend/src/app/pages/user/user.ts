@@ -67,8 +67,8 @@ export class User {
   private loadUser() {
     return firstValueFrom(this.userService.getUser(this.userId))
       .then((data) => {
-        this.user.set(data.user);
-        this.titleService.setTitle(`${data.user.username} - Neighbour Zone`);
+        this.user.set(data);
+        this.titleService.setTitle(`${data.username} - Neighbour Zone`);
       })
       .catch((error) => {
         console.error('Error fetching user:', error);

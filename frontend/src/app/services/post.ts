@@ -1,6 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { CreatePostRequest, EventResponse, PostResponse, PostsResponse } from '../types/api.types';
+import {
+  CreatePostRequest,
+  EventResponse,
+  Post,
+  PostResponse,
+  PostsResponse,
+} from '../types/api.types';
 
 @Injectable({
   providedIn: 'root',
@@ -18,7 +24,7 @@ export class PostService {
   }
 
   public getPost(postId: string) {
-    return this.http.get<PostResponse>(`${this.apiUrl}/post/${postId}`);
+    return this.http.get<Post>(`${this.apiUrl}/post/${postId}`);
   }
 
   public createPost(data: CreatePostRequest) {

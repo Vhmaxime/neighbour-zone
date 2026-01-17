@@ -3,7 +3,9 @@ import { Injectable, inject } from '@angular/core';
 import {
   CreatePostRequest,
   CreateUserRequest,
+  CurrentUser,
   CurrentUserResponse,
+  UserPublic,
   UserResponse,
 } from '../types/api.types';
 
@@ -15,11 +17,11 @@ export class UserService {
   private http = inject(HttpClient);
 
   public getCurrentUser() {
-    return this.http.get<CurrentUserResponse>(`${this.apiUrl}/user/me`);
+    return this.http.get<CurrentUser>(`${this.apiUrl}/user/me`);
   }
 
   public getUser(userId: string) {
-    return this.http.get<UserResponse>(`${this.apiUrl}/user/${userId}`);
+    return this.http.get<UserPublic>(`${this.apiUrl}/user/${userId}`);
   }
 
   public updateCurrentUser(data: Partial<CreateUserRequest>) {
