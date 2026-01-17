@@ -17,66 +17,150 @@
   </div>
   }
   <div class="flex flex-col mb-4">
-    <label class="text-sm font-medium text-gray-700 mb-1" for="firstname">First name</label>
+    <label
+      class="text-sm font-medium text-gray-700 mb-1 [.invalid]:text-red-500!"
+      [class.invalid]="
+        profileForm.get('firstname')?.invalid && profileForm.get('firstname')?.touched
+      "
+      for="firstname"
+      >First name</label
+    >
     <input
       id="firstname"
       type="text"
       formControlName="firstname"
-      class="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500"
+      [class.invalid]="
+        profileForm.get('firstname')?.invalid && profileForm.get('firstname')?.touched
+      "
+      class="border [.invalid]:border-red-500! [.invalid]:ring-red-500! [.invalid]:text-red-500! border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-primary-500"
     />
+    @if (profileForm.get('firstname')?.invalid && profileForm.get('firstname')?.touched) { @if
+    (profileForm.get('firstname')?.errors?.['required']) {
+    <span class="text-red-500 text-sm">required</span>
+    } @if (profileForm.get('firstname')?.errors?.['minlength']) {
+    <span class="text-red-500 text-sm">minimal 2 characters</span>
+    } @if (profileForm.get('firstname')?.errors?.['maxlength']) {
+    <span class="text-red-500 text-sm">maximal 30 characters</span>
+    } }
   </div>
 
   <div class="flex flex-col mb-4">
-    <label class="text-sm font-medium text-gray-700 mb-1" for="lastname">Last name</label>
+    <label
+      class="text-sm font-medium text-gray-700 mb-1 [.invalid]:text-red-500!"
+      [class.invalid]="profileForm.get('lastname')?.invalid && profileForm.get('lastname')?.touched"
+      for="lastname"
+      >Last name</label
+    >
     <input
       id="lastname"
       type="text"
       formControlName="lastname"
-      class="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500"
+      [class.invalid]="profileForm.get('lastname')?.invalid && profileForm.get('lastname')?.touched"
+      class="border [.invalid]:border-red-500! [.invalid]:ring-red-500! [.invalid]:text-red-500! border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-primary-500"
     />
+    @if (profileForm.get('lastname')?.invalid && profileForm.get('lastname')?.touched) { @if
+    (profileForm.get('lastname')?.errors?.['required']) {
+    <span class="text-red-500 text-sm">required</span>
+    } @if (profileForm.get('lastname')?.errors?.['minlength']) {
+    <span class="text-red-500 text-sm">minimal 2 characters</span>
+    } @if (profileForm.get('lastname')?.errors?.['maxlength']) {
+    <span class="text-red-500 text-sm">maximal 30 characters</span>
+    } }
   </div>
 
   <div class="flex flex-col mb-4">
-    <label class="text-sm font-medium text-gray-700 mb-1" for="username">Username</label>
+    <label
+      class="text-sm font-medium text-gray-700 mb-1 [.invalid]:text-red-500!"
+      [class.invalid]="profileForm.get('username')?.invalid && profileForm.get('username')?.touched"
+      for="username"
+      >Username</label
+    >
     <input
       id="username"
       type="text"
       formControlName="username"
-      class="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500"
+      [class.invalid]="profileForm.get('username')?.invalid && profileForm.get('username')?.touched"
+      class="border [.invalid]:border-red-500! [.invalid]:ring-red-500! [.invalid]:text-red-500! border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-primary-500"
     />
+    @if (profileForm.get('username')?.invalid && profileForm.get('username')?.touched) { @if
+    (profileForm.get('username')?.errors?.['required']) {
+    <span class="text-red-500 text-sm">required</span>
+    } @if (profileForm.get('username')?.errors?.['minlength']) {
+    <span class="text-red-500 text-sm">minimal 3 characters</span>
+    } @if (profileForm.get('username')?.errors?.['maxlength']) {
+    <span class="text-red-500 text-sm">maximal 20 characters</span>
+    } }
   </div>
 
   <div class="flex flex-col mb-4">
-    <label class="text-sm font-medium text-gray-700 mb-1" for="email">Email</label>
+    <label
+      class="text-sm font-medium text-gray-700 mb-1 [.invalid]:text-red-500!"
+      [class.invalid]="profileForm.get('email')?.invalid && profileForm.get('email')?.touched"
+      for="email"
+      >Email</label
+    >
     <input
       id="email"
       type="email"
       formControlName="email"
-      class="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500"
+      [class.invalid]="profileForm.get('email')?.invalid && profileForm.get('email')?.touched"
+      class="border [.invalid]:border-red-500! [.invalid]:ring-red-500! [.invalid]:text-red-500! border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-primary-500"
     />
+    @if (profileForm.get('email')?.invalid && profileForm.get('email')?.touched) { @if
+    (profileForm.get('email')?.errors?.['required']) {
+    <span class="text-red-500 text-sm">required</span>
+    } @if (profileForm.get('email')?.errors?.['email']) {
+    <span class="text-red-500 text-sm">invalid email</span>
+    } }
   </div>
 
   <div class="flex flex-col mb-4">
-    <label class="text-sm font-medium text-gray-700 mb-1" for="phoneNumber">Phone number</label>
+    <label
+      class="text-sm font-medium text-gray-700 mb-1 [.invalid]:text-red-500!"
+      [class.invalid]="
+        profileForm.get('phoneNumber')?.invalid && profileForm.get('phoneNumber')?.touched
+      "
+      for="phoneNumber"
+      >Phone number</label
+    >
     <input
       id="phoneNumber"
       type="tel"
       formControlName="phoneNumber"
-      class="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500"
+      [class.invalid]="
+        profileForm.get('phoneNumber')?.invalid && profileForm.get('phoneNumber')?.touched
+      "
+      class="border [.invalid]:border-red-500! [.invalid]:ring-red-500! [.invalid]:text-red-500! border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-primary-500"
     />
+    @if (profileForm.get('phoneNumber')?.invalid && profileForm.get('phoneNumber')?.touched) { @if
+    (profileForm.get('phoneNumber')?.errors?.['minlength']) {
+    <span class="text-red-500 text-sm">minimal 10 characters</span>
+    } @if (profileForm.get('phoneNumber')?.errors?.['maxlength']) {
+    <span class="text-red-500 text-sm">maximal 15 characters</span>
+    } }
   </div>
 
   <div class="flex flex-col mb-4 col-span-1 md:col-span-2">
-    <label class="text-sm font-medium text-gray-700 mb-1" for="bio">Bio</label>
+    <label
+      class="text-sm font-medium text-gray-700 mb-1 [.invalid]:text-red-500!"
+      [class.invalid]="profileForm.get('bio')?.invalid && profileForm.get('bio')?.touched"
+      for="bio"
+      >Bio</label
+    >
     <textarea
       id="bio"
       rows="4"
       formControlName="bio"
-      class="border border-gray-300 rounded-lg px-3 py-2 min-h-25 resize-y focus:outline-none focus:ring-2 focus:ring-primary-500"
+      [class.invalid]="profileForm.get('bio')?.invalid && profileForm.get('bio')?.touched"
+      class="border [.invalid]:border-red-500! [.invalid]:ring-red-500! [.invalid]:text-red-500! border-gray-300 rounded-lg px-3 py-2 min-h-25 resize-y focus:outline-none focus:ring-1 focus:ring-primary-500"
     ></textarea>
     <div class="text-right text-xs text-gray-400 mt-1">
       {{ profileForm.get('bio')?.value?.length || 0 }} / {{ 160 }} characters
     </div>
+    @if (profileForm.get('bio')?.invalid && profileForm.get('bio')?.touched) { @if
+    (profileForm.get('bio')?.errors?.['maxlength']) {
+    <span class="text-red-500 text-sm">maximal 160 characters</span>
+    } }
   </div>
   <button
     type="submit"
