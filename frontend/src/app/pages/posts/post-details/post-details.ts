@@ -7,11 +7,12 @@ import { firstValueFrom } from 'rxjs';
 import { AuthService } from '../../../services/auth';
 import { BackButton } from '../../../components/back-button/back-button';
 import { ActionButton } from '../../../components/action-button/action-button';
+import { LikeButton } from '../../../components/like-button/like-button';
 
 
 @Component({
   selector: 'app-post-details',
-  imports: [RouterLink, DatePipe, BackButton, ActionButton],
+  imports: [RouterLink, DatePipe, BackButton, ActionButton, LikeButton],
   templateUrl: './post-details.html',
   styleUrl: './post-details.css',
 })

@@ -49,6 +49,16 @@
 
       <h1 class="text-3xl font-black text-gray-900 mb-4">{{ p.title }}</h1>
       <p class="text-gray-700 leading-relaxed text-lg whitespace-pre-wrap">{{ p.content }}</p>
+
+      <div class="flex items-center justify-end mt-8 pt-6 border-t border-gray-50">
+        <app-like-button
+          [type]="'post'"
+          [id]="p.id"
+          [isLiked]="p.liked"
+          [likes]="p.likes"
+        />
+      </div>
+      
     </article>
   }
 </div>
