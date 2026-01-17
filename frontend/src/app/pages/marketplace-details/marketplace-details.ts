@@ -1,4 +1,4 @@
-import { Component, inject, signal, computed } from '@angular/core';
+import { Component, inject, signal, computed,OnInit } from '@angular/core';
 import { DatePipe, Location, CurrencyPipe } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink} from '@angular/router';
 import { firstValueFrom } from 'rxjs';
@@ -6,13 +6,12 @@ import { MarketplaceItem } from '../../types/api.types';
 import { MarketplaceService } from '../../services/marketplace';
 import { AuthService } from '../../services/auth';
 import { BackButton } from '../../components/back-button/back-button';
-import { EditButton } from '../../components/edit-button/edit-button';
-import { DeleteButton } from '../../components/delete-button/delete-button';
+import { ActionButton } from '../../components/action-button/action-button';
 
 @Component({
   selector: 'app-marketplace-details',
   standalone: true,
-  imports: [RouterLink, CurrencyPipe, DatePipe, BackButton, EditButton, DeleteButton],
+  imports: [RouterLink, CurrencyPipe, DatePipe, BackButton, ActionButton],
   templateUrl: './marketplace-details.html',
   styleUrl: './marketplace-details.css',
 })
@@ -33,7 +32,7 @@ export class MarketplaceDetails {
     () => this.item()?.provider.id === this.authService.getUser()?.sub
   );
 
-  public ngOnInit() {
+  ngOnInit() {
     this.loadItem();
   }
 
@@ -55,9 +54,5 @@ export class MarketplaceDetails {
       .finally(() => {
         this.isLoading.set(false);
       });
-  }
-
-  public onItemDeleted() {
-    this.router.navigate(['/marketplace']);
   }
 }
