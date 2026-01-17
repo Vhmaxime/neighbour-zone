@@ -36,8 +36,11 @@ export class CreateItem {
       title: this.form.value.title!,
       description: this.form.value.description!,
       price: this.form.value.price ?? 0,
+      placeId: 1,
+      placeDisplayName: "Hasselt",
       category: this.form.value.category as 'offered' | 'wanted',
-      location: this.form.value.location!
+      lat: "zzzz",
+      lon: "ssss"
     }).subscribe({
       next: () => {
         // On success, redirect back to the list
