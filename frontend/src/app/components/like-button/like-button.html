@@ -1,6 +1,6 @@
 <button
   [class]="likeState() ? '!text-red-500 !hover:text-red-600' : '!text-gray-500 !hover:text-red-500'"
-  class="flex items-center space-x-2 transition-colors !bg-transparent m-0 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-200! p-2! rounded-full"
+  class="flex items-center space-x-2 transition-colors !bg-transparent m-0! disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-200! p-2! rounded-full"
   (click)="handleLike()"
   [disabled]="isLoading() || readonly()"
 >
