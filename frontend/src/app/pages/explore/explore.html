@@ -1,4 +1,11 @@
 <div class="split-layout">
+  
+  <main class="map-panel">
+    @if (events$ | async; as events) {
+      <app-map [events]="events"></app-map>
+    }
+  </main>
+
   <aside class="sidebar">
 
     <div class="sidebar-header">
@@ -6,25 +13,22 @@
       <app-explore-search></app-explore-search>
     </div>
 
-  
     <div class="sidebar-static-section">
       <h2 class="section-title" style="padding: 0 24px; margin-top: 8px;">Calendar</h2>
       <div style="padding: 0 24px 16px 24px;">
-        <app-calendar *ngIf="events$ | async as events" [events]="events">
-        </app-calendar>
+        @if (events$ | async; as events) {
+          <app-calendar [events]="events">
+          </app-calendar>
+        }
       </div>
     </div>
-    <div class="sidebar-content custom-scrollbar">
 
+    <div class="sidebar-content custom-scrollbar">
       <div class="section-block">
         <h2 class="section-title">Friends</h2>
         <app-friend-list></app-friend-list>
       </div>
-
     </div>
   </aside>
-  <main class="map-panel">
-    <app-map *ngIf="events$ | async as events" [events]="events"></app-map>
-  </main>
 
 </div>
