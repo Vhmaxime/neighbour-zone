@@ -6,30 +6,28 @@ import { Router } from '@angular/router';
 import { NominatimLocation } from '../../types/nominatom-types';
 
 @Component({
-  selector: 'app-location-search-bar',
+  selector: 'app-location-search-results',
   imports: [ReactiveFormsModule],
-  templateUrl: './location-search-bar.html',
-  styleUrl: './location-search-bar.css',
+  templateUrl: './location-search-results.html',
+  styleUrl: './location-search-results.css',
 })
-export class LocationSearchBar {
+export class LocationSearchResults {
   private nominatimService = inject(NominatimService);
-  public searchControl = new FormControl('');
+
   public isSearching = signal(false);
   public searchResults = signal<NominatimLocation[] | null>(null);
   public selectedLocation = output<NominatimLocation>();
+  public placeDisplayName = output<string>();
+  public searchTerm = input.required<string>();
 
-  public ngOnInit() {
-    this.searchControl.valueChanges
-      .pipe(debounceTime(300))
-      .subscribe((query) => (query ? this.performSearch(query) : undefined));
-  }
-
-  private performSearch(query: string) {
+  public performSearch() {
     if (this.isSearching()) {
       return;
     }
+    const searchTerm = this.searchTerm();
+
     this.isSearching.set(true);
-    firstValueFrom(this.nominatimService.searchLocation(query))
+    firstValueFrom(this.nominatimService.searchLocation(searchTerm))
       .then((results) => {
         this.searchResults.set(results);
       })
@@ -41,6 +39,6 @@ export class LocationSearchBar {
   public onSelectLocation(location: NominatimLocation) {
     this.searchResults.set(null);
     this.selectedLocation.emit(location);
-    this.searchControl.setValue(location.display_name, { emitEvent: false });
+    this.placeDisplayName.emit(location.display_name);
   }
 }
