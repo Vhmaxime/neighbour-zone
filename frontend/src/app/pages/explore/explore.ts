@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ExploreSearch } from '../../components/explore-search/explore-search';
 import { FriendList } from '../../components/friend-list/friend-list';
@@ -22,12 +22,12 @@ import { map } from 'rxjs/operators';
   styleUrls: ['./explore.css'],
 })
 export class Explore {
+  private eventService = inject(EventService);
 
-  events$: Observable<any[]>;
+  events$: Observable<any[]> | undefined;
 
-  constructor(private eventService: EventService) {
+  ngOnInit() {
     this.events$ = this.eventService.getEvents().pipe(
-      // we geven alleen de events array door
       map(res => res.events)
     );
   }
