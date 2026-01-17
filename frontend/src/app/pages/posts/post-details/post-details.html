@@ -5,17 +5,12 @@
 
     @if (post(); as p) {
       <div class="flex items-center gap-3">
-        <app-edit-button 
+        <app-action-button 
           [itemId]="p.id" 
           [authorId]="p.author.id" 
           [routePath]="'post'" 
-        />
-        <app-delete-button 
-          [itemId]="p.id" 
-          [authorId]="p.author.id" 
-          [itemTitle]="p.title" 
-          [itemType]="'post'" 
-          (deleted)="onPostDeleted()" 
+          mode="edit"
+          [itemType]="'post'"
         />
       </div>
     }

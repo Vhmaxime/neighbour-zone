@@ -6,12 +6,12 @@ import { Post } from '../../../types/api.types';
 import { firstValueFrom } from 'rxjs';
 import { AuthService } from '../../../services/auth';
 import { BackButton } from '../../../components/back-button/back-button';
-import { EditButton } from '../../../components/edit-button/edit-button';
-import { DeleteButton } from '../../../components/delete-button/delete-button';
+import { ActionButton } from '../../../components/action-button/action-button';
+
 
 @Component({
   selector: 'app-post-details',
-  imports: [RouterLink, DatePipe, BackButton, EditButton, DeleteButton],
+  imports: [RouterLink, DatePipe, BackButton, ActionButton],
   templateUrl: './post-details.html',
   styleUrl: './post-details.css',
 })
@@ -51,9 +51,4 @@ export class PostDetails {
         this.isLoading.set(false);
       });
   }
-
-  public onPostDeleted() {
-    this.router.navigate(['/feed']);
-  }
-
 }

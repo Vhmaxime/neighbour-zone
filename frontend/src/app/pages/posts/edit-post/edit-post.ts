@@ -4,11 +4,12 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { PostService } from '../../../services/post'; 
 import { firstValueFrom } from 'rxjs';
+import { ActionButton } from '../../../components/action-button/action-button';
 
 @Component({
   selector: 'app-edit-post',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, ActionButton],
   templateUrl: './edit-post.html',
   styleUrl: './edit-post.css',
 })
@@ -25,6 +26,8 @@ export class EditPost {
   public isLoading = signal(true);
   public isSaving = signal(false);
 
+  public post = signal<any>(null);
+
   // Added 'question' to types just in case
   public editForm = this.fb.group({
     title: ['', [Validators.required, Validators.minLength(3)]],
@@ -39,7 +42,6 @@ export class EditPost {
   private async loadPost() {
     // Safety Check
     if (!this.postId) {
-      console.error('❌ Error: No Post ID found in URL');
       this.router.navigate(['/feed']);
       return;
     }
@@ -57,13 +59,18 @@ export class EditPost {
       const response: any = await Promise.race([fetchPromise, timeoutPromise]);
       
       // Handle { post: ... } vs raw response
-      const post = response.post || response;
+      const postData = response.post || response;
 
-      if (post) {
+      console.log('✅ Setting post signal:', postData);
+
+      // Must save the data to the signal
+      this.post.set(postData);
+
+      if (postData) {
         this.editForm.patchValue({
-          title: post.title,
-          content: post.content,
-          type: post.type
+          title: postData.title,
+          content: postData.content,
+          type: postData.type
         });
       }
     } catch (err) {
@@ -89,4 +96,9 @@ export class EditPost {
       this.isSaving.set(false);
     }
   }
+
+  onPostDeleted(id: string) {
+    this.router.navigate(['/feed']);
+  }
+
 }
