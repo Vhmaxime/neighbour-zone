@@ -9,7 +9,6 @@ import { BackButton } from '../../../components/back-button/back-button';
 import { ActionButton } from '../../../components/action-button/action-button';
 import { LikeButton } from '../../../components/like-button/like-button';
 
-
 @Component({
   selector: 'app-post-details',
   imports: [RouterLink, DatePipe, BackButton, ActionButton, LikeButton],
@@ -38,7 +37,7 @@ export class PostDetails {
     this.isLoading.set(true);
     firstValueFrom(this.postService.getPost(this.postId))
       .then((data) => {
-        this.post.set(data.post);
+        this.post.set(data);
       })
       .catch((error) => {
         if (error.status === 404) {

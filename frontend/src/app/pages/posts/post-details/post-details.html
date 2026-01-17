@@ -1,64 +1,57 @@
 <div class="max-w-2xl mx-auto py-10 px-4">
-  
   <div class="flex items-center justify-between mb-8">
     <app-back-button />
 
     @if (post(); as p) {
-      <div class="flex items-center gap-3">
-        <app-action-button 
-          [itemId]="p.id" 
-          [authorId]="p.author.id" 
-          [routePath]="'post'" 
-          mode="edit"
-          [itemType]="'post'"
-        />
-      </div>
+    <div class="flex items-center gap-3">
+      <app-action-button
+        [itemId]="p.id"
+        [authorId]="p.author.id"
+        [routePath]="'post'"
+        mode="edit"
+        [itemType]="'post'"
+      />
+    </div>
     }
   </div>
 
   @if (isLoading()) {
-    <div class="flex flex-col items-center justify-center py-20 gap-4">
-      <div class="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-      <p class="text-gray-500 font-medium">Loading post...</p>
-    </div>
-  } 
-  
-  @else if (isError()) {
-    <div class="text-center py-20 bg-red-50 rounded-3xl border border-red-100">
-      <p class="text-red-600 font-medium">Something went wrong while loading the post.</p>
-    </div>
-  } 
-  
-  @else if (post(); as p) {
-    <article class="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
-      <div class="flex items-center gap-4 mb-6">
-        <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold text-xl">
-          {{ p.author.username.charAt(0).toUpperCase() }}
-        </div>
-        <div>
-          <a [routerLink]="['/user', p.author.id]" class="hover:underline">
+  <div class="flex flex-col items-center justify-center py-20 gap-4">
+    <div
+      class="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"
+    ></div>
+    <p class="text-gray-500 font-medium">Loading post...</p>
+  </div>
+  } @else if (isError()) {
+  <div class="text-center py-20 bg-red-50 rounded-3xl border border-red-100">
+    <p class="text-red-600 font-medium">Something went wrong while loading the post.</p>
+  </div>
+  } @else if (post(); as p) {
+  <article class="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
+    <div class="flex items-center gap-4 mb-6">
+      <div
+        class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold text-xl"
+      >
+        {{ p.author.username.charAt(0).toUpperCase() }}
+      </div>
+      <div>
+        <a [routerLink]="['/user', p.author.id]" class="hover:underline">
           <h3 class="font-bold text-gray-900">{{ p.author.username }}</h3>
-          </a>
-          <div class="flex items-center gap-2 text-xs text-gray-400">
-            <span class="uppercase tracking-wider font-bold text-blue-500">{{ p.type }}</span>
-            <span>•</span>
-            <span>{{ p.createdAt | date:'mediumDate' }}</span>
-          </div>
+        </a>
+        <div class="flex items-center gap-2 text-xs text-gray-400">
+          <span class="uppercase tracking-wider font-bold text-blue-500">{{ p.type }}</span>
+          <span>•</span>
+          <span>{{ p.createdAt | date : 'mediumDate' }}</span>
         </div>
       </div>
+    </div>
 
-      <h1 class="text-3xl font-black text-gray-900 mb-4">{{ p.title }}</h1>
-      <p class="text-gray-700 leading-relaxed text-lg whitespace-pre-wrap">{{ p.content }}</p>
+    <h1 class="text-3xl font-black text-gray-900 mb-4">{{ p.title }}</h1>
+    <p class="text-gray-700 leading-relaxed text-lg whitespace-pre-wrap">{{ p.content }}</p>
 
-      <div class="flex items-center justify-end mt-8 pt-6 border-t border-gray-50">
-        <app-like-button
-          [type]="'post'"
-          [id]="p.id"
-          [isLiked]="p.liked"
-          [likes]="p.likes"
-        />
-      </div>
-      
-    </article>
+    <div class="flex items-center justify-end mt-8 pt-6 border-t border-gray-50">
+      <app-like-button [type]="'post'" [id]="p.id" [isLiked]="p.liked" [likes]="p.likes" />
+    </div>
+  </article>
   }
 </div>

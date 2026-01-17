@@ -33,7 +33,7 @@ export class ProfileUpdateForm {
   }
 
   private loadCurrentUser() {
-    firstValueFrom(this.userService.getCurrentUser()).then(({ user }) => {
+    firstValueFrom(this.userService.getCurrentUser()).then((user) => {
       this.setFormValues(user);
     });
   }
