@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal, } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   ReactiveFormsModule,
@@ -10,16 +10,17 @@ import {
 import { AuthService } from '../../services/auth';
 import { UserService } from '../../services/user';
 import { firstValueFrom } from 'rxjs';
+import { ProfileUpdateForm } from '../../components/profile-update-form/profile-update-form';
 
 @Component({
   selector: 'app-settings',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, ProfileUpdateForm],
   templateUrl: './settings.html',
   styleUrls: ['./settings.css'],
 })
 export class Settings implements OnInit {
-  private fb = inject(FormBuilder);
+  private formBuilder = inject(FormBuilder);
   private userService = inject(UserService);
   private authService = inject(AuthService);
 
@@ -50,7 +51,7 @@ export class Settings implements OnInit {
   }>;
 
   constructor() {
-    this.securityForm = this.fb.group(
+    this.securityForm = this.formBuilder.group(
       {
         currentPassword: ['', [Validators.required]],
         newPassword: [
@@ -114,14 +115,13 @@ export class Settings implements OnInit {
           bio: user.bio || '',
         });
 
-        setTimeout(() => this.saveProfileStatus = 'SAVE CHANGES', 3000);
+        setTimeout(() => (this.saveProfileStatus = 'SAVE CHANGES'), 3000);
       })
       .catch(() => {
         this.isSavingProfile.set(false);
         this.saveProfileStatus = 'SAVE CHANGES';
       });
   }
-
 
   passwordsMatch(group: FormGroup) {
     const password = group.get('newPassword')?.value;
