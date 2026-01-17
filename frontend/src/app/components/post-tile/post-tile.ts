@@ -3,12 +3,11 @@ import { DatePipe } from '@angular/common';
 import { RouterLink, Router} from '@angular/router';
 import { Post as P } from '../../types/api.types';
 import { LikeButton } from '../like-button/like-button';
-import { EditButton } from '../../components/edit-button/edit-button'; 
-import { DeleteButton } from '../../components/delete-button/delete-button';
+import { ActionButton } from '../../components/action-button/action-button';
 
 @Component({
   selector: 'app-post-tile',
-  imports: [DatePipe, RouterLink, LikeButton, EditButton, DeleteButton],
+  imports: [DatePipe, RouterLink, LikeButton, ActionButton],
   templateUrl: './post-tile.html',
   styleUrl: './post-tile.css',
 })

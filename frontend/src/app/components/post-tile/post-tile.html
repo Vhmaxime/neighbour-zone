@@ -30,13 +30,12 @@
           {{ post().type }}
         </span>
 
-        <app-edit-button [itemId]="post().id" [authorId]="post().author.id" [routePath]="'post'" />
-        <app-delete-button
+        <app-action-button
           [itemId]="post().id"
           [authorId]="post().author.id"
-          [itemTitle]="post().title"
           [itemType]="'post'"
-          (deleted)="onPostDeleted($event)"
+          [routePath]="'post'"
+          mode="edit"
         />
       </div>
     </div>
