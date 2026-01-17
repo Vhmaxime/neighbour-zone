@@ -123,7 +123,10 @@ export interface CreateMarketplaceItemRequest {
   title: string;
   description: string;
   price?: number;
-  location: string;
+  placeDisplayName: string;
+  placeId: number;
+  lat: string;
+  lon: string;
   category: MarketplaceCategory;
 }
 
