@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -6,16 +6,17 @@ import { firstValueFrom } from 'rxjs';
 import { EventService } from '../../../services/event';
 import { CreateEventRequest } from '../../../types/api.types';
 import { AuthService } from '../../../services/auth';
+import { ActionButton } from '../../../components/action-button/action-button';
 
 
 @Component({
   selector: 'app-edit-event',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, ActionButton],
   templateUrl: './edit-event.html',
   styleUrl: './edit-event.html',
 })
-export class EditEvent implements OnInit {
+export class EditEvent {
   private eventService = inject(EventService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
@@ -24,6 +25,9 @@ export class EditEvent implements OnInit {
   public eventId = this.route.snapshot.paramMap.get('id') as string;
   public isSubmitting = signal(false);
   public isLoading = signal(true);
+
+  // Store full event object for ActionButton usage (need organizer id)
+  public eventSource = signal<any>(null);
 
   public eventData = {
     title: '',
@@ -39,6 +43,9 @@ export class EditEvent implements OnInit {
     try {
       const response = await firstValueFrom(this.eventService.getEvent(this.eventId));
       const data = response.event;
+
+      // Save full object to signal for template
+      this.eventSource.set(data);
 
         const user = this.authService.getUser();
         if (user?.sub !== data.organizer.id) {
@@ -78,5 +85,9 @@ export class EditEvent implements OnInit {
       next: () => this.router.navigate(['/events', this.eventId]),
       error: () => this.isSubmitting.set(false)
     });
+  }
+
+  onEventDeleted() {
+    this.router.navigate(['/events']);
   }
 }
