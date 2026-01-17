@@ -1,9 +1,9 @@
 import { z } from "zod/v4";
 
 export const eventSchema = z.object({
-  title: z.string().min(1).max(255),
-  description: z.string().min(1),
-  placeDisplayName: z.string().min(1).max(255),
+  title: z.string().min(1).max(100),
+  description: z.string().min(1).max(300),
+  placeDisplayName: z.string().min(1).max(100),
   placeId: z.number().int(),
   lat: z.string().min(1),
   lon: z.string().min(1),
