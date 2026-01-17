@@ -27,17 +27,12 @@
   <div class="flex items-center gap-3">
     
     <div class="flex items-center gap-2" (click)="$event.stopPropagation()">
-      <app-edit-button 
+      <app-action-button 
         [itemId]="event().id" 
         [authorId]="event().organizer.id" 
-        [routePath]="'events'" 
-      />
-      <app-delete-button 
-        [itemId]="event().id" 
-        [authorId]="event().organizer.id" 
-        [itemTitle]="event().title"
         [itemType]="'event'"
-        (deleted)="deleted.emit($event)" 
+        [routePath]="'events'" 
+        mode="edit"
       />
     </div>
 

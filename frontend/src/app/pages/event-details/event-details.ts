@@ -6,13 +6,12 @@ import { Event } from '../../types/api.types';
 import { Title } from '@angular/platform-browser';
 import { EventService } from '../../services/event';
 import { BackButton } from '../../components/back-button/back-button';
-import { EditButton } from '../../components/edit-button/edit-button';
-import { DeleteButton } from '../../components/delete-button/delete-button';
+import { ActionButton } from '../../components/action-button/action-button';
 
 @Component({
   selector: 'app-event-details',
   standalone: true,
-  imports: [CommonModule, RouterLink, DatePipe, BackButton, EditButton, DeleteButton],
+  imports: [CommonModule, RouterLink, DatePipe, BackButton, ActionButton],
   templateUrl: './event-details.html',
   styleUrl: './event-details.css',
 })
@@ -52,9 +51,5 @@ export class EventDetails {
     } finally {
       this.isLoading.set(false);
     }
-  }
-
-  public onEventDeleted() {
-    this.router.navigate(['/events']);
   }
 }
