@@ -15,15 +15,7 @@ export class PasswordUpdateForm {
   private userService = inject(UserService);
   public passwordForm = this.formBuilder.nonNullable.group({
     currentPassword: ['', [Validators.required]],
-    newPassword: [
-      '',
-      [
-        Validators.minLength(8),
-        Validators.maxLength(32),
-        Validators.required,
-        Validators.pattern(/^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*])/),
-      ],
-    ],
+    newPassword: ['', [Validators.minLength(8), Validators.maxLength(32), Validators.required]],
     confirmPassword: ['', [Validators.minLength(8), Validators.maxLength(32), Validators.required]],
   });
   public isLoading = signal<boolean>(false);

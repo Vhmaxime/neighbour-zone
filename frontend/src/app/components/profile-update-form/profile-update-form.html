@@ -32,7 +32,7 @@
       [class.invalid]="
         profileForm.get('firstname')?.invalid && profileForm.get('firstname')?.touched
       "
-      class="border [.invalid]:border-red-500! [.invalid]:ring-red-500! [.invalid]:text-red-500! border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-primary-500"
+      class="border [.invalid]:border-red-500! [.invalid]:ring-red-500! [.invalid]:text-red-500! border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
     />
     @if (profileForm.get('firstname')?.invalid && profileForm.get('firstname')?.touched) { @if
     (profileForm.get('firstname')?.errors?.['required']) {
@@ -56,14 +56,14 @@
       type="text"
       formControlName="lastname"
       [class.invalid]="profileForm.get('lastname')?.invalid && profileForm.get('lastname')?.touched"
-      class="border [.invalid]:border-red-500! [.invalid]:ring-red-500! [.invalid]:text-red-500! border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-primary-500"
+      class="border [.invalid]:border-red-500! [.invalid]:ring-red-500! [.invalid]:text-red-500! border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
     />
     @if (profileForm.get('lastname')?.invalid && profileForm.get('lastname')?.touched) { @if
     (profileForm.get('lastname')?.errors?.['required']) {
     <span class="text-red-500 text-sm">required</span>
-    } @if (profileForm.get('lastname')?.errors?.['minlength']) {
+    } @else if (profileForm.get('lastname')?.errors?.['minlength']) {
     <span class="text-red-500 text-sm">minimal 2 characters</span>
-    } @if (profileForm.get('lastname')?.errors?.['maxlength']) {
+    } @else if (profileForm.get('lastname')?.errors?.['maxlength']) {
     <span class="text-red-500 text-sm">maximal 30 characters</span>
     } }
   </div>
@@ -80,14 +80,14 @@
       type="text"
       formControlName="username"
       [class.invalid]="profileForm.get('username')?.invalid && profileForm.get('username')?.touched"
-      class="border [.invalid]:border-red-500! [.invalid]:ring-red-500! [.invalid]:text-red-500! border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-primary-500"
+      class="border [.invalid]:border-red-500! [.invalid]:ring-red-500! [.invalid]:text-red-500! border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
     />
     @if (profileForm.get('username')?.invalid && profileForm.get('username')?.touched) { @if
     (profileForm.get('username')?.errors?.['required']) {
     <span class="text-red-500 text-sm">required</span>
-    } @if (profileForm.get('username')?.errors?.['minlength']) {
+    } @else if (profileForm.get('username')?.errors?.['minlength']) {
     <span class="text-red-500 text-sm">minimal 3 characters</span>
-    } @if (profileForm.get('username')?.errors?.['maxlength']) {
+    } @else if (profileForm.get('username')?.errors?.['maxlength']) {
     <span class="text-red-500 text-sm">maximal 20 characters</span>
     } }
   </div>
@@ -104,12 +104,12 @@
       type="email"
       formControlName="email"
       [class.invalid]="profileForm.get('email')?.invalid && profileForm.get('email')?.touched"
-      class="border [.invalid]:border-red-500! [.invalid]:ring-red-500! [.invalid]:text-red-500! border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-primary-500"
+      class="border [.invalid]:border-red-500! [.invalid]:ring-red-500! [.invalid]:text-red-500! border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
     />
     @if (profileForm.get('email')?.invalid && profileForm.get('email')?.touched) { @if
     (profileForm.get('email')?.errors?.['required']) {
     <span class="text-red-500 text-sm">required</span>
-    } @if (profileForm.get('email')?.errors?.['email']) {
+    } @else if (profileForm.get('email')?.errors?.['email']) {
     <span class="text-red-500 text-sm">invalid email</span>
     } }
   </div>
@@ -130,12 +130,12 @@
       [class.invalid]="
         profileForm.get('phoneNumber')?.invalid && profileForm.get('phoneNumber')?.touched
       "
-      class="border [.invalid]:border-red-500! [.invalid]:ring-red-500! [.invalid]:text-red-500! border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-primary-500"
+      class="border [.invalid]:border-red-500! [.invalid]:ring-red-500! [.invalid]:text-red-500! border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
     />
     @if (profileForm.get('phoneNumber')?.invalid && profileForm.get('phoneNumber')?.touched) { @if
     (profileForm.get('phoneNumber')?.errors?.['minlength']) {
     <span class="text-red-500 text-sm">minimal 10 characters</span>
-    } @if (profileForm.get('phoneNumber')?.errors?.['maxlength']) {
+    } @else if (profileForm.get('phoneNumber')?.errors?.['maxlength']) {
     <span class="text-red-500 text-sm">maximal 15 characters</span>
     } }
   </div>
@@ -152,7 +152,7 @@
       rows="4"
       formControlName="bio"
       [class.invalid]="profileForm.get('bio')?.invalid && profileForm.get('bio')?.touched"
-      class="border [.invalid]:border-red-500! [.invalid]:ring-red-500! [.invalid]:text-red-500! border-gray-300 rounded-lg px-3 py-2 min-h-25 resize-y focus:outline-none focus:ring-1 focus:ring-primary-500"
+      class="border [.invalid]:border-red-500! [.invalid]:ring-red-500! [.invalid]:text-red-500! border-gray-300 rounded-lg px-3 py-2 min-h-25 resize-y focus:outline-none focus:ring-2 focus:ring-blue-500"
     ></textarea>
     <div class="text-right text-xs text-gray-400 mt-1">
       {{ profileForm.get('bio')?.value?.length || 0 }} / {{ 160 }} characters
