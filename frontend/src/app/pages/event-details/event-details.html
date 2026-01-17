@@ -56,6 +56,14 @@
             {{ e.organizer.username }}
           </a>
         </small>
+
+        <app-like-button
+          [type]="'event'"
+          [id]="e.id"
+          [isLiked]="e.liked"
+          [likes]="e.likes"
+        />
+
       </div>
     </article>
   </div>
