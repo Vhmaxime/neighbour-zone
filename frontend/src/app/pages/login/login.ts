@@ -1,12 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  ReactiveFormsModule,
-  FormBuilder,
-  FormControl,
-  Validators,
-  FormGroup,
-} from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth';
 import { Router, RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
@@ -19,46 +13,48 @@ import { firstValueFrom } from 'rxjs';
   styleUrls: ['./login.css'],
 })
 export class Login {
-  error = signal<string | null>(null);
-  isSubmitting = signal(false);
-
-  form: FormGroup<{
-    email: FormControl<string>;
-    password: FormControl<string>;
-    rememberMe: FormControl<boolean>;
-  }>;
-
-  private fb = inject(FormBuilder);
+  private formBuilder = inject(FormBuilder);
   private authService = inject(AuthService);
   private router = inject(Router);
-
-  constructor() {
-    this.form = this.fb.group({
-      email: this.fb.control('', {
-        validators: [Validators.required, Validators.email],
-        nonNullable: true,
-      }),
-      password: this.fb.control('', { validators: Validators.required, nonNullable: true }),
-      rememberMe: this.fb.control(false, { nonNullable: true }),
-    });
-  }
+  public loginForm = this.formBuilder.nonNullable.group({
+    email: ['', [Validators.required]],
+    password: ['', [Validators.required]],
+    rememberMe: [false, [Validators.required]],
+  });
+  public isLoading = signal<boolean>(false);
+  public error = signal<string | null>(null);
+  public isSuccess = signal<boolean>(false);
 
   public onSubmit() {
-    if (this.form.invalid) return;
-
-    const { email, password, rememberMe } = this.form.getRawValue();
-
-    this.isSubmitting.set(true);
-    this.error.set(null);
-
-    firstValueFrom(this.authService.login({ email, password, rememberMe }))
+    const { email, password, rememberMe } = this.loginForm.value;
+    if (this.loginForm.invalid || !email || !password) {
+      return;
+    }
+    this.isLoading.set(true);
+    firstValueFrom(
+      this.authService.login({
+        email,
+        password,
+        rememberMe,
+      })
+    )
       .then(() => {
-        this.isSubmitting.set(false);
+        this.isSuccess.set(true);
+        this.error.set(null);
         this.router.navigate(['/explore']);
       })
-      .catch((err) => {
-        this.isSubmitting.set(false);
-        this.error.set(err.error?.message || 'An error occurred. Please try again.');
+      .catch((error) => {
+        if (error.error.message) {
+          this.error.set(error.error.message);
+          this.isSuccess.set(false);
+          return;
+        }
+        console.error('Error logging in:', error);
+        this.error.set('An unexpected error occurred. Please try again.');
+        this.isSuccess.set(false);
+      })
+      .finally(() => {
+        this.isLoading.set(false);
       });
   }
 }

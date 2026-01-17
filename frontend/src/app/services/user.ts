@@ -28,9 +28,7 @@ export class UserService {
     return this.http.patch<CurrentUserResponse>(`${this.apiUrl}/user/me`, data);
   }
 
-  public updateCurrentUserPassword(
-    data: Partial<{ currentPassword: string; newPassword: string }>
-  ) {
+  public updateCurrentUserPassword(data: { currentPassword: string; newPassword: string }) {
     return this.http.patch<void>(`${this.apiUrl}/user/me/password`, data);
   }
 

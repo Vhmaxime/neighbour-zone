@@ -4,16 +4,16 @@ import { passwordSchema } from "./index.js";
 export const registerSchema = z.object({
   firstname: z.string().min(2).max(30),
   lastname: z.string().min(2).max(30),
-  username: z.string().min(3).max(20),
+  username: z.string().min(2).max(30),
   email: z.email(),
-  phoneNumber: z.string().min(10).max(15),
+  phoneNumber: z.string().min(10).max(30),
   password: passwordSchema,
 });
 
 export type RegisterValues = z.infer<typeof registerSchema>;
 
 export const loginSchema = z.object({
-  email: z.email(),
+  email: z.string().min(1),
   password: z.string().min(1),
 });
 

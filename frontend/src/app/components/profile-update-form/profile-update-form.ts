@@ -17,7 +17,7 @@ export class ProfileUpdateForm {
   public profileForm = this.formBuilder.group({
     firstname: ['', [Validators.minLength(2), Validators.maxLength(30), Validators.required]],
     lastname: ['', [Validators.minLength(2), Validators.maxLength(30), Validators.required]],
-    username: ['', [Validators.minLength(3), Validators.maxLength(20), Validators.required]],
+    username: ['', [Validators.minLength(2), Validators.maxLength(30), Validators.required]],
     email: ['', [Validators.email, Validators.required]],
     phoneNumber: ['', [Validators.minLength(10), Validators.maxLength(15)]],
     bio: ['', [Validators.maxLength(160)]],

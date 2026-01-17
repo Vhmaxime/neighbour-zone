@@ -1,5 +1,5 @@
 import { Component, inject, signal, computed } from '@angular/core';
-import { DatePipe, Location } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { PostService } from '../../../services/post';
 import { Post } from '../../../types/api.types';
@@ -19,7 +19,6 @@ export class PostDetails {
   private activatedRoute = inject(ActivatedRoute);
   private postService = inject(PostService);
   private router = inject(Router);
-  private location = inject(Location);
   private authService = inject(AuthService);
   private postId = this.activatedRoute.snapshot.paramMap.get('id') as string;
   public post = signal<Post | null>(null);
