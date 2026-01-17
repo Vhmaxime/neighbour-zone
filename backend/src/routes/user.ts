@@ -127,7 +127,7 @@ userRouter.patch(
     );
 
     if (!isCurrentPasswordValid) {
-      return c.json({ message: "Current password is incorrect" }, 400);
+      return c.json({ message: "Current password is incorrect" }, 401);
     }
 
     await db
