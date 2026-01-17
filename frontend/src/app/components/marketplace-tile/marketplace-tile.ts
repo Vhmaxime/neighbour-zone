@@ -1,12 +1,11 @@
 import { Component, input, output, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { MarketplaceItem } from '../../types/api.types';
-import { EditButton } from '../../components/edit-button/edit-button'; 
-import { DeleteButton } from '../../components/delete-button/delete-button';
+import { ActionButton } from '../../components/action-button/action-button';
 
 @Component({
   selector: 'app-marketplace-tile',
-  imports: [EditButton, DeleteButton],
+  imports: [ActionButton],
   templateUrl: './marketplace-tile.html',
   styleUrl: './marketplace-tile.css',
 })
