@@ -16,7 +16,6 @@ export class NavbarComponent {
 
   public today: Date = new Date();
 
-  public UserId = this.authService.getUser()?.sub;
 
   public logout() {
     this.authService.logout();
