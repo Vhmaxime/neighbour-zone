@@ -6,11 +6,12 @@ import { PostService } from '../../services/post';
 import { CreatePostButton } from '../../components/create-post-button/create-post-button';
 import { PostTile } from '../../components/post-tile/post-tile';
 import { Post as P } from '../../types/api.types';
+import { LoadingComponent } from "../../components/loading-component/loading-component";
 
 @Component({
   selector: 'app-feed',
   standalone: true,
-  imports: [CommonModule, CreatePostButton, PostTile],
+  imports: [CommonModule, CreatePostButton, PostTile, LoadingComponent],
   templateUrl: './feed.html',
   styleUrl: './feed.css',
 })
@@ -40,7 +41,7 @@ export class Feed implements OnInit {
       .subscribe({
         next: (response) => {
           const posts = response.posts || [];
-          
+
           const sorted = [...posts].sort(
             (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
           );
