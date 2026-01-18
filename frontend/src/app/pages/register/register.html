@@ -1,24 +1,14 @@
 <form class="max-w-md mx-auto space-y-4" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-  <h1 class="text-center">Log in to your account</h1>
+  <h1 class="text-center">Create account</h1>
 
   <div class="flex flex-col">
-    <label
-      class="text-sm font-medium text-gray-700 mb-1 [.invalid]:text-red-500!"
-      [class.invalid]="
+    <label class="text-sm font-medium text-gray-700 mb-1 [.invalid]:text-red-500!" [class.invalid]="
+        registerForm.get('firstname')?.invalid && registerForm.get('firstname')?.touched
+      " for="firstname">First name</label>
+    <input id="firstname" type="text" formControlName="firstname" [class.invalid]="
         registerForm.get('firstname')?.invalid && registerForm.get('firstname')?.touched
       "
-      for="firstname"
-      >First name</label
-    >
-    <input
-      id="firstname"
-      type="text"
-      formControlName="firstname"
-      [class.invalid]="
-        registerForm.get('firstname')?.invalid && registerForm.get('firstname')?.touched
-      "
-      class="border [.invalid]:border-red-500! [.invalid]:ring-red-500! [.invalid]:text-red-500! border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-    />
+      class="border [.invalid]:border-red-500! [.invalid]:ring-red-500! [.invalid]:text-red-500! border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
     @if (registerForm.get('firstname')?.invalid && registerForm.get('firstname')?.touched) { @if
     (registerForm.get('firstname')?.errors?.['required']) {
     <span class="text-red-500 text-sm">required</span>
@@ -30,23 +20,13 @@
   </div>
 
   <div class="flex flex-col">
-    <label
-      class="text-sm font-medium text-gray-700 mb-1 [.invalid]:text-red-500!"
-      [class.invalid]="
+    <label class="text-sm font-medium text-gray-700 mb-1 [.invalid]:text-red-500!" [class.invalid]="
+        registerForm.get('lastname')?.invalid && registerForm.get('lastname')?.touched
+      " for="lastname">Last name</label>
+    <input id="lastname" type="text" formControlName="lastname" [class.invalid]="
         registerForm.get('lastname')?.invalid && registerForm.get('lastname')?.touched
       "
-      for="lastname"
-      >Last name</label
-    >
-    <input
-      id="lastname"
-      type="text"
-      formControlName="lastname"
-      [class.invalid]="
-        registerForm.get('lastname')?.invalid && registerForm.get('lastname')?.touched
-      "
-      class="border [.invalid]:border-red-500! [.invalid]:ring-red-500! [.invalid]:text-red-500! border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-    />
+      class="border [.invalid]:border-red-500! [.invalid]:ring-red-500! [.invalid]:text-red-500! border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
     @if (registerForm.get('lastname')?.invalid && registerForm.get('lastname')?.touched) { @if
     (registerForm.get('lastname')?.errors?.['required']) {
     <span class="text-red-500 text-sm">required</span>
@@ -58,23 +38,13 @@
   </div>
 
   <div class="flex flex-col">
-    <label
-      class="text-sm font-medium text-gray-700 mb-1 [.invalid]:text-red-500!"
-      [class.invalid]="
+    <label class="text-sm font-medium text-gray-700 mb-1 [.invalid]:text-red-500!" [class.invalid]="
+        registerForm.get('username')?.invalid && registerForm.get('username')?.touched
+      " for="username">Username</label>
+    <input id="username" type="text" formControlName="username" [class.invalid]="
         registerForm.get('username')?.invalid && registerForm.get('username')?.touched
       "
-      for="username"
-      >Username</label
-    >
-    <input
-      id="username"
-      type="text"
-      formControlName="username"
-      [class.invalid]="
-        registerForm.get('username')?.invalid && registerForm.get('username')?.touched
-      "
-      class="border [.invalid]:border-red-500! [.invalid]:ring-red-500! [.invalid]:text-red-500! border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-    />
+      class="border [.invalid]:border-red-500! [.invalid]:ring-red-500! [.invalid]:text-red-500! border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
     @if (registerForm.get('username')?.invalid && registerForm.get('username')?.touched) { @if
     (registerForm.get('username')?.errors?.['required']) {
     <span class="text-red-500 text-sm">required</span>
@@ -86,19 +56,12 @@
   </div>
 
   <div class="flex flex-col">
-    <label
-      class="text-sm font-medium text-gray-700 mb-1 [.invalid]:text-red-500!"
+    <label class="text-sm font-medium text-gray-700 mb-1 [.invalid]:text-red-500!"
       [class.invalid]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched"
-      for="email"
-      >Email</label
-    >
-    <input
-      id="email"
-      type="email"
-      formControlName="email"
+      for="email">Email</label>
+    <input id="email" type="email" formControlName="email"
       [class.invalid]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched"
-      class="border [.invalid]:border-red-500! [.invalid]:ring-red-500! [.invalid]:text-red-500! border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-    />
+      class="border [.invalid]:border-red-500! [.invalid]:ring-red-500! [.invalid]:text-red-500! border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
     @if (registerForm.get('email')?.invalid && registerForm.get('email')?.touched) { @if
     (registerForm.get('email')?.errors?.['required']) {
     <span class="text-red-500 text-sm">required</span>
@@ -106,23 +69,13 @@
   </div>
 
   <div class="flex flex-col">
-    <label
-      class="text-sm font-medium text-gray-700 mb-1 [.invalid]:text-red-500!"
-      [class.invalid]="
+    <label class="text-sm font-medium text-gray-700 mb-1 [.invalid]:text-red-500!" [class.invalid]="
+        registerForm.get('phoneNumber')?.invalid && registerForm.get('phoneNumber')?.touched
+      " for="phoneNumber">Phone Number</label>
+    <input id="phoneNumber" type="text" formControlName="phoneNumber" [class.invalid]="
         registerForm.get('phoneNumber')?.invalid && registerForm.get('phoneNumber')?.touched
       "
-      for="phoneNumber"
-      >Phone Number</label
-    >
-    <input
-      id="phoneNumber"
-      type="text"
-      formControlName="phoneNumber"
-      [class.invalid]="
-        registerForm.get('phoneNumber')?.invalid && registerForm.get('phoneNumber')?.touched
-      "
-      class="border [.invalid]:border-red-500! [.invalid]:ring-red-500! [.invalid]:text-red-500! border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-    />
+      class="border [.invalid]:border-red-500! [.invalid]:ring-red-500! [.invalid]:text-red-500! border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
     @if (registerForm.get('phoneNumber')?.invalid && registerForm.get('phoneNumber')?.touched) { @if
     (registerForm.get('phoneNumber')?.errors?.['required']) {
     <span class="text-red-500 text-sm">required</span>
@@ -134,23 +87,13 @@
   </div>
 
   <div class="flex flex-col">
-    <label
-      class="text-sm font-medium text-gray-700 mb-1 [.invalid]:text-red-500!"
-      [class.invalid]="
+    <label class="text-sm font-medium text-gray-700 mb-1 [.invalid]:text-red-500!" [class.invalid]="
+        registerForm.get('password')?.invalid && registerForm.get('password')?.touched
+      " for="password">Password</label>
+    <input id="password" type="password" formControlName="password" [class.invalid]="
         registerForm.get('password')?.invalid && registerForm.get('password')?.touched
       "
-      for="password"
-      >Password</label
-    >
-    <input
-      id="password"
-      type="password"
-      formControlName="password"
-      [class.invalid]="
-        registerForm.get('password')?.invalid && registerForm.get('password')?.touched
-      "
-      class="border [.invalid]:border-red-500! [.invalid]:ring-red-500! [.invalid]:text-red-500! border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-    />
+      class="border [.invalid]:border-red-500! [.invalid]:ring-red-500! [.invalid]:text-red-500! border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
     @if (registerForm.get('password')?.invalid && registerForm.get('password')?.touched) { @if
     (registerForm.get('password')?.errors?.['required']) {
     <span class="text-red-500 text-sm">required</span>
@@ -159,26 +102,25 @@
     } @else if (registerForm.get('password')?.errors?.['maxlength']) {
     <span class="text-red-500 text-sm">maximal 32 characters</span>
     } }
+    <ul class="[&>li]:text-sm space-y-1 text-gray-500/60 mt-2">
+      <li [class.text-green-500]="hasMinLength()" class="transition-colors">At least 8 characters</li>
+      <li [class.text-green-500]="hasUppercase()" class="transition-colors">1 uppercase letter (A–Z)</li>
+      <li [class.text-green-500]="hasLowercase()" class="transition-colors">1 lowercase letter (a–z)</li>
+      <li [class.text-green-500]="hasNumber()" class="transition-colors">1 number (0–9)</li>
+      <li [class.text-green-500]="hasSpecial()" class="transition-colors">
+        1 special character (!@#$%^&*)
+      </li>
+    </ul>
   </div>
 
   <div class="flex flex-col">
-    <label
-      class="text-sm font-medium text-gray-700 mb-1 [.invalid]:text-red-500!"
-      [class.invalid]="
+    <label class="text-sm font-medium text-gray-700 mb-1 [.invalid]:text-red-500!" [class.invalid]="
+        registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched
+      " for="confirmPassword">Confirm Password</label>
+    <input id="confirmPassword" type="password" formControlName="confirmPassword" [class.invalid]="
         registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched
       "
-      for="confirmPassword"
-      >Confirm Password</label
-    >
-    <input
-      id="confirmPassword"
-      type="password"
-      formControlName="confirmPassword"
-      [class.invalid]="
-        registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched
-      "
-      class="border [.invalid]:border-red-500! [.invalid]:ring-red-500! [.invalid]:text-red-500! border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-    />
+      class="border [.invalid]:border-red-500! [.invalid]:ring-red-500! [.invalid]:text-red-500! border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
     @if (registerForm.get('confirmPassword')?.invalid &&
     registerForm.get('confirmPassword')?.touched) { @if
     (registerForm.get('confirmPassword')?.errors?.['required']) {
@@ -189,11 +131,8 @@
     } }
   </div>
 
-  <button
-    type="submit"
-    [disabled]="!registerForm.valid || isLoading()"
-    class="border-(--accent)! m-0! w-full enabled:hover:text-(--accent)! border-2! enabled:hover:bg-transparent! rounded-lg! px-4! py-2! disabled:opacity-50! disabled:cursor-not-allowed! transition-all! bg-accent! text-white! font-medium!"
-  >
+  <button type="submit" [disabled]="!registerForm.valid || isLoading()"
+    class="border-(--accent)! m-0! w-full enabled:hover:text-(--accent)! border-2! enabled:hover:bg-transparent! rounded-lg! px-4! py-2! disabled:opacity-50! disabled:cursor-not-allowed! transition-all! bg-accent! text-white! font-medium!">
     Register
   </button>
   @if (error()) {

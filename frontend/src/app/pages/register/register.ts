@@ -29,6 +29,26 @@ export class Register {
   public error = signal<string | null>(null);
   public isSuccess = signal<boolean>(false);
 
+  public hasUppercase() {
+    return /[A-Z]/.test(this.registerForm.get('password')?.value || '');
+  }
+
+  public hasLowercase() {
+    return /[a-z]/.test(this.registerForm.get('password')?.value || '');
+  }
+
+  public hasNumber() {
+    return /[0-9]/.test(this.registerForm.get('password')?.value || '');
+  }
+
+  public hasSpecial() {
+    return /[!@#$%^&*]/.test(this.registerForm.get('password')?.value || '');
+  }
+
+  public hasMinLength() {
+    return (this.registerForm.get('password')?.value || '').length >= 8;
+  }
+
   public onSubmit() {
     const { firstname, lastname, username, email, phoneNumber, password } = this.registerForm.value;
     if (
