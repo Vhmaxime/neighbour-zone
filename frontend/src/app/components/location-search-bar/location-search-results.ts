@@ -1,44 +1,22 @@
-import { Component, inject, signal, output, input } from '@angular/core';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { debounceTime, firstValueFrom } from 'rxjs';
-import { NominatimService } from '../../services/nominatim';
-import { Router } from '@angular/router';
+import { Component, input, output } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { NominatimLocation } from '../../types/nominatom-types';
 
 @Component({
   selector: 'app-location-search-results',
-  imports: [ReactiveFormsModule],
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './location-search-results.html',
   styleUrl: './location-search-results.css',
 })
 export class LocationSearchResults {
-  private nominatimService = inject(NominatimService);
+  // Input: Receives the list of locations from the parent component
+  public locations = input.required<NominatimLocation[]>();
 
-  public isSearching = signal(false);
-  public searchResults = signal<NominatimLocation[] | null>(null);
-  public selectedLocation = output<NominatimLocation>();
-  public placeDisplayName = output<string>();
-  public searchTerm = input.required<string>();
-
-  public performSearch() {
-    if (this.isSearching()) {
-      return;
-    }
-    const searchTerm = this.searchTerm();
-
-    this.isSearching.set(true);
-    firstValueFrom(this.nominatimService.searchLocation(searchTerm))
-      .then((results) => {
-        this.searchResults.set(results);
-      })
-      .finally(() => {
-        this.isSearching.set(false);
-      });
-  }
+  // Output: Emits the selected location back to the parent
+  public locationSelected = output<NominatimLocation>();
 
   public onSelectLocation(location: NominatimLocation) {
-    this.searchResults.set(null);
-    this.selectedLocation.emit(location);
-    this.placeDisplayName.emit(location.display_name);
+    this.locationSelected.emit(location);
   }
 }
