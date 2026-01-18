@@ -1,35 +1,52 @@
-<div class="calendar-container">
-  <div class="calendar-header">
-    <button (click)="prevMonth()" class="nav-btn">&larr;</button>
-    <h2>{{ viewDate.toFormat('MMMM yyyy', { locale: 'en' }) }}</h2>
-    <button (click)="nextMonth()" class="nav-btn">&rarr;</button>
+<div class="p-4 bg-white w-full">
+  
+  <div class="flex items-center justify-between mb-4">
+    <button 
+      (click)="prevMonth()" 
+      class="p-1 text-gray-400 hover:text-gray-800 hover:bg-gray-100 rounded-md transition-colors"
+    >
+      <span class="text-sm">◀</span>
+    </button>
+    
+    <h2 class="text-sm font-bold text-gray-800 uppercase tracking-wide">
+      {{ viewDate.toFormat('MMMM yyyy', { locale: 'en' }) }}
+    </h2>
+
+    <button 
+      (click)="nextMonth()" 
+      class="p-1 text-gray-400 hover:text-gray-800 hover:bg-gray-100 rounded-md transition-colors"
+    >
+      <span class="text-sm">▶</span>
+    </button>
   </div>
 
-  <div class="weekdays-grid">
-    <div *ngFor="let dayName of weekDays" class="weekday">
+  <div class="grid grid-cols-7 mb-2">
+    <div 
+      *ngFor="let dayName of weekDays" 
+      class="text-center text-[10px] font-bold text-[#D97757] uppercase opacity-80"
+    >
       {{ dayName }}
     </div>
   </div>
 
-  <div class="days-grid">
-    <div
+  <div class="grid grid-cols-7 gap-0.5"> <div
       *ngFor="let date of days"
-      class="day-cell"
-      [class.different-month]="date.month !== viewDate.month"
-      [class.today]="isToday(date)"
-      [class.has-event]="hasEventOnDate(date)"
+      class="relative h-7 w-full flex flex-col items-center justify-center rounded-md text-xs cursor-pointer transition-all select-none"
+      [class.text-gray-300]="date.month !== viewDate.month"
+      [class.text-gray-700]="date.month === viewDate.month && !isToday(date)"
+      [class.bg-[#D97757]]="isToday(date)"
+      [class.text-white]="isToday(date)"
+      [class.font-bold]="isToday(date)"
+      [class.hover:bg-orange-50]="!isToday(date) && date.month === viewDate.month"
     >
-      <span class="day-number">{{ date.day }}</span>
-      <span class="event-dot" *ngIf="hasEventOnDate(date)"></span>
-      <div class="event-preview" *ngIf="hasEventOnDate(date)">
-        <div
-          class="event-preview-item"
-          *ngFor="let event of getEventsForDate(date)"
-        >
-          <strong>{{ event.title }}</strong>
-          <span>{{ event.placeDisplayName }}</span>
-        </div>
-      </div>
+      <span>{{ date.day }}</span>
+
+      <div 
+        *ngIf="hasEventOnDate(date)" 
+        class="absolute bottom-0.5 w-1 h-1 rounded-full"
+        [class.bg-white]="isToday(date)"
+        [class.bg-[#D97757]]="!isToday(date)"
+      ></div>
     </div>
   </div>
 </div>
