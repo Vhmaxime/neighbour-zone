@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FriendsResponse } from '../../types/api.types';
 import { FriendService } from '../../services/friend';
 import { firstValueFrom } from 'rxjs';
+import { LoadingComponent } from '../loading-component/loading-component';
 
 interface State {
   tabs: 'Friends' | 'Requests' | 'Sent';
@@ -11,7 +12,7 @@ interface State {
 
 @Component({
   selector: 'app-friend-list',
-  imports: [CommonModule],
+  imports: [CommonModule, LoadingComponent],
   templateUrl: './friend-list.html',
   styleUrl: './friend-list.css',
 })
