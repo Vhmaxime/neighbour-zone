@@ -17,6 +17,7 @@ export class Calendar implements OnInit, OnChanges {
   public days: DateTime[] = [];
   public weekDays: string[] = [];
 
+
   ngOnInit(): void {
     this.weekDays = Info.weekdays('short', { locale: 'en' });
     this.setupCalendar();
@@ -45,15 +46,15 @@ export class Calendar implements OnInit, OnChanges {
   }
 
   public hasEventOnDate(date: DateTime): boolean {
-  return this.events.some(event => {
-    if (!event.dateTime) return false;
+    return this.events.some(event => {
+      if (!event.dateTime) return false;
 
-    const eventDate = DateTime.fromISO(event.dateTime).startOf('day');
-    return eventDate.equals(date.startOf('day'));
-  });
-}
+      const eventDate = DateTime.fromISO(event.dateTime).startOf('day');
+      return eventDate.equals(date.startOf('day'));
+    });
+  }
 
- public getEventsForDate(date: DateTime): any[] {
+  public getEventsForDate(date: DateTime): any[] {
     return this.events.filter(event => {
       if (!event.dateTime) return false;
 
@@ -61,6 +62,8 @@ export class Calendar implements OnInit, OnChanges {
       return eventDate.equals(date.startOf('day'));
     });
   }
+
+
 
   public prevMonth(): void {
     this.viewDate = this.viewDate.minus({ months: 1 });
