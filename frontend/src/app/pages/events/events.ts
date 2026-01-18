@@ -14,7 +14,7 @@ import { LoadingComponent } from '../../components/loading-component/loading-com
   templateUrl: './events.html',
   styleUrl: './events.css',
 })
-export class Events implements OnInit {
+export class Events {
   private eventService = inject(EventService);
   public events = signal<Event[]>([]);
 

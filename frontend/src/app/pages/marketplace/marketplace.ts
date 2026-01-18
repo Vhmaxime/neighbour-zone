@@ -13,7 +13,7 @@ import { LoadingComponent } from '../../components/loading-component/loading-com
   templateUrl: './marketplace.html',
   styleUrl: './marketplace.css',
 })
-export class Marketplace implements OnInit {
+export class Marketplace {
   private marketplaceService = inject(MarketplaceService);
   public items = signal<MarketplaceItem[]>([]);
 
