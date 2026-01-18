@@ -1,8 +1,6 @@
 <div class="max-w-2xl mx-auto py-8 px-4">
   <div class="mb-8">
-    <a routerLink="/events" class="text-blue-600 hover:underline text-sm mb-2 inline-block"
-      >&larr; Back to Events</a
-    >
+    <app-back-button />
     <h1 class="text-3xl font-bold text-gray-900">Organize an Event</h1>
   </div>
 
@@ -12,9 +10,9 @@
     class="bg-white p-6 rounded-xl border shadow-sm space-y-6"
   >
     @if (error()) {
-    <div class="bg-red-50 text-red-600 p-3 rounded-lg border border-red-200">
-      {{ error() }}
-    </div>
+      <div class="bg-red-50 text-red-600 p-3 rounded-lg border border-red-200">
+        {{ error() }}
+      </div>
     }
 
     <div class="w-full">
@@ -32,14 +30,14 @@
         class="block w-full border [.invalid]:border-red-500! [.invalid]:ring-red-500! [.invalid]:text-red-500! border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
 
-      @if (eventForm.get('title')?.invalid && eventForm.get('title')?.touched) { 
+      @if (eventForm.get('title')?.invalid && eventForm.get('title')?.touched) {
         @if (eventForm.get('title')?.errors?.['required']) {
           <span class="text-red-500 text-sm">required</span>
         } @else if (eventForm.get('title')?.errors?.['minlength']) {
           <span class="text-red-500 text-sm">minimal 1 characters</span>
         } @else if (eventForm.get('title')?.errors?.['maxlength']) {
           <span class="text-red-500 text-sm">maximal 100 characters</span>
-        } 
+        }
       }
     </div>
 
@@ -52,7 +50,7 @@
         for="placeDisplayName"
         >Location</label
       >
-      
+
       <input
         id="placeDisplayName"
         type="text"
@@ -64,20 +62,21 @@
         placeholder="Start typing to search..."
       />
 
-      @if (eventForm.get('placeDisplayName')?.invalid && eventForm.get('placeDisplayName')?.touched)
-      { 
+      @if (
+        eventForm.get('placeDisplayName')?.invalid && eventForm.get('placeDisplayName')?.touched
+      ) {
         @if (eventForm.get('placeDisplayName')?.errors?.['required']) {
           <span class="text-red-500 text-sm">required</span>
-        } 
+        }
       }
 
       @if (searchResults().length > 0) {
-      <div class="absolute z-10 w-full mt-1">
-        <app-location-search-results
-          [locations]="searchResults()"
-          (locationSelected)="onLocationSelected($event)"
-        ></app-location-search-results>
-      </div>
+        <div class="absolute z-10 w-full mt-1">
+          <app-location-search-results
+            [locations]="searchResults()"
+            (locationSelected)="onLocationSelected($event)"
+          ></app-location-search-results>
+        </div>
       }
     </div>
 
@@ -96,10 +95,10 @@
           [class.invalid]="eventForm.get('dateTime')?.invalid && eventForm.get('dateTime')?.touched"
           class="block w-full border [.invalid]:border-red-500! [.invalid]:ring-red-500! [.invalid]:text-red-500! border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
-        @if (eventForm.get('dateTime')?.invalid && eventForm.get('dateTime')?.touched) { 
+        @if (eventForm.get('dateTime')?.invalid && eventForm.get('dateTime')?.touched) {
           @if (eventForm.get('dateTime')?.errors?.['required']) {
             <span class="text-red-500 text-sm">required</span>
-          } 
+          }
         }
       </div>
       <div class="w-full">
@@ -116,7 +115,7 @@
           [class.invalid]="eventForm.get('endAt')?.invalid && eventForm.get('endAt')?.touched"
           class="block w-full border [.invalid]:border-red-500! [.invalid]:ring-red-500! [.invalid]:text-red-500! border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
-        </div>
+      </div>
     </div>
 
     <div class="flex flex-col">
@@ -137,14 +136,14 @@
         "
         class="border [.invalid]:border-red-500! [.invalid]:ring-red-500! [.invalid]:text-red-500! border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
       ></textarea>
-      @if (eventForm.get('description')?.invalid && eventForm.get('description')?.touched) { 
+      @if (eventForm.get('description')?.invalid && eventForm.get('description')?.touched) {
         @if (eventForm.get('description')?.errors?.['required']) {
           <span class="text-red-500 text-sm">required</span>
         } @else if (eventForm.get('description')?.errors?.['minlength']) {
           <span class="text-red-500 text-sm">minimal 1 characters</span>
         } @else if (eventForm.get('description')?.errors?.['maxlength']) {
           <span class="text-red-500 text-sm">maximal 300 characters</span>
-        } 
+        }
       }
     </div>
 
@@ -153,7 +152,11 @@
       [disabled]="!eventForm.valid || isLoading()"
       class="border-(--accent)! m-0! w-full enabled:hover:text-(--accent)! border-2! enabled:hover:bg-transparent! rounded-lg! px-4! py-2! disabled:opacity-50! disabled:cursor-not-allowed! transition-all! bg-accent! text-white! font-medium!"
     >
-      @if (isLoading()) { Creating... } @else { Create Event }
+      @if (isLoading()) {
+        Creating...
+      } @else {
+        Create Event
+      }
     </button>
   </form>
 </div>

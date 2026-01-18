@@ -1,18 +1,19 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormsModule, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { LocationSearchResults } from '../../../components/location-search-bar/location-search-results';
 import { NominatimService } from '../../../services/nominatim';
 import { EventService } from '../../../services/event';
 import { NominatimLocation } from '../../../types/nominatom-types';
 import { firstValueFrom } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap, filter } from 'rxjs/operators';
+import { BackButton } from '../../../components/back-button/back-button';
 
 @Component({
   selector: 'app-create-event',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, ReactiveFormsModule, LocationSearchResults],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, LocationSearchResults, BackButton],
   templateUrl: './create-event.html',
   styleUrl: './create-event.css',
 })
@@ -32,7 +33,10 @@ export class CreateEvent {
   public eventForm = this.formBuilder.nonNullable.group({
     title: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(100)]],
     description: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(300)]],
-    placeDisplayName: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(100)]],
+    placeDisplayName: [
+      '',
+      [Validators.required, Validators.minLength(1), Validators.maxLength(100)],
+    ],
     dateTime: ['', [Validators.required]],
     endAt: [''],
   });
@@ -43,7 +47,7 @@ export class CreateEvent {
         filter((query) => !!query && query.length >= 3), // Only search if 3+ chars
         debounceTime(300), // Wait 300ms after user stops typing
         distinctUntilChanged(), // Don't search if the text is effectively the same
-        switchMap((query) => this.nominatimService.searchLocation(query)) // Cancel old search if new one starts
+        switchMap((query) => this.nominatimService.searchLocation(query)), // Cancel old search if new one starts
       )
       .subscribe({
         next: (results) => {
@@ -81,7 +85,7 @@ export class CreateEvent {
         lat: place.lat,
         lon: place.lon,
         placeId: place.place_id,
-      })
+      }),
     )
       .then(({ event }) => {
         this.isSuccess.set(true);
@@ -102,11 +106,8 @@ export class CreateEvent {
   public onLocationSelected(location: NominatimLocation) {
     this.place.set(location);
     this.searchResults.set([]);
-    
+
     // emitEvent: false prevents this update from triggering the search again!
-    this.eventForm.patchValue(
-      { placeDisplayName: location.display_name }, 
-      { emitEvent: false }
-    );
+    this.eventForm.patchValue({ placeDisplayName: location.display_name }, { emitEvent: false });
   }
 }
