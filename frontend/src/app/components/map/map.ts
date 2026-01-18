@@ -7,7 +7,8 @@ import {
   ElementRef,
   OnDestroy,
   Inject,
-  PLATFORM_ID
+  PLATFORM_ID,
+  ViewChild
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import * as L from 'leaflet';
@@ -29,6 +30,7 @@ export interface MapEvent {
 export class MapComponent implements AfterViewInit, OnChanges, OnDestroy {
 
   @Input() events: MapEvent[] = [];
+  @ViewChild('popupTemplate') popupTemplate!: ElementRef;
 
   private map!: L.Map;
   private markers: L.Layer[] = [];
@@ -89,11 +91,17 @@ export class MapComponent implements AfterViewInit, OnChanges, OnDestroy {
   private renderMarkers(): void {
     this.clearMarkers();
 
+    if (!this.popupTemplate) return;
+
+    const templateHtml = this.popupTemplate.nativeElement.innerHTML;
+
     for (const event of this.events) {
       const lat = Number(event.lat);
       const lon = Number(event.lon);
 
       if (!Number.isFinite(lat) || !Number.isFinite(lon)) continue;
+
+      const popupContent = templateHtml.replace('{{title}}', event.title);
 
       const marker = L.circleMarker([lat, lon], {
         radius: 7,
@@ -103,14 +111,10 @@ export class MapComponent implements AfterViewInit, OnChanges, OnDestroy {
         fillOpacity: 1,
       })
         .addTo(this.map)
-        .bindPopup(`
-          <div class="event-popup">
-            <h3>${event.title}</h3>
-            <p class="place">${event.placeDisplayName}</p>
-          </div>
-        `);
+        .bindPopup(popupContent);
 
       this.markers.push(marker);
+
     }
   }
 
