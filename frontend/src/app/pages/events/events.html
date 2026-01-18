@@ -19,37 +19,32 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
       @for (event of events(); track event.id) {
         <div
-          class="bg-white border rounded-xl overflow-hidden shadow-sm hover:shadow-md transition flex flex-col h-full group"
+          class="bg-white border rounded-xl overflow-hidden shadow-sm hover:shadow-md transition flex flex-col h-full group cursor-pointer"
+          [routerLink]="['/events', event.id]"
         >
-          <div class="h-48 bg-gray-100 flex items-center justify-center text-gray-400 relative">
-            <span class="text-3xl">📅</span>
-            <div
-              class="absolute top-2 right-2 bg-white/90 backdrop-blur px-2 py-1 rounded-md text-xs font-bold text-blue-600 shadow-sm"
-            >
-              {{ event.dateTime | date: 'MMM d' }}
+          <div class="p-5 flex flex-col flex-grow">
+            
+            <div class="flex justify-between items-start gap-3 mb-3">
+              <h3 class="font-bold text-gray-900 leading-tight line-clamp-2" [title]="event.title">
+                {{ event.title }}
+              </h3>
+              
+              <div class="shrink-0 bg-blue-50 px-2.5 py-1 rounded-md flex flex-col items-center text-blue-700 border border-blue-100">
+                <span class="text-[10px] uppercase font-bold leading-none">{{ event.dateTime | date: 'MMM' }}</span>
+                <span class="text-lg font-bold leading-none">{{ event.dateTime | date: 'd' }}</span>
+              </div>
             </div>
-          </div>
 
-          <div class="p-4 flex flex-col flex-grow">
-            <h3 class="font-bold text-gray-900 truncate mb-2" [title]="event.title">
-              {{ event.title }}
-            </h3>
-
-            <p class="text-gray-500 text-sm line-clamp-2 mb-4 flex-grow">
+            <p class="text-gray-500 text-sm line-clamp-3 mb-4 flex-grow">
               {{ event.description }}
             </p>
 
-            <div class="text-xs text-gray-400 mb-2 flex items-center gap-1">
-              📍 {{ event.placeDisplayName }}
+            <div class="pt-3 border-t border-gray-100 mt-auto flex items-center text-xs text-gray-400 gap-1">
+              <span>📍</span>
+              <span class="truncate">{{ event.placeDisplayName }}</span>
             </div>
 
-            <a
-              [routerLink]="['/events', event.id]"
-              class="block text-center w-full mt-auto border border-gray-200 text-gray-600 py-2 rounded-lg hover:bg-gray-50 text-sm font-medium transition cursor-pointer"
-            >
-              View Event Details
-            </a>
-          </div>
+            </div>
         </div>
       } @empty {
         <div class="col-span-full py-16 text-center">
