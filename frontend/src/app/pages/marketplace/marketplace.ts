@@ -1,23 +1,41 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { Observable } from 'rxjs';
+import { firstValueFrom, Observable } from 'rxjs';
 import { MarketplaceService } from '../../services/marketplace';
 import { MarketplaceItem } from '../../types/api.types';
+import { LoadingComponent } from '../../components/loading-component/loading-component';
 
 @Component({
   selector: 'app-marketplace',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, LoadingComponent],
   templateUrl: './marketplace.html',
-  styleUrl: './marketplace.css'
+  styleUrl: './marketplace.css',
 })
 export class Marketplace implements OnInit {
   private marketplaceService = inject(MarketplaceService);
+  public items = signal<MarketplaceItem[]>([]);
 
-  items$: Observable<MarketplaceItem[]> | undefined;
+  public isLoading = signal(true);
+  public isError = signal(false);
 
   ngOnInit() {
-    this.items$ = this.marketplaceService.getMarketplaceItems();
+    this.loadItems();
+  }
+
+  private loadItems() {
+    firstValueFrom(this.marketplaceService.getMarketplaceItems())
+      .then((data) => {
+        this.items.set(data);
+        this.isError.set(false);
+      })
+      .catch((error) => {
+        console.error('Error loading items:', error);
+        this.isError.set(true);
+      })
+      .finally(() => {
+        this.isLoading.set(false);
+      });
   }
 }
