@@ -1,16 +1,16 @@
 <div class="flex w-full h-full bg-gray-100">
-
   <main class="flex-1 flex flex-col min-w-0">
-    
-    <div class="bg-white border-b border-r border-gray-200 px-4 py-3 shadow-sm z-20 flex justify-center shrink-0 mr-4 rounded-tr-xl rounded-br-xl">
-       <div class="w-full max-w-2xl">
-          <app-explore-search class="block w-full"></app-explore-search>
-       </div>
+    <div
+      class="bg-white border-b border-r border-gray-200 px-4 py-3 shadow-sm z-20 flex justify-center shrink-0 mr-4 rounded-tr-xl rounded-br-xl"
+    >
+      <div class="w-full max-w-2xl">
+        <app-explore-search class="block w-full"></app-explore-search>
+      </div>
     </div>
 
     <div class="relative flex-1 w-full overflow-hidden bg-gray-50">
       <div class="absolute inset-0">
-        @if (events$ | async; as events) {
+        @if (events(); as events) {
           <app-map [events]="events" class="block w-full h-full"></app-map>
         }
       </div>
@@ -18,12 +18,13 @@
   </main>
 
   <aside class="w-80 bg-white border-l border-gray-200 flex flex-col shrink-0 z-30">
-    
     <div class="p-2 border-b border-gray-100">
-      <div class="w-[90%] mx-auto bg-gray-50 rounded-xl border border-gray-100 overflow-hidden text-xs">
-         @if (events$ | async; as events) {
-           <app-calendar [events]="events"></app-calendar>
-         }
+      <div
+        class="w-[90%] mx-auto bg-gray-50 rounded-xl border border-gray-100 overflow-hidden text-xs"
+      >
+        @if (events(); as events) {
+          <app-calendar [events]="events"></app-calendar>
+        }
       </div>
     </div>
 
@@ -32,7 +33,5 @@
         <app-friend-list></app-friend-list>
       </div>
     </div>
-
   </aside>
-
 </div>
