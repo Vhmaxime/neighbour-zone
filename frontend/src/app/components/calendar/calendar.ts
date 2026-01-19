@@ -16,6 +16,7 @@ export class Calendar implements OnInit, OnChanges {
   public days: DateTime[] = [];
   public weekDays: string[] = [];
 
+
   ngOnInit(): void {
     // Get short weekday names (Mon, Tue, etc.)
     this.weekDays = Info.weekdays('short', { locale: 'en' });
@@ -53,6 +54,8 @@ export class Calendar implements OnInit, OnChanges {
       return eventDate.equals(date.startOf('day'));
     });
   }
+
+
 
   public prevMonth(): void {
     this.viewDate = this.viewDate.minus({ months: 1 });

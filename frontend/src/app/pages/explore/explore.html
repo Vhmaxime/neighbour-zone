@@ -1,37 +1,34 @@
-<div class="flex w-full h-full bg-gray-100">
-  <main class="flex-1 flex flex-col min-w-0">
-    <div
-      class="bg-white border-b border-r border-gray-200 px-4 py-3 shadow-sm z-20 flex justify-center shrink-0 mr-4 rounded-tr-xl rounded-br-xl"
-    >
-      <div class="w-full max-w-2xl">
-        <app-explore-search class="block w-full"></app-explore-search>
-      </div>
-    </div>
-
-    <div class="relative flex-1 w-full overflow-hidden bg-gray-50">
-      <div class="absolute inset-0">
-        @if (events(); as events) {
-          <app-map [events]="events" class="block w-full h-full"></app-map>
-        }
-      </div>
-    </div>
+<div class="split-layout">
+  
+  <main class="map-panel">
+    @if (events(); as events) {
+      <app-map [events]="events"></app-map>
+    }
   </main>
 
-  <aside class="w-80 bg-white border-l border-gray-200 flex flex-col shrink-0 z-30">
-    <div class="p-2 border-b border-gray-100">
-      <div
-        class="w-[90%] mx-auto bg-gray-50 rounded-xl border border-gray-100 overflow-hidden text-xs"
-      >
+  <aside class="sidebar">
+
+    <div class="sidebar-header">
+      <h1 class="app-title">EXPLORE</h1>
+      <app-explore-search></app-explore-search>
+    </div>
+
+    <div class="sidebar-static-section">
+      <h2 class="section-title" style="padding: 0 24px; margin-top: 8px;">Calendar</h2>
+      <div style="padding: 0 24px 16px 24px;">
         @if (events(); as events) {
-          <app-calendar [events]="events"></app-calendar>
+          <app-calendar [events]="events">
+          </app-calendar>
         }
       </div>
     </div>
 
-    <div class="flex-1 flex flex-col min-h-0">
-      <div class="overflow-y-auto p-4 custom-scrollbar">
+    <div class="sidebar-content custom-scrollbar">
+      <div class="section-block">
+        <h2 class="section-title">Friends</h2>
         <app-friend-list></app-friend-list>
       </div>
     </div>
   </aside>
+
 </div>
