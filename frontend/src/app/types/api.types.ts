@@ -1,6 +1,5 @@
 // Enums
 export type UserRole = 'user' | 'admin';
-export type PostType = 'news' | 'tip';
 export type MarketplaceCategory = 'wanted' | 'offered';
 export type FriendshipStatus = 'pending' | 'accepted';
 
