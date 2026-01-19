@@ -151,7 +151,9 @@
         class="border [.invalid]:border-red-500! [.invalid]:ring-red-500! [.invalid]:text-red-500! border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
       @if (profileForm.get('phoneNumber')?.invalid && profileForm.get('phoneNumber')?.touched) {
-        @if (profileForm.get('phoneNumber')?.errors?.['minlength']) {
+        @if (profileForm.get('phoneNumber')?.errors?.['required']) {
+          <span class="text-red-500 text-sm">required</span>
+        } @else if (profileForm.get('phoneNumber')?.errors?.['minlength']) {
           <span class="text-red-500 text-sm">minimal 10 characters</span>
         } @else if (profileForm.get('phoneNumber')?.errors?.['maxlength']) {
           <span class="text-red-500 text-sm">maximal 15 characters</span>

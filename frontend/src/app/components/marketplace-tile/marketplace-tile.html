@@ -5,12 +5,11 @@
   <div class="flex-1 p-4">
     <div class="flex items-start justify-between mb-2">
       <h3 class="text-lg font-semibold text-gray-900 line-clamp-2">{{ item().title }}</h3>
-      
+
       <div class="flex items-center gap-2" (click)="$event.stopPropagation()">
-        
-        <app-action-button 
-          [itemId]="item().id" 
-          [authorId]="item().provider.id" 
+        <app-action-button
+          [itemId]="item().id"
+          [authorId]="item().provider.id"
           [itemType]="'marketplace'"
           [routePath]="'marketplace'"
           mode="edit"
@@ -29,9 +28,9 @@
     </div>
 
     <p class="text-sm text-gray-600 line-clamp-2 mb-3">{{ item().description }}</p>
-    
+
     <div class="flex items-center justify-between text-sm">
-      <span class="text-gray-500">{{ item().location }}</span>
+      <span class="text-gray-500">{{ item().placeDisplayName }}</span>
       @if (item().price) {
         <span class="text-lg font-bold text-gray-900">€{{ item().price }}</span>
       } @else {

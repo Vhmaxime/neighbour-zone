@@ -20,7 +20,7 @@ export class ProfileUpdateForm {
     lastname: ['', [Validators.minLength(2), Validators.maxLength(30), Validators.required]],
     username: ['', [Validators.minLength(2), Validators.maxLength(30), Validators.required]],
     email: ['', [Validators.email, Validators.required]],
-    phoneNumber: ['', [Validators.minLength(10), Validators.maxLength(15)]],
+    phoneNumber: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(15)]],
     bio: ['', [Validators.maxLength(160)]],
   });
 
