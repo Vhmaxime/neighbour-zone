@@ -70,7 +70,7 @@ export const routes: Routes = [
             path: ':id',
             title: 'Event Details | Neighbour Zone',
             loadComponent: () =>
-              import('./pages/event-details/event-details').then((m) => m.EventDetails),
+              import('./pages/events/event-details/event-details').then((m) => m.EventDetails),
           },
           {
             path: ':id/edit',
@@ -97,7 +97,7 @@ export const routes: Routes = [
             path: ':id',
             loadComponent: () =>
               import('./pages/marketplace-details/marketplace-details').then(
-                (m) => m.MarketplaceDetails
+                (m) => m.MarketplaceDetails,
               ),
           },
           // inside the marketplace children array in app.routes.ts
@@ -106,7 +106,7 @@ export const routes: Routes = [
             title: 'Edit Item | Neighbour Zone',
             loadComponent: () =>
               import('./pages/marketplace/edit-marketplace/edit-marketplace').then(
-                (m) => m.EditMarketplace
+                (m) => m.EditMarketplace,
               ),
           },
         ],

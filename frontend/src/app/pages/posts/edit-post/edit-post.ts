@@ -15,84 +15,97 @@ import { LoadingComponent } from '../../../components/loading-component/loading-
   styleUrl: './edit-post.css',
 })
 export class EditPost {
-  private fb = inject(FormBuilder);
+  // Injected services
   private postService = inject(PostService);
-  private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
+  private router = inject(Router);
+  private formBuilder = inject(FormBuilder);
 
-  private postId = this.activatedRoute.snapshot.paramMap.get('id') as string;
+  // Get ID from route params
+  public postId = this.activatedRoute.snapshot.paramMap.get('id') as string;
 
+  // State signals
   public isLoading = signal(true);
   public isSaving = signal(false);
   public error = signal<string | null>(null);
+  public isSuccess = signal(false);
 
+  // Store full post object for ActionButton usage
   public post = signal<any>(null);
 
-  public editForm = this.fb.group({
-    title: ['', [Validators.required, Validators.minLength(3)], Validators.maxLength(255)],
-    content: ['', [Validators.maxLength(500)]]
+  // Form definition
+  public editForm = this.formBuilder.nonNullable.group({
+    title: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(255)]],
+    content: ['', [Validators.maxLength(500)]],
   });
 
-  constructor() {
+  public ngOnInit() {
     this.loadPost();
   }
 
-  private async loadPost() {
-    // Safety Check
+  private loadPost() {
+    this.isLoading.set(true);
+    this.error.set(null);
+    this.isSuccess.set(false);
+
     if (!this.postId) {
       this.router.navigate(['/feed']);
       return;
     }
 
-    try {
-      this.isLoading.set(true);
-
-      // TIMEOUT FIX: If backend takes > 3s, stop spinning
-      const fetchPromise = firstValueFrom(this.postService.getPost(this.postId));
-      const timeoutPromise = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('Timeout')), 3000),
-      );
-
-      // Race the fetch against the clock
-      const response: any = await Promise.race([fetchPromise, timeoutPromise]);
-
-      // Handle { post: ... } vs raw response
-      const postData = response.post || response;
-
-      console.log('✅ Setting post signal:', postData);
-
-      // Must save the data to the signal
-      this.post.set(postData);
-
-      if (postData) {
-        this.editForm.patchValue({
-          title: postData.title,
-          content: postData.content
-        });
-      }
-    } catch (err) {
-      console.error('❌ Error loading post:', err);
-    } finally {
-      // Stop loading no matter what
-      this.isLoading.set(false);
-    }
+    firstValueFrom(this.postService.getPost(this.postId))
+      .then((response: any) => {
+        const postData = response.post || response;
+        if (!postData) {
+          this.router.navigate(['/feed']);
+          return;
+        }
+        this.post.set(postData);
+        this.setFormValues(postData);
+      })
+      .catch((err) => {
+        this.error.set('An error occurred while loading the post.');
+        console.error('rror loading post:', err);
+      })
+      .finally(() => {
+        this.isLoading.set(false);
+      });
   }
 
-  public async onSubmit() {
-    if (this.editForm.invalid) return;
+  private setFormValues(post: any) {
+    const { title, content } = post;
+    this.editForm.patchValue({
+      title,
+      content,
+    });
+  }
+
+  public onSubmit() {
+    this.editForm.markAllAsTouched();
+    const { title, content } = this.editForm.value;
+    if (this.editForm.invalid || !title) {
+      return;
+    }
 
     this.isSaving.set(true);
-    try {
-      await firstValueFrom(this.postService.updatePost(this.postId, this.editForm.value as any));
-      this.router.navigate(['/feed']);
-    } catch (err) {
-      console.error('Update failed:', err);
-    } finally {
-      this.isSaving.set(false);
-    }
+    this.error.set(null);
+    this.isSuccess.set(false);
+
+    firstValueFrom(this.postService.updatePost(this.postId, { title, content }))
+      .then((data) => {
+        this.isSuccess.set(true);
+        this.router.navigate(['/post', data.post.id]);
+      })
+      .catch((err) => {
+        this.error.set('Failed to update post. Please try again later.');
+        console.error('Update failed:', err);
+      })
+      .finally(() => {
+        this.isSaving.set(false);
+      });
   }
 
-  onPostDeleted(id: string) {
+  public onPostDeleted() {
     this.router.navigate(['/feed']);
   }
 }

@@ -1,94 +1,192 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { firstValueFrom } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, firstValueFrom, switchMap } from 'rxjs';
 import { EventService } from '../../../services/event';
-import { CreateEventRequest } from '../../../types/api.types';
+import { Event } from '../../../types/api.types';
 import { AuthService } from '../../../services/auth';
 import { ActionButton } from '../../../components/action-button/action-button';
 import { BackButton } from '../../../components/back-button/back-button';
 import { LoadingComponent } from '../../../components/loading-component/loading-component';
+import { Title } from '@angular/platform-browser';
+import { NominatimLocation } from '../../../types/nominatom-types';
+import { LocationSearchResults } from '../../../components/location-search-bar/location-search-results';
+import { NominatimService } from '../../../services/nominatim';
 
 @Component({
   selector: 'app-edit-event',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, ActionButton, BackButton, LoadingComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterLink,
+    ActionButton,
+    BackButton,
+    LoadingComponent,
+    ReactiveFormsModule,
+    LocationSearchResults,
+  ],
   templateUrl: './edit-event.html',
   styleUrl: './edit-event.html',
 })
 export class EditEvent {
+  // Injected services
   private eventService = inject(EventService);
-  private route = inject(ActivatedRoute);
+  private activatedRoute = inject(ActivatedRoute);
   private router = inject(Router);
   private authService = inject(AuthService);
+  private formBuilder = inject(FormBuilder);
+  private titleService = inject(Title);
+  private nominatimService = inject(NominatimService);
 
-  public eventId = this.route.snapshot.paramMap.get('id') as string;
+  // Get ID from route params
+  public eventId = this.activatedRoute.snapshot.paramMap.get('id') as string;
+  public user = this.authService.getUser();
+
+  // State signals for location search
+  public searchResults = signal<NominatimLocation[]>([]);
+  public place = signal<NominatimLocation | null>(null);
+
+  // State signals
   public isSubmitting = signal(false);
   public isLoading = signal(true);
+  public error = signal<string | null>(null);
+  public isSuccess = signal(false);
 
   // Store full event object for ActionButton usage (need organizer id)
-  public eventSource = signal<any>(null);
+  public event = signal<Event | null>(null);
 
-  public eventData = {
-    title: '',
-    description: '',
-    placeDisplayName: '',
-    dateTime: '',
-    endAt: '',
-  };
+  // Form definition
+  public eventForm = this.formBuilder.nonNullable.group({
+    title: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
+    description: ['', [Validators.maxLength(150)]],
+    placeDisplayName: [
+      '',
+      [Validators.required, Validators.minLength(1), Validators.maxLength(100)],
+    ],
+    dateTime: ['', [Validators.required]],
+    endAt: [''],
+  });
 
-  private coords = { lat: '', lon: '', placeId: 0 };
+  public ngOnInit() {
+    this.loadEvent();
 
-  async ngOnInit() {
-    try {
-      const response = await firstValueFrom(this.eventService.getEvent(this.eventId));
-      const data = response.event;
-
-      // Save full object to signal for template
-      this.eventSource.set(data);
-
-      const user = this.authService.getUser();
-      if (user?.sub !== data.organizer.id) {
-        this.router.navigate(['/events', this.eventId]);
-        return;
-      }
-
-      // Populate the form
-      this.eventData = {
-        title: data.title,
-        description: data.description,
-        placeDisplayName: data.placeDisplayName,
-        dateTime: data.dateTime ? new Date(data.dateTime).toISOString().slice(0, 16) : '',
-        endAt: data.endAt ? new Date(data.endAt).toISOString().slice(0, 16) : '',
-      };
-      this.coords = { lat: data.lat, lon: data.lon, placeId: data.placeId };
-    } catch (error) {
-      console.error('Error loading event:', error);
-      this.router.navigate(['/events']);
-    } finally {
-      this.isLoading.set(false);
-    }
+    this.eventForm.controls.placeDisplayName.valueChanges
+      .pipe(
+        filter((query) => !!query && query.length >= 3),
+        debounceTime(300),
+        distinctUntilChanged(),
+        switchMap((query) => this.nominatimService.searchLocation(query)),
+      )
+      .subscribe({
+        next: (results) => {
+          this.searchResults.set(results);
+        },
+      });
   }
 
-  onSubmit() {
-    this.isSubmitting.set(true);
-    const payload: Partial<CreateEventRequest> = {
-      ...this.eventData,
-      dateTime: new Date(this.eventData.dateTime).toISOString(),
-      endAt: this.eventData.endAt ? new Date(this.eventData.endAt).toISOString() : undefined,
-      lat: this.coords.lat,
-      lon: this.coords.lon,
-      placeId: this.coords.placeId,
-    };
+  private loadEvent() {
+    this.isLoading.set(true);
+    this.error.set(null);
+    this.isSuccess.set(false);
 
-    this.eventService.updateEvent(this.eventId, payload).subscribe({
-      next: () => this.router.navigate(['/events', this.eventId]),
-      error: () => this.isSubmitting.set(false),
+    firstValueFrom(this.eventService.getEvent(this.eventId))
+      .then(({ event }) => {
+        if (this.user?.sub !== event.organizer.id) {
+          this.router.navigate(['/events', this.eventId]);
+          return;
+        }
+        this.event.set(event);
+        this.setFormValues(event);
+        this.titleService.setTitle(event.title);
+      })
+      .catch((err) => {
+        if (err.status === 404) {
+          this.router.navigate(['/not-found']);
+          return;
+        }
+        this.error.set('An error occurred while loading the event.');
+      })
+      .finally(() => {
+        this.isLoading.set(false);
+      });
+  }
+
+  private setFormValues(event: Event) {
+    const { title, description, placeDisplayName, dateTime, endAt, lat, lon, placeId } = event;
+    this.eventForm.patchValue({
+      title,
+      description,
+      placeDisplayName,
+      dateTime,
+      endAt: endAt ?? undefined,
+    });
+
+    this.place.set({
+      lat,
+      lon,
+      display_name: placeDisplayName,
+      place_id: placeId,
     });
   }
 
-  onEventDeleted() {
+  public onSubmit() {
+    this.eventForm.markAllAsTouched();
+
+    const { title, description, placeDisplayName, dateTime, endAt } = this.eventForm.value;
+
+    const place = this.place();
+
+    if (this.eventForm.invalid || !title || !placeDisplayName || !dateTime) {
+      return;
+    }
+
+    this.isSubmitting.set(true);
+    this.error.set(null);
+    this.isSuccess.set(false);
+
+    if (!place) {
+      this.error.set('Please search for a location and select one from the list.');
+      this.isSubmitting.set(false);
+      return;
+    }
+
+    firstValueFrom(
+      this.eventService.createEvent({
+        title,
+        description,
+        placeDisplayName,
+        dateTime: new Date(dateTime).toISOString(),
+        endAt: endAt ? new Date(endAt).toISOString() : undefined,
+        lat: place.lat,
+        lon: place.lon,
+        placeId: place.place_id,
+      }),
+    )
+      .then(({ event }) => {
+        this.isSuccess.set(true);
+        this.router.navigate(['/events', event.id]);
+      })
+      .catch((error) => {
+        this.error.set('Failed to create event. Please try again later.');
+        console.error('Submission Error:', error);
+      })
+      .finally(() => {
+        this.isSubmitting.set(false);
+      });
+  }
+
+  public onEventDeleted() {
     this.router.navigate(['/events']);
+  }
+
+  // Location selection handler
+  public onLocationSelected(location: NominatimLocation) {
+    this.place.set(location);
+    this.searchResults.set([]);
+
+    // emitEvent: false prevents this update from triggering the search again!
+    this.eventForm.patchValue({ placeDisplayName: location.display_name }, { emitEvent: false });
   }
 }

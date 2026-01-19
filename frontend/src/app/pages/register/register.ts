@@ -4,18 +4,22 @@ import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth';
 import { Router, RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
+import { PasswordValidation } from '../../components/password-validation/password-validation';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, PasswordValidation],
   templateUrl: './register.html',
   styleUrls: ['./register.css'],
 })
 export class Register {
+  // Inject dependencies
   private formBuilder = inject(FormBuilder);
   private authService = inject(AuthService);
   private router = inject(Router);
+
+  //Form definition
   public registerForm = this.formBuilder.nonNullable.group({
     firstname: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(30)]],
     lastname: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(30)]],
@@ -25,32 +29,16 @@ export class Register {
     password: ['', [Validators.required, Validators.minLength(8)]],
     confirmPassword: ['', [Validators.required]],
   });
+
+  // State signals
   public isLoading = signal<boolean>(false);
   public error = signal<string | null>(null);
   public isSuccess = signal<boolean>(false);
 
-  public hasUppercase() {
-    return /[A-Z]/.test(this.registerForm.get('password')?.value || '');
-  }
-
-  public hasLowercase() {
-    return /[a-z]/.test(this.registerForm.get('password')?.value || '');
-  }
-
-  public hasNumber() {
-    return /[0-9]/.test(this.registerForm.get('password')?.value || '');
-  }
-
-  public hasSpecial() {
-    return /[!@#$%^&*]/.test(this.registerForm.get('password')?.value || '');
-  }
-
-  public hasMinLength() {
-    return (this.registerForm.get('password')?.value || '').length >= 8;
-  }
-
+  // Form submission handler
   public onSubmit() {
     const { firstname, lastname, username, email, phoneNumber, password } = this.registerForm.value;
+
     if (
       this.registerForm.invalid ||
       !email ||
@@ -62,7 +50,11 @@ export class Register {
     ) {
       return;
     }
+
     this.isLoading.set(true);
+    this.error.set(null);
+    this.isSuccess.set(false);
+
     firstValueFrom(
       this.authService.register({
         firstname,
@@ -71,22 +63,19 @@ export class Register {
         email,
         phoneNumber,
         password,
-      })
+      }),
     )
       .then(() => {
         this.isSuccess.set(true);
-        this.error.set(null);
         this.router.navigate(['/explore']);
       })
       .catch((error) => {
         if (error.error.message) {
           this.error.set(error.error.message);
-          this.isSuccess.set(false);
           return;
         }
-        console.error('Error logging in:', error);
+        console.error('Error registering:', error);
         this.error.set('An unexpected error occurred. Please try again.');
-        this.isSuccess.set(false);
       })
       .finally(() => {
         this.isLoading.set(false);

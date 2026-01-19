@@ -3,11 +3,12 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { UserService } from '../../services/user';
 import { firstValueFrom } from 'rxjs';
 import { User } from '../../types/api.types';
+import { LoadingComponent } from '../loading-component/loading-component';
 
 @Component({
   selector: 'app-profile-update-form',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, LoadingComponent],
   templateUrl: './profile-update-form.html',
   styleUrl: './profile-update-form.css',
 })
@@ -23,20 +24,24 @@ export class ProfileUpdateForm {
     bio: ['', [Validators.maxLength(160)]],
   });
 
+  public isSubmitting = signal<boolean>(false);
   public isLoading = signal<boolean>(true);
   public isError = signal<boolean>(false);
   public isSuccess = signal<boolean>(false);
 
   public ngOnInit() {
-    this.isLoading.set(true);
     this.loadCurrentUser();
-    this.isLoading.set(false);
   }
 
   private loadCurrentUser() {
-    firstValueFrom(this.userService.getCurrentUser()).then((user) => {
-      this.setFormValues(user);
-    });
+    this.isLoading.set(true);
+    firstValueFrom(this.userService.getCurrentUser())
+      .then((user) => {
+        this.setFormValues(user);
+      })
+      .finally(() => {
+        this.isLoading.set(false);
+      });
   }
 
   private setFormValues(user: User) {
@@ -55,7 +60,7 @@ export class ProfileUpdateForm {
     if (this.profileForm.invalid) {
       return;
     }
-    this.isLoading.set(true);
+    this.isSubmitting.set(true);
 
     const { firstname, lastname, username, email, phoneNumber, bio } = this.profileForm.value;
 
@@ -80,7 +85,7 @@ export class ProfileUpdateForm {
         this.isSuccess.set(false);
       })
       .finally(() => {
-        this.isLoading.set(false);
+        this.isSubmitting.set(false);
       });
   }
 }

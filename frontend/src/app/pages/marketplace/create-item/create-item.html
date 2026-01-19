@@ -6,18 +6,40 @@
   </div>
 
   <form
-    [formGroup]="form"
     (ngSubmit)="onSubmit()"
+    [formGroup]="itemForm"
     class="bg-white p-6 rounded-xl border shadow-sm space-y-6"
   >
-    <div>
-      <label class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+    @if (error()) {
+      <div class="bg-red-50 text-red-600 p-3 rounded-lg border border-red-200">
+        {{ error() }}
+      </div>
+    }
+
+    <div class="w-full">
+      <label
+        class="block text-sm font-medium text-gray-700 mb-1 [.invalid]:text-red-500!"
+        [class.invalid]="itemForm.get('title')?.invalid && itemForm.get('title')?.touched"
+        for="title"
+        >Title</label
+      >
       <input
+        id="title"
         type="text"
         formControlName="title"
-        class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+        [class.invalid]="itemForm.get('title')?.invalid && itemForm.get('title')?.touched"
+        class="block w-full border [.invalid]:border-red-500! [.invalid]:ring-red-500! [.invalid]:text-red-500! border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
         placeholder="e.g. Vintage Bicycle"
       />
+      @if (itemForm.get('title')?.invalid && itemForm.get('title')?.touched) {
+        @if (itemForm.get('title')?.errors?.['required']) {
+          <span class="text-red-500 text-sm">required</span>
+        } @else if (itemForm.get('title')?.errors?.['minlength']) {
+          <span class="text-red-500 text-sm">minimal 3 characters</span>
+        } @else if (itemForm.get('title')?.errors?.['maxlength']) {
+          <span class="text-red-500 text-sm">maximal 50 characters</span>
+        }
+      }
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -25,7 +47,7 @@
         <label class="block text-sm font-medium text-gray-700 mb-1">Type</label>
         <select
           formControlName="category"
-          class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white"
+          class="block w-full border [.invalid]:border-red-500! [.invalid]:ring-red-500! [.invalid]:text-red-500! border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           <option value="offered">Offered (Selling/Giving)</option>
           <option value="wanted">Wanted (Looking for)</option>
@@ -33,42 +55,91 @@
       </div>
 
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Price (€)</label>
+        <label
+          class="block text-sm font-medium text-gray-700 mb-1 [.invalid]:text-red-500!"
+          [class.invalid]="
+            itemForm.get('placeDisplayName')?.invalid && itemForm.get('placeDisplayName')?.touched
+          "
+          for="price"
+          >Price (€)</label
+        >
         <input
-          type="number"
+          id="price"
+          type="text"
           formControlName="price"
-          class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-          placeholder="0.00"
+          [class.invalid]="itemForm.get('price')?.invalid && itemForm.get('price')?.touched"
+          class="block w-full border [.invalid]:border-red-500! [.invalid]:ring-red-500! [.invalid]:text-red-500! border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          placeholder="Start typing to search..."
         />
       </div>
     </div>
 
-    <div>
-      <label class="block text-sm font-medium text-gray-700 mb-1">Location</label>
+    <div class="w-full relative">
+      <label
+        class="block text-sm font-medium text-gray-700 mb-1 [.invalid]:text-red-500!"
+        [class.invalid]="
+          itemForm.get('placeDisplayName')?.invalid && itemForm.get('placeDisplayName')?.touched
+        "
+        for="placeDisplayName"
+        >Location</label
+      >
       <input
+        id="placeDisplayName"
         type="text"
-        formControlName="location"
-        class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-        placeholder="e.g. Main St. or 'Pick up only'"
+        formControlName="placeDisplayName"
+        [class.invalid]="
+          itemForm.get('placeDisplayName')?.invalid && itemForm.get('placeDisplayName')?.touched
+        "
+        class="block w-full border [.invalid]:border-red-500! [.invalid]:ring-red-500! [.invalid]:text-red-500! border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        placeholder="Start typing to search..."
       />
+      @if (itemForm.get('placeDisplayName')?.invalid && itemForm.get('placeDisplayName')?.touched) {
+        @if (itemForm.get('placeDisplayName')?.errors?.['required']) {
+          <span class="text-red-500 text-sm">required</span>
+        }
+      }
+      @if (searchResults().length > 0) {
+        <div class="absolute z-10 w-full mt-1">
+          <app-location-search-results
+            [locations]="searchResults()"
+            (locationSelected)="onLocationSelected($event)"
+          ></app-location-search-results>
+        </div>
+      }
     </div>
 
-    <div>
-      <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+    <div class="flex flex-col">
+      <label
+        class="text-sm font-medium text-gray-700 mb-1 [.invalid]:text-red-500!"
+        [class.invalid]="
+          itemForm.get('description')?.invalid && itemForm.get('description')?.touched
+        "
+        for="description"
+        >Description</label
+      >
       <textarea
+        id="description"
+        type="text"
         formControlName="description"
-        rows="4"
-        class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+        [class.invalid]="
+          itemForm.get('description')?.invalid && itemForm.get('description')?.touched
+        "
+        class="border [.invalid]:border-red-500! [.invalid]:ring-red-500! [.invalid]:text-red-500! border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
         placeholder="Describe the condition, size, etc..."
       ></textarea>
+      @if (itemForm.get('description')?.invalid && itemForm.get('description')?.touched) {
+        @if (itemForm.get('description')?.errors?.['maxlength']) {
+          <span class="text-red-500 text-sm">maximal 150 characters</span>
+        }
+      }
     </div>
 
     <button
       type="submit"
-      [disabled]="form.invalid || isSubmitting"
+      [disabled]="!itemForm.valid || isSubmitting()"
       class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg shadow-sm transition disabled:opacity-50 disabled:cursor-not-allowed"
     >
-      @if (isSubmitting) {
+      @if (isSubmitting()) {
         Publishing...
       } @else {
         Publish Item
