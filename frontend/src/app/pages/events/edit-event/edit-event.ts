@@ -1,14 +1,15 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { EventService } from '../../../services/event';
-import { CreateEventRequest } from '../../../types/api.types';
+import { CreateEventRequest, Event } from '../../../types/api.types';
 import { AuthService } from '../../../services/auth';
 import { ActionButton } from '../../../components/action-button/action-button';
 import { BackButton } from '../../../components/back-button/back-button';
 import { LoadingComponent } from '../../../components/loading-component/loading-component';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-edit-event',
@@ -18,75 +19,65 @@ import { LoadingComponent } from '../../../components/loading-component/loading-
   styleUrl: './edit-event.html',
 })
 export class EditEvent {
+  // Injected services
   private eventService = inject(EventService);
-  private route = inject(ActivatedRoute);
+  private activatedRoute = inject(ActivatedRoute);
   private router = inject(Router);
   private authService = inject(AuthService);
+  private formBuilder = inject(FormBuilder);
+  private titleService = inject(Title);
 
-  public eventId = this.route.snapshot.paramMap.get('id') as string;
-  public isSubmitting = signal(false);
+  // Get ID from route params
+  public eventId = this.activatedRoute.snapshot.paramMap.get('id') as string;
+
+  // State signals
   public isLoading = signal(true);
+  public error = signal<string | null>(null);
+  public isSuccess = signal(false);
 
   // Store full event object for ActionButton usage (need organizer id)
-  public eventSource = signal<any>(null);
+  public event = signal<Event | null>(null);
 
-  public eventData = {
-    title: '',
-    description: '',
-    placeDisplayName: '',
-    dateTime: '',
-    endAt: '',
-  };
+  // Form definition
+  public editForm = this.formBuilder.nonNullable.group({
+    title: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
+    description: ['', [Validators.maxLength(150)]],
+    placeDisplayName: [
+      '',
+      [Validators.required, Validators.minLength(1), Validators.maxLength(100)],
+    ],
+    dateTime: ['', [Validators.required]],
+    endAt: [''],
+  });
 
-  private coords = { lat: '', lon: '', placeId: 0 };
-
-  async ngOnInit() {
-    try {
-      const response = await firstValueFrom(this.eventService.getEvent(this.eventId));
-      const data = response.event;
-
-      // Save full object to signal for template
-      this.eventSource.set(data);
-
-      const user = this.authService.getUser();
-      if (user?.sub !== data.organizer.id) {
-        this.router.navigate(['/events', this.eventId]);
-        return;
-      }
-
-      // Populate the form
-      this.eventData = {
-        title: data.title,
-        description: data.description,
-        placeDisplayName: data.placeDisplayName,
-        dateTime: data.dateTime ? new Date(data.dateTime).toISOString().slice(0, 16) : '',
-        endAt: data.endAt ? new Date(data.endAt).toISOString().slice(0, 16) : '',
-      };
-      this.coords = { lat: data.lat, lon: data.lon, placeId: data.placeId };
-    } catch (error) {
-      console.error('Error loading event:', error);
-      this.router.navigate(['/events']);
-    } finally {
-      this.isLoading.set(false);
-    }
+  public ngOnInit() {
+    this.isLoading.set(true);
+    this.loadEvent();
+    this.isLoading.set(false);
   }
 
-  onSubmit() {
-    this.isSubmitting.set(true);
-    const payload: Partial<CreateEventRequest> = {
-      ...this.eventData,
-      dateTime: new Date(this.eventData.dateTime).toISOString(),
-      endAt: this.eventData.endAt ? new Date(this.eventData.endAt).toISOString() : undefined,
-      lat: this.coords.lat,
-      lon: this.coords.lon,
-      placeId: this.coords.placeId,
-    };
+  private loadEvent() {
+    this.isLoading.set(true);
+    this.error.set(null);
 
-    this.eventService.updateEvent(this.eventId, payload).subscribe({
-      next: () => this.router.navigate(['/events', this.eventId]),
-      error: () => this.isSubmitting.set(false),
-    });
+    firstValueFrom(this.eventService.getEvent(this.eventId))
+      .then(({ event }) => {
+        this.event.set(event);
+        this.titleService.setTitle(event.title);
+      })
+      .catch((err) => {
+        if (err.status === 404) {
+          this.router.navigate(['/not-found']);
+          return;
+        }
+        this.error.set('An error occurred while loading the event.');
+      })
+      .finally(() => {
+        this.isLoading.set(false);
+      });
   }
+
+  onSubmit() {}
 
   onEventDeleted() {
     this.router.navigate(['/events']);

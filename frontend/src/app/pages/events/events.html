@@ -23,14 +23,17 @@
           [routerLink]="['/events', event.id]"
         >
           <div class="p-5 flex flex-col flex-grow">
-            
             <div class="flex justify-between items-start gap-3 mb-3">
               <h3 class="font-bold text-gray-900 leading-tight line-clamp-2" [title]="event.title">
                 {{ event.title }}
               </h3>
-              
-              <div class="shrink-0 bg-blue-50 px-2.5 py-1 rounded-md flex flex-col items-center text-blue-700 border border-blue-100">
-                <span class="text-[10px] uppercase font-bold leading-none">{{ event.dateTime | date: 'MMM' }}</span>
+
+              <div
+                class="shrink-0 bg-blue-50 px-2.5 py-1 rounded-md flex flex-col items-center text-blue-700 border border-blue-100"
+              >
+                <span class="text-[10px] uppercase font-bold leading-none">{{
+                  event.dateTime | date: 'MMM'
+                }}</span>
                 <span class="text-lg font-bold leading-none">{{ event.dateTime | date: 'd' }}</span>
               </div>
             </div>
@@ -39,12 +42,13 @@
               {{ event.description }}
             </p>
 
-            <div class="pt-3 border-t border-gray-100 mt-auto flex items-center text-xs text-gray-400 gap-1">
+            <div
+              class="pt-3 border-t border-gray-100 mt-auto flex items-center text-xs text-gray-400 gap-1"
+            >
               <span>📍</span>
               <span class="truncate">{{ event.placeDisplayName }}</span>
             </div>
-
-            </div>
+          </div>
         </div>
       } @empty {
         <div class="col-span-full py-16 text-center">

@@ -45,7 +45,7 @@ export class EventDetails {
   }
 
   // Load event by ID
-  private async loadEvent() {
+  private loadEvent() {
     this.isLoading.set(true);
     this.error.set(null);
 
