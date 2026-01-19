@@ -10,11 +10,22 @@ import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/cor
   // Removed styleUrls. We are using Tailwind classes in HTML.
 })
 export class Calendar implements OnInit, OnChanges {
+selectDate(_t16: DateTime<boolean>) {
+throw new Error('Method not implemented.');
+}
+closePopup() {
+throw new Error('Method not implemented.');
+}
+selectedEvents: any;
+getEventsForDate(_t16: DateTime<boolean>): any {
+throw new Error('Method not implemented.');
+}
   @Input() events: any[] = [];
 
   public viewDate: DateTime = DateTime.now();
   public days: DateTime[] = [];
   public weekDays: string[] = [];
+
 
   ngOnInit(): void {
     // Get short weekday names (Mon, Tue, etc.)
@@ -53,6 +64,8 @@ export class Calendar implements OnInit, OnChanges {
       return eventDate.equals(date.startOf('day'));
     });
   }
+
+
 
   public prevMonth(): void {
     this.viewDate = this.viewDate.minus({ months: 1 });

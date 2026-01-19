@@ -1,52 +1,69 @@
 <div class="p-4 bg-white w-full">
-  
+
   <div class="flex items-center justify-between mb-4">
-    <button 
-      (click)="prevMonth()" 
-      class="p-1 text-gray-400 hover:text-gray-800 hover:bg-gray-100 rounded-md transition-colors"
-    >
+    <button (click)="prevMonth()"
+      class="p-1 text-gray-400 hover:text-gray-800 hover:bg-gray-100 rounded-md transition-colors">
       <span class="text-sm">◀</span>
     </button>
-    
+
     <h2 class="text-sm font-bold text-gray-800 uppercase tracking-wide">
       {{ viewDate.toFormat('MMMM yyyy', { locale: 'en' }) }}
     </h2>
 
-    <button 
-      (click)="nextMonth()" 
-      class="p-1 text-gray-400 hover:text-gray-800 hover:bg-gray-100 rounded-md transition-colors"
-    >
+    <button (click)="nextMonth()"
+      class="p-1 text-gray-400 hover:text-gray-800 hover:bg-gray-100 rounded-md transition-colors">
       <span class="text-sm">▶</span>
     </button>
   </div>
 
   <div class="grid grid-cols-7 mb-2">
-    <div 
-      *ngFor="let dayName of weekDays" 
-      class="text-center text-[10px] font-bold text-[#D97757] uppercase opacity-80"
-    >
+    <div *ngFor="let dayName of weekDays" class="text-center text-[10px] font-bold text-[#D97757] uppercase opacity-80">
       {{ dayName }}
     </div>
   </div>
 
-  <div class="grid grid-cols-7 gap-0.5"> <div
-      *ngFor="let date of days"
-      class="relative h-7 w-full flex flex-col items-center justify-center rounded-md text-xs cursor-pointer transition-all select-none"
-      [class.text-gray-300]="date.month !== viewDate.month"
-      [class.text-gray-700]="date.month === viewDate.month && !isToday(date)"
-      [class.bg-[#D97757]]="isToday(date)"
-      [class.text-white]="isToday(date)"
-      [class.font-bold]="isToday(date)"
-      [class.hover:bg-orange-50]="!isToday(date) && date.month === viewDate.month"
-    >
-      <span>{{ date.day }}</span>
-
-      <div 
-        *ngIf="hasEventOnDate(date)" 
-        class="absolute bottom-0.5 w-1 h-1 rounded-full"
-        [class.bg-white]="isToday(date)"
-        [class.bg-[#D97757]]="!isToday(date)"
-      ></div>
+  <div class="days-grid">
+    <div *ngFor="let date of days" class="day-cell" [class.different-month]="date.month !== viewDate.month"
+      [class.today]="isToday(date)" [class.has-event]="hasEventOnDate(date)" (click)="selectDate(date)">
+      <span class="day-number">{{ date.day }}</span>
+      <span class="event-dot" *ngIf="hasEventOnDate(date)"></span>
+      <div class="event-preview" *ngIf="hasEventOnDate(date)">
+        <div class="event-preview-item" *ngFor="let event of getEventsForDate(date)">
+          <strong>{{ event.title }}</strong>
+          <span>{{ event.placeDisplayName }}</span>
+        </div>
+      </div>
+      >>>>>>> main
     </div>
+</div>
+
+
+<div *ngIf="selectedEvents.length > 0"
+  class="absolute z-10 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+  <div
+    class="relative min-w-[200px] max-w-[240px] bg-gradient-to-b from-white to-[#fffaf7] rounded-[14px] py-[12px] px-[14px] border border-[#D97757]/18 shadow-[0_20px_40px_rgba(0,0,0,0.12),0_4px_12px_rgba(217,119,87,0.12)] font-['Inter'] overflow-hidden">
+
+    <div
+      class="absolute top-[10px] bottom-[10px] left-[10px] w-[3px] rounded-[3px] bg-gradient-to-b from-[#D97757] to-[#E6A28B] opacity-85">
+    </div>
+
+    <button (click)="closePopup()" class="absolute top-2 right-2 text-gray-400 hover:text-gray-600">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+
+    <div class="pl-[8px] mt-1 space-y-2">
+      <div *ngFor="let event of selectedEvents">
+        <h3 class="text-[0.78rem] font-bold tracking-[0.01em] text-[#1f2937] m-0 break-words whitespace-normal">
+          {{ event.title }}
+        </h3>
+        <p *ngIf="event.dateTime" class="text-[0.65rem] text-gray-500 mt-0.5">
+          {{ event.dateTime | date:'shortTime' }}
+        </p>
+      </div>
+    </div>
+
   </div>
+</div>
 </div>
