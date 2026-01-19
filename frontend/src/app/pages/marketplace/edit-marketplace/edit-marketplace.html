@@ -5,19 +5,17 @@
   </div>
 
   @if (isLoading()) {
-    <div class="flex flex-col items-center justify-center py-20 gap-3">
-      <div class="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-      <p class="text-gray-500 font-medium">Fetching item details...</p>
-    </div>
-  } 
-  
-  @else if (item(); as data) {
-    <form [formGroup]="editForm" (ngSubmit)="onSubmit()" class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 space-y-6">
-      
+    <app-loading-component />
+  } @else if (item(); as data) {
+    <form
+      [formGroup]="editForm"
+      (ngSubmit)="onSubmit()"
+      class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 space-y-6"
+    >
       <div>
         <label class="block text-sm font-bold text-gray-700 mb-2">Item Title</label>
-        <input 
-          type="text" 
+        <input
+          type="text"
           formControlName="title"
           class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none transition-all"
         />
@@ -26,7 +24,7 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label class="block text-sm font-bold text-gray-700 mb-2">Category</label>
-          <select 
+          <select
             formControlName="category"
             class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none transition-all"
           >
@@ -37,8 +35,8 @@
 
         <div>
           <label class="block text-sm font-bold text-gray-700 mb-2">Price (€)</label>
-          <input 
-            type="number" 
+          <input
+            type="number"
             formControlName="price"
             min="0"
             class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none transition-all"
@@ -48,8 +46,8 @@
 
       <div>
         <label class="block text-sm font-bold text-gray-700 mb-2">Location</label>
-        <input 
-          type="text" 
+        <input
+          type="text"
           formControlName="location"
           class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none transition-all"
         />
@@ -57,17 +55,16 @@
 
       <div>
         <label class="block text-sm font-bold text-gray-700 mb-2">Description</label>
-        <textarea 
-          formControlName="description" 
+        <textarea
+          formControlName="description"
           rows="5"
           class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none transition-all resize-none"
         ></textarea>
       </div>
 
       <div class="flex items-center justify-between pt-4 border-t border-gray-50">
-        
         <app-action-button
-          [itemId]="data.id" 
+          [itemId]="data.id"
           [authorId]="data.provider.id || data.provider_id || ''"
           [itemType]="'marketplace'"
           [itemTitle]="editForm.get('title')?.value ?? ''"
@@ -76,26 +73,28 @@
         />
 
         <div class="flex items-center gap-4">
-          <a routerLink="/marketplace" class="text-sm font-semibold text-gray-500 hover:text-gray-800 transition-colors">
+          <a
+            routerLink="/marketplace"
+            class="text-sm font-semibold text-gray-500 hover:text-gray-800 transition-colors"
+          >
             Cancel
           </a>
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             [disabled]="editForm.invalid || isSaving()"
             class="px-8 py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 disabled:opacity-50 transition-all shadow-lg shadow-blue-100"
           >
             {{ isSaving() ? 'Saving changes...' : 'Update Item' }}
           </button>
         </div>
-
       </div>
     </form>
-  }
-
-  @else {
+  } @else {
     <div class="text-center py-10">
       <p class="text-red-500 font-bold">Error: Item not found or could not be loaded.</p>
-      <a routerLink="/marketplace" class="text-blue-600 underline mt-2 block">Go back to marketplace</a>
+      <a routerLink="/marketplace" class="text-blue-600 underline mt-2 block"
+        >Go back to marketplace</a
+      >
     </div>
   }
 </div>

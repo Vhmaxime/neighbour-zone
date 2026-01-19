@@ -1,7 +1,6 @@
 <div class="edit-container">
   @if (isLoading()) {
-    <div class="loading">Loading event data...</div>
-
+    <app-loading-component />
   } @else if (eventSource(); as e) {
     <app-back-button />
     <h2>Edit Event</h2>
