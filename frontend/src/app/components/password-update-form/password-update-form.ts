@@ -16,7 +16,7 @@ export class PasswordUpdateForm {
   public passwordForm = this.formBuilder.nonNullable.group({
     currentPassword: ['', [Validators.required]],
     newPassword: ['', [Validators.minLength(8), Validators.maxLength(32), Validators.required]],
-    confirmPassword: ['', [Validators.minLength(8), Validators.maxLength(32), Validators.required]],
+    confirmPassword: ['', [Validators.required]],
   });
   public isLoading = signal<boolean>(false);
   public error = signal<string | null>(null);
@@ -32,7 +32,7 @@ export class PasswordUpdateForm {
       this.userService.updateCurrentUserPassword({
         currentPassword,
         newPassword,
-      })
+      }),
     )
       .then(() => {
         this.isSuccess.set(true);
