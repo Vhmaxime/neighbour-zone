@@ -16,7 +16,7 @@ export class CreatePost {
   private postService = inject(PostService);
   private router = inject(Router);
 
-  public isLoading = signal(false);
+  public isSubmitting = signal(false);
   public error = signal<string | null>(null);
 
   // Initialize form with empty values
@@ -32,7 +32,7 @@ export class CreatePost {
 
     if (!title) return;
 
-    this.isLoading.set(true);
+    this.isSubmitting.set(true);
     this.error.set(null);
 
     firstValueFrom(this.postService.createPost({ title, content }))
@@ -43,7 +43,7 @@ export class CreatePost {
         this.error.set('An unknown error occurred.');
       })
       .finally(() => {
-        this.isLoading.set(false);
+        this.isSubmitting.set(false);
       });
   }
 }

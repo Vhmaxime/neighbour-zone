@@ -71,10 +71,10 @@
       </a>
       <button
         type="submit"
-        [disabled]="createForm.invalid || isLoading()"
+        [disabled]="createForm.invalid || isSubmitting()"
         class="px-8 py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 disabled:opacity-50 transition-all shadow-lg shadow-blue-100"
       >
-        {{ isLoading() ? 'Posting...' : 'Share with Neighbors' }}
+        {{ isSubmitting() ? 'Posting...' : 'Share with Neighbors' }}
       </button>
     </div>
   </form>
