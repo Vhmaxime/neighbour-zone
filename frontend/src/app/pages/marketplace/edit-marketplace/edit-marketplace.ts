@@ -27,11 +27,11 @@ export class EditMarketplace {
   public item = signal<any>(null);
 
   public editForm = this.fb.group({
-    title: ['', [Validators.required, Validators.minLength(3)]],
-    description: ['', [Validators.required, Validators.minLength(10)]],
+    title: ['', [Validators.required, Validators.minLength(3),Validators.maxLength(50)]],
+    description: ['', [Validators.maxLength(150)]],
     price: [0, [Validators.min(0)]],
     category: ['offered', [Validators.required]],
-    location: ['', [Validators.required]]
+    placeDisplayName: ['', [Validators.required]]
   });
 
   constructor() {
@@ -54,7 +54,7 @@ export class EditMarketplace {
           description: itemData.description,
           price: itemData.price,
           category: itemData.category,
-          location: itemData.location
+          placeDisplayName: itemData.location
         });
       }
     } catch (err) {

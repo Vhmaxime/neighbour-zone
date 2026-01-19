@@ -20,11 +20,11 @@ export class CreateItem {
   isSubmitting = false;
 
   form = this.fb.group({
-    title: ['', [Validators.required, Validators.minLength(3)]],
-    description: ['', [Validators.required, Validators.minLength(10)]],
+    title: ['', [Validators.required, Validators.minLength(3),Validators.maxLength(50)]],
+    description: ['', [Validators.maxLength(150)]],
     price: [0, [Validators.min(0)]],
-    category: ['offered', [Validators.required]], // Default to 'offered'
-    location: ['Neighbourhood', [Validators.required]],
+    category: ['offered', [Validators.required]],
+    placeDisplayName: ['', [Validators.required]]
   });
 
   onSubmit() {
