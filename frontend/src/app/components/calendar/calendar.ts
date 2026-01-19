@@ -7,10 +7,19 @@ import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/cor
   standalone: true,
   imports: [CommonModule],
   templateUrl: './calendar.html',
-  styleUrls: ['./calendar.css']
+  // Removed styleUrls. We are using Tailwind classes in HTML.
 })
 export class Calendar implements OnInit, OnChanges {
-
+selectDate(_t16: DateTime<boolean>) {
+throw new Error('Method not implemented.');
+}
+closePopup() {
+throw new Error('Method not implemented.');
+}
+selectedEvents: any;
+getEventsForDate(_t16: DateTime<boolean>): any {
+throw new Error('Method not implemented.');
+}
   @Input() events: any[] = [];
 
   public viewDate: DateTime = DateTime.now();
@@ -19,12 +28,14 @@ export class Calendar implements OnInit, OnChanges {
 
 
   ngOnInit(): void {
+    // Get short weekday names (Mon, Tue, etc.)
     this.weekDays = Info.weekdays('short', { locale: 'en' });
     this.setupCalendar();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['events']) {
+      // Trigger change detection for inputs if needed
       this.days = [...this.days];
     }
   }
@@ -35,6 +46,7 @@ export class Calendar implements OnInit, OnChanges {
 
     this.days = [];
 
+    // 42 days (6 weeks) to ensure the grid is always consistent
     for (let i = 0; i < 42; i++) {
       this.days.push(day);
       day = day.plus({ days: 1 });
@@ -46,18 +58,8 @@ export class Calendar implements OnInit, OnChanges {
   }
 
   public hasEventOnDate(date: DateTime): boolean {
-    return this.events.some(event => {
+    return this.events.some((event) => {
       if (!event.dateTime) return false;
-
-      const eventDate = DateTime.fromISO(event.dateTime).startOf('day');
-      return eventDate.equals(date.startOf('day'));
-    });
-  }
-
-  public getEventsForDate(date: DateTime): any[] {
-    return this.events.filter(event => {
-      if (!event.dateTime) return false;
-
       const eventDate = DateTime.fromISO(event.dateTime).startOf('day');
       return eventDate.equals(date.startOf('day'));
     });
