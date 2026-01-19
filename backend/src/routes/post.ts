@@ -24,7 +24,7 @@ postRouter.get(
         console.error("Validation error:", result.error);
         return c.json({ message: "Invalid request data" }, 400);
       }
-    }
+    },
   ),
   async (c) => {
     const { sub: userId } = c.get("jwtPayload");
@@ -69,7 +69,7 @@ postRouter.get(
     });
 
     return c.json({ posts: postSet, count: postSet.length }, 200);
-  }
+  },
 );
 
 // Create a new post
@@ -82,7 +82,7 @@ postRouter.post(
     }
   }),
   async (c) => {
-    const { title, content, type } = c.req.valid("json");
+    const { title, content } = c.req.valid("json");
 
     const { sub: authorId } = c.get("jwtPayload");
 
@@ -92,7 +92,6 @@ postRouter.post(
         authorId,
         title,
         content,
-        type,
       })
       .returning();
 
@@ -112,7 +111,7 @@ postRouter.post(
     });
 
     return c.json({ post }, 201);
-  }
+  },
 );
 
 // Get a single post by ID
@@ -176,7 +175,7 @@ postRouter.get(
     }
 
     return c.json({ ...post, liked }, 200);
-  }
+  },
 );
 
 // Update a post by ID
@@ -235,7 +234,7 @@ postRouter.patch(
     });
 
     return c.json({ post }, 200);
-  }
+  },
 );
 
 // Delete a post by ID
@@ -267,7 +266,7 @@ postRouter.delete(
     await db.delete(postsTable).where(eq(postsTable.id, postId));
 
     return c.json({ message: "ok" }, 200);
-  }
+  },
 );
 
 // Like or unlike a post
@@ -304,8 +303,8 @@ postRouter.post(
         .where(
           and(
             eq(postLikesTable.userId, userId),
-            eq(postLikesTable.postId, postId)
-          )
+            eq(postLikesTable.postId, postId),
+          ),
         );
       return c.json({ message: "ok" }, 200);
     }
@@ -316,7 +315,7 @@ postRouter.post(
     });
 
     return c.json({ message: "ok" }, 200);
-  }
+  },
 );
 
 export default postRouter;

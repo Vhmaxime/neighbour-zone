@@ -27,8 +27,6 @@ export const usersTable = pgTable("users", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
-export const postTypeEnum = pgEnum("post_type", ["news", "tip"]);
-
 export const postsTable = pgTable("posts", {
   id: uuid("id").primaryKey().defaultRandom(),
   authorId: uuid("author_id")
@@ -36,7 +34,6 @@ export const postsTable = pgTable("posts", {
     .references(() => usersTable.id, { onDelete: "cascade" }),
   title: text("title").notNull(),
   content: text("content"),
-  type: postTypeEnum("type").notNull().default("news"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 

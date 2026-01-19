@@ -40,8 +40,7 @@ export interface CurrentUser {
 export interface Post {
   id: string;
   title: string;
-  content: string;
-  type: PostType;
+  content?: string;
   createdAt: string;
   author: UserPublic;
   likes: number;
@@ -104,8 +103,7 @@ export interface LoginRequest {
 
 export interface CreatePostRequest {
   title: string;
-  content: string;
-  type: PostType;
+  content?: string;
 }
 
 export interface CreateEventRequest {
