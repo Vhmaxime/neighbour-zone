@@ -1,14 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  ReactiveFormsModule,
-  FormBuilder,
-  Validators,
-  FormGroup,
-  FormControl,
-  AbstractControl,
-  ValidationErrors,
-} from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth';
 import { Router, RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
@@ -21,78 +13,83 @@ import { firstValueFrom } from 'rxjs';
   styleUrls: ['./register.css'],
 })
 export class Register {
-  error = signal<string | null>(null);
-
-  form: FormGroup<{
-    username: FormControl<string>;
-    firstname: FormControl<string>;
-    lastname: FormControl<string>;
-    email: FormControl<string>;
-    phoneNumber: FormControl<string>;
-    password: FormControl<string>;
-    confirmPassword: FormControl<string>;
-  }>;
-
-  private fb = inject(FormBuilder);
+  private formBuilder = inject(FormBuilder);
   private authService = inject(AuthService);
   private router = inject(Router);
-  isSubmitting = signal(false);
+  public registerForm = this.formBuilder.nonNullable.group({
+    firstname: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(30)]],
+    lastname: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(30)]],
+    username: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(30)]],
+    email: ['', [Validators.required, Validators.email]],
+    phoneNumber: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(15)]],
+    password: ['', [Validators.required, Validators.minLength(8)]],
+    confirmPassword: ['', [Validators.required]],
+  });
+  public isLoading = signal<boolean>(false);
+  public error = signal<string | null>(null);
+  public isSuccess = signal<boolean>(false);
 
-  constructor() {
-    this.form = this.fb.group(
-      {
-        username: this.fb.control('', { validators: Validators.required, nonNullable: true }),
-        firstname: this.fb.control('', { validators: Validators.required, nonNullable: true }),
-        lastname: this.fb.control('', { validators: Validators.required, nonNullable: true }),
-        email: this.fb.control('', {
-          validators: [Validators.required, Validators.email],
-          nonNullable: true,
-        }),
-        phoneNumber: this.fb.control('', { validators: Validators.required, nonNullable: true }),
-        password: this.fb.control('', { validators: Validators.required, nonNullable: true }),
-        confirmPassword: this.fb.control('', {
-          validators: Validators.required,
-          nonNullable: true,
-        }),
-      },
-      {
-        validators: this.passwordsMatch,
-      }
-    ) as FormGroup<{
-      username: FormControl<string>;
-      firstname: FormControl<string>;
-      lastname: FormControl<string>;
-      email: FormControl<string>;
-      phoneNumber: FormControl<string>;
-      password: FormControl<string>;
-      confirmPassword: FormControl<string>;
-    }>;
+  public hasUppercase() {
+    return /[A-Z]/.test(this.registerForm.get('password')?.value || '');
   }
 
-  passwordsMatch(group: AbstractControl): ValidationErrors | null {
-    const password = group.get('password')?.value;
-    const confirm = group.get('confirmPassword')?.value;
-    return password === confirm ? null : { passwordMismatch: true };
+  public hasLowercase() {
+    return /[a-z]/.test(this.registerForm.get('password')?.value || '');
+  }
+
+  public hasNumber() {
+    return /[0-9]/.test(this.registerForm.get('password')?.value || '');
+  }
+
+  public hasSpecial() {
+    return /[!@#$%^&*]/.test(this.registerForm.get('password')?.value || '');
+  }
+
+  public hasMinLength() {
+    return (this.registerForm.get('password')?.value || '').length >= 8;
   }
 
   public onSubmit() {
-    if (this.form.invalid) return;
-
-    const { username, firstname, lastname, email, phoneNumber, password } = this.form.getRawValue();
-
-    this.isSubmitting.set(true);
-    this.error.set(null);
-
+    const { firstname, lastname, username, email, phoneNumber, password } = this.registerForm.value;
+    if (
+      this.registerForm.invalid ||
+      !email ||
+      !password ||
+      !firstname ||
+      !lastname ||
+      !phoneNumber ||
+      !username
+    ) {
+      return;
+    }
+    this.isLoading.set(true);
     firstValueFrom(
-      this.authService.register({ username, firstname, lastname, email, phoneNumber, password })
+      this.authService.register({
+        firstname,
+        lastname,
+        username,
+        email,
+        phoneNumber,
+        password,
+      })
     )
       .then(() => {
-        this.isSubmitting.set(false);
+        this.isSuccess.set(true);
+        this.error.set(null);
         this.router.navigate(['/explore']);
       })
-      .catch((err) => {
-        this.isSubmitting.set(false);
-        this.error.set(err.error?.message || 'An error occurred. Please try again.');
+      .catch((error) => {
+        if (error.error.message) {
+          this.error.set(error.error.message);
+          this.isSuccess.set(false);
+          return;
+        }
+        console.error('Error logging in:', error);
+        this.error.set('An unexpected error occurred. Please try again.');
+        this.isSuccess.set(false);
+      })
+      .finally(() => {
+        this.isLoading.set(false);
       });
   }
 }

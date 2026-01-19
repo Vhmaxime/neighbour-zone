@@ -1,26 +1,21 @@
 @if (isLoading()) {
-  <div class="flex flex-col items-center justify-center py-20 gap-4">
-    <div
-      class="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"
-    ></div>
-    <p class="text-gray-500 font-medium">Loading event details...</p>
-  </div>
+  <app-loading-component />
 } @else if (event(); as e) {
   <div class="max-w-2xl mx-auto py-10 px-4">
     <div class="flex items-center justify-between mb-8">
       <app-back-button />
-  
+
       <div class="flex items-center gap-3">
-        <app-action-button 
-          [itemId]="e.id" 
-          [authorId]="e.organizer.id" 
+        <app-action-button
+          [itemId]="e.id"
+          [authorId]="e.organizer.id"
           [itemType]="'event'"
-          [routePath]="'events'" 
+          [routePath]="'events'"
           mode="edit"
         />
       </div>
     </div>
-  
+
     <article class="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
       <div class="flex items-center justify-between mb-6">
         <h1 class="text-3xl font-black text-gray-900">{{ e.title }}</h1>
@@ -30,22 +25,22 @@
           Event
         </span>
       </div>
-  
+
       <div class="space-y-4 mb-8">
         <p class="text-gray-700 flex items-center gap-2">
-          <span class="text-xl">📅</span> {{ e.dateTime | date : 'fullDate' }}
+          <span class="text-xl">📅</span> {{ e.dateTime | date: 'fullDate' }}
         </p>
         <p class="text-gray-700 flex items-center gap-2">
           <span class="text-xl">📍</span> {{ e.placeDisplayName }}
         </p>
       </div>
-  
+
       <hr class="border-gray-100 mb-8" />
-  
+
       <p class="text-lg text-gray-700 leading-relaxed whitespace-pre-wrap mb-8">
         {{ e.description }}
       </p>
-  
+
       <div class="pt-6 border-t border-gray-50">
         <small class="text-gray-500 font-medium">
           Organized by:
@@ -57,13 +52,7 @@
           </a>
         </small>
 
-        <app-like-button
-          [type]="'event'"
-          [id]="e.id"
-          [isLiked]="e.liked"
-          [likes]="e.likes"
-        />
-
+        <app-like-button [type]="'event'" [id]="e.id" [isLiked]="e.liked" [likes]="e.likes" />
       </div>
     </article>
   </div>

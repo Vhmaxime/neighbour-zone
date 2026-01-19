@@ -7,12 +7,12 @@ import { EventService } from '../../../services/event';
 import { CreateEventRequest } from '../../../types/api.types';
 import { AuthService } from '../../../services/auth';
 import { ActionButton } from '../../../components/action-button/action-button';
-
+import { BackButton } from '../../../components/back-button/back-button';
 
 @Component({
   selector: 'app-edit-event',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, ActionButton],
+  imports: [CommonModule, FormsModule, RouterLink, ActionButton, BackButton],
   templateUrl: './edit-event.html',
   styleUrl: './edit-event.html',
 })
@@ -21,7 +21,7 @@ export class EditEvent {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private authService = inject(AuthService);
-  
+
   public eventId = this.route.snapshot.paramMap.get('id') as string;
   public isSubmitting = signal(false);
   public isLoading = signal(true);
@@ -47,11 +47,11 @@ export class EditEvent {
       // Save full object to signal for template
       this.eventSource.set(data);
 
-        const user = this.authService.getUser();
-        if (user?.sub !== data.organizer.id) {
-            this.router.navigate(['/events', this.eventId]);
-            return;
-        }
+      const user = this.authService.getUser();
+      if (user?.sub !== data.organizer.id) {
+        this.router.navigate(['/events', this.eventId]);
+        return;
+      }
 
       // Populate the form
       this.eventData = {
@@ -78,12 +78,12 @@ export class EditEvent {
       endAt: this.eventData.endAt ? new Date(this.eventData.endAt).toISOString() : undefined,
       lat: this.coords.lat,
       lon: this.coords.lon,
-      placeId: this.coords.placeId
+      placeId: this.coords.placeId,
     };
 
     this.eventService.updateEvent(this.eventId, payload).subscribe({
       next: () => this.router.navigate(['/events', this.eventId]),
-      error: () => this.isSubmitting.set(false)
+      error: () => this.isSubmitting.set(false),
     });
   }
 

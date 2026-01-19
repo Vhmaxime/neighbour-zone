@@ -23,11 +23,11 @@ export class PasswordUpdateForm {
   public isSuccess = signal<boolean>(false);
 
   public onSubmit() {
-    if (this.passwordForm.invalid) {
+    const { currentPassword, newPassword } = this.passwordForm.value;
+    if (this.passwordForm.invalid || !currentPassword || !newPassword) {
       return;
     }
     this.isLoading.set(true);
-    const { currentPassword, newPassword } = this.passwordForm.value;
     firstValueFrom(
       this.userService.updateCurrentUserPassword({
         currentPassword,

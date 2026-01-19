@@ -1,13 +1,14 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { MarketplaceService } from '../../../services/marketplace';
+import { BackButton } from '../../../components/back-button/back-button';
 
 @Component({
   selector: 'app-create-item',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, BackButton],
   templateUrl: './create-item.html',
   styleUrl: './create-item.css',
 })
@@ -23,34 +24,36 @@ export class CreateItem {
     description: ['', [Validators.required, Validators.minLength(10)]],
     price: [0, [Validators.min(0)]],
     category: ['offered', [Validators.required]], // Default to 'offered'
-    location: ['Neighbourhood', [Validators.required]]
+    location: ['Neighbourhood', [Validators.required]],
   });
-  
+
   onSubmit() {
     if (this.form.invalid) return;
 
     this.isSubmitting = true;
 
     // Send data to the backend
-    this.marketplaceService.createMarketplaceItem({
-      title: this.form.value.title!,
-      description: this.form.value.description!,
-      price: this.form.value.price ?? 0,
-      placeId: 1,
-      placeDisplayName: "Hasselt",
-      category: this.form.value.category as 'offered' | 'wanted',
-      lat: "zzzz",
-      lon: "ssss"
-    }).subscribe({
-      next: () => {
-        // On success, redirect back to the list
-        this.router.navigate(['/marketplace']);
-      },
-      error: (err) => {
-        console.error('Failed to create item', err);
-        this.isSubmitting = false;
-        alert('Failed to post item. Please try again.');
-      }
-    });
+    this.marketplaceService
+      .createMarketplaceItem({
+        title: this.form.value.title!,
+        description: this.form.value.description!,
+        price: this.form.value.price ?? 0,
+        placeId: 1,
+        placeDisplayName: 'Hasselt',
+        category: this.form.value.category as 'offered' | 'wanted',
+        lat: 'zzzz',
+        lon: 'ssss',
+      })
+      .subscribe({
+        next: () => {
+          // On success, redirect back to the list
+          this.router.navigate(['/marketplace']);
+        },
+        error: (err) => {
+          console.error('Failed to create item', err);
+          this.isSubmitting = false;
+          alert('Failed to post item. Please try again.');
+        },
+      });
   }
 }

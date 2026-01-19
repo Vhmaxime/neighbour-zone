@@ -86,9 +86,9 @@
     (profileForm.get('username')?.errors?.['required']) {
     <span class="text-red-500 text-sm">required</span>
     } @else if (profileForm.get('username')?.errors?.['minlength']) {
-    <span class="text-red-500 text-sm">minimal 3 characters</span>
+    <span class="text-red-500 text-sm">minimal 2 characters</span>
     } @else if (profileForm.get('username')?.errors?.['maxlength']) {
-    <span class="text-red-500 text-sm">maximal 20 characters</span>
+    <span class="text-red-500 text-sm">maximal 30 characters</span>
     } }
   </div>
 

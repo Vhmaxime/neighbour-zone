@@ -1,5 +1,5 @@
 import { Component, inject, signal, computed } from '@angular/core';
-import { DatePipe, Location } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { PostService } from '../../../services/post';
 import { Post } from '../../../types/api.types';
@@ -8,10 +8,11 @@ import { AuthService } from '../../../services/auth';
 import { BackButton } from '../../../components/back-button/back-button';
 import { ActionButton } from '../../../components/action-button/action-button';
 import { LikeButton } from '../../../components/like-button/like-button';
+import { LoadingComponent } from '../../../components/loading-component/loading-component';
 
 @Component({
   selector: 'app-post-details',
-  imports: [RouterLink, DatePipe, BackButton, ActionButton, LikeButton],
+  imports: [RouterLink, DatePipe, BackButton, ActionButton, LikeButton, LoadingComponent],
   templateUrl: './post-details.html',
   styleUrl: './post-details.css',
 })
@@ -19,14 +20,13 @@ export class PostDetails {
   private activatedRoute = inject(ActivatedRoute);
   private postService = inject(PostService);
   private router = inject(Router);
-  private location = inject(Location);
   private authService = inject(AuthService);
   private postId = this.activatedRoute.snapshot.paramMap.get('id') as string;
   public post = signal<Post | null>(null);
   public isLoading = signal(false);
   public isError = signal(false);
   public isAuthor = computed<boolean>(
-    () => this.post()?.author.id === this.authService.getUser()?.sub
+    () => this.post()?.author.id === this.authService.getUser()?.sub,
   );
 
   public ngOnInit() {

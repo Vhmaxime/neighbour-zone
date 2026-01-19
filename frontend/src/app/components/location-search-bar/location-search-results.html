@@ -1,0 +1,16 @@
+<ul
+  class="bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto w-full"
+>
+  @if (locations().length === 0) {
+    <li class="px-4 py-2 text-gray-500 text-sm">No results found.</li>
+  } @else {
+    @for (place of locations(); track place.place_id) {
+      <li
+        (click)="onSelectLocation(place)"
+        class="px-4 py-2 cursor-pointer hover:bg-blue-100 transition-colors text-sm text-gray-700"
+      >
+        {{ place.display_name }}
+      </li>
+    }
+  }
+</ul>

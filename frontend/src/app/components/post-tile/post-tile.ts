@@ -1,6 +1,6 @@
 import { Component, output, input, inject } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { RouterLink, Router} from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
 import { Post as P } from '../../types/api.types';
 import { LikeButton } from '../like-button/like-button';
 import { ActionButton } from '../../components/action-button/action-button';
@@ -20,10 +20,5 @@ export class PostTile {
   public viewPost() {
     console.log('Navigating to post:', this.post().id);
     this.router.navigate(['/post', this.post().id]);
-  }
-
-  // Helper method to bridge the action from the child component to the feed
-  public onPostDeleted(id: string) {
-    this.deleted.emit(id);
   }
 }

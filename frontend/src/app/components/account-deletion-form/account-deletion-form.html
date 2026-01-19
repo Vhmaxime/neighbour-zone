@@ -1,0 +1,43 @@
+@if (!showConfirmation()) {
+<div class="danger-card">
+    <div class="danger-text">
+        <button type="button" class="btn-danger" (click)="initiateDelete()">Delete Account</button>
+        <span class="danger-desc">
+            Once you delete your account, all data will be permanently removed
+        </span>
+    </div>
+</div>
+} @else {
+<div class="danger-card" style="flex-direction: column; align-items: flex-start; gap: 16px;">
+
+    @if (isError()){
+    <div class="p-2 w-full mb-2 text-red-800 bg-red-100 border border-red-200 rounded-lg text-sm">
+        {{ isError() }}
+    </div>
+    }
+
+    <p class="text-red-600 text-sm font-bold">
+        Are you sure? This action cannot be undone.
+    </p>
+
+    <form [formGroup]="deleteForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-4 w-full">
+        <div class="flex flex-col">
+            <label class="text-xs font-bold text-red-800 mb-1" for="confirmation">
+                Type <strong>DELETE</strong> to confirm
+            </label>
+            <input id="confirmation" type="text" formControlName="confirmation" placeholder="DELETE"
+                class="border border-red-300 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-red-500 bg-white" />
+        </div>
+
+        <div class="flex gap-3">
+            <button type="submit" [disabled]="deleteForm.invalid || isLoading()" class="btn-danger">
+                @if (isLoading()) { Deleting... } @else { Confirm Delete }
+            </button>
+            <button type="button" (click)="cancelDelete()"
+                class="bg-white border border-gray-300 text-gray-700 rounded-lg px-4 py-2 font-medium hover:bg-gray-50 transition-colors text-sm">
+                Cancel
+            </button>
+        </div>
+    </form>
+</div>
+}
