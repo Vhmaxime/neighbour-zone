@@ -4,7 +4,7 @@ import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth';
 import { Router, RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
-import { PasswordValidation } from '../../password-validation/password-validation';
+import { PasswordValidation } from '../../components/password-validation/password-validation';
 
 @Component({
   selector: 'app-register',
