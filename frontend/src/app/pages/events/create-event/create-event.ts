@@ -25,6 +25,7 @@ export class CreateEvent {
   private nominatimService = inject(NominatimService);
 
   // State signals
+  public isSubmitting = signal<boolean>(false);
   public isLoading = signal<boolean>(false);
   public isSuccess = signal<boolean>(false);
   public error = signal<string | null>(null);
@@ -74,13 +75,13 @@ export class CreateEvent {
       return;
     }
 
-    this.isLoading.set(true);
+    this.isSubmitting.set(true);
     this.error.set(null);
     this.isSuccess.set(false);
 
     if (!place) {
       this.error.set('Please search for a location and select one from the list.');
-      this.isLoading.set(false);
+      this.isSubmitting.set(false);
       return;
     }
 
@@ -105,7 +106,7 @@ export class CreateEvent {
         console.error('Submission Error:', error);
       })
       .finally(() => {
-        this.isLoading.set(false);
+        this.isSubmitting.set(false);
       });
   }
 
