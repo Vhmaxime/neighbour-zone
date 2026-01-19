@@ -1,11 +1,11 @@
 <div class="bg-red-500 text-white p-4 mb-4">
   <p>HTML Debugger:</p>
-  <p>Inbox Length: {{ inbox.length }}</p>
+  <p>Inbox Length: {{ inbox()?.count }}</p>
   <pre>{{ inbox | json }}</pre>
 </div>
 
 <div
-  class="flex h-[600px] w-full max-w-5xl mx-auto border border-gray-700 bg-gray-900 text-gray-100 rounded-lg overflow-hidden shadow-xl"
+  class="flex h-150 w-full max-w-5xl mx-auto border border-gray-700 bg-gray-900 text-gray-100 rounded-lg overflow-hidden shadow-xl"
 >
   <div class="w-1/3 border-r border-gray-700 flex flex-col">
     <div class="p-4 border-b border-gray-700 bg-gray-800">
@@ -16,9 +16,9 @@
       @if (inbox(); as inbox) {
         @for (convo of inbox.conversations; track convo.id) {
           <div
-            (click)="selectThread(convo.id)"
+            (click)="loadThread(convo.id)"
             class="p-4 border-b border-gray-800 cursor-pointer hover:bg-gray-700 transition-colors"
-            [class.bg-gray-800]="selectedId === convo.id"
+            [class.bg-gray-800]="activeThread()?.id === convo.id"
           >
             <div class="font-bold text-blue-400">
               {{ getOtherUserName(convo) }}
@@ -36,10 +36,13 @@
   </div>
 
   <div class="w-2/3 flex flex-col bg-gray-900">
-    @if (activeThread) {
+    @if (activeThread(); as activeThread) {
       <div class="p-4 border-b border-gray-700 bg-gray-800 flex justify-between items-center">
         <h3 class="font-bold text-white">Conversation with {{ getOtherUserName(activeThread) }}</h3>
-        <button (click)="refreshThread()" class="text-sm text-gray-400 hover:text-white underline">
+        <button
+          (click)="loadThread(activeThread.id)"
+          class="text-sm text-gray-400 hover:text-white underline"
+        >
           Refresh
         </button>
       </div>
@@ -69,14 +72,14 @@
       <div class="p-4 bg-gray-800 border-t border-gray-700">
         <div class="flex gap-2">
           <textarea
-            [(ngModel)]="replyText"
+            [(ngModel)]="message"
             rows="2"
             class="flex-1 bg-gray-900 border border-gray-600 rounded p-2 text-white focus:border-blue-500 outline-none resize-none"
             placeholder="Write a reply..."
           ></textarea>
           <button
-            (click)="sendReply()"
-            [disabled]="!replyText.trim()"
+            (click)="handleSend()"
+            [disabled]="!message.trim()"
             class="bg-blue-600 hover:bg-blue-500 disabled:bg-gray-600 text-white px-6 rounded font-bold"
           >
             Send
