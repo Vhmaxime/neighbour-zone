@@ -118,7 +118,7 @@ export interface CreateEventRequest {
 
 export interface CreateMarketplaceItemRequest {
   title: string;
-  description: string;
+  description?: string;
   price?: number;
   placeDisplayName: string;
   placeId: number;
