@@ -1,25 +1,24 @@
-import { Component, inject, signal} from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
-import { PostService } from '../../../services/post'; 
+import { PostService } from '../../../services/post';
 import { firstValueFrom } from 'rxjs';
 import { ActionButton } from '../../../components/action-button/action-button';
+import { LoadingComponent } from '../../../components/loading-component/loading-component';
 
 @Component({
   selector: 'app-edit-post',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, ActionButton],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, ActionButton, LoadingComponent],
   templateUrl: './edit-post.html',
   styleUrl: './edit-post.css',
 })
 export class EditPost {
-
   private fb = inject(FormBuilder);
   private postService = inject(PostService);
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
-
 
   private postId = this.activatedRoute.snapshot.paramMap.get('id') as string;
 
@@ -32,7 +31,7 @@ export class EditPost {
   public editForm = this.fb.group({
     title: ['', [Validators.required, Validators.minLength(3)]],
     content: ['', [Validators.required, Validators.minLength(10)]],
-    type: ['news', [Validators.required]]
+    type: ['news', [Validators.required]],
   });
 
   constructor() {
@@ -51,13 +50,13 @@ export class EditPost {
 
       // TIMEOUT FIX: If backend takes > 3s, stop spinning
       const fetchPromise = firstValueFrom(this.postService.getPost(this.postId));
-      const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Timeout')), 3000)
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Timeout')), 3000),
       );
 
       // Race the fetch against the clock
       const response: any = await Promise.race([fetchPromise, timeoutPromise]);
-      
+
       // Handle { post: ... } vs raw response
       const postData = response.post || response;
 
@@ -70,7 +69,7 @@ export class EditPost {
         this.editForm.patchValue({
           title: postData.title,
           content: postData.content,
-          type: postData.type
+          type: postData.type,
         });
       }
     } catch (err) {
@@ -86,9 +85,7 @@ export class EditPost {
 
     this.isSaving.set(true);
     try {
-      await firstValueFrom(
-        this.postService.updatePost(this.postId, this.editForm.value as any)
-      );
+      await firstValueFrom(this.postService.updatePost(this.postId, this.editForm.value as any));
       this.router.navigate(['/feed']);
     } catch (err) {
       console.error('Update failed:', err);
@@ -100,5 +97,4 @@ export class EditPost {
   onPostDeleted(id: string) {
     this.router.navigate(['/feed']);
   }
-
 }

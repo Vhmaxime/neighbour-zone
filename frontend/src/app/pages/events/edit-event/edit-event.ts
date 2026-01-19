@@ -8,11 +8,12 @@ import { CreateEventRequest } from '../../../types/api.types';
 import { AuthService } from '../../../services/auth';
 import { ActionButton } from '../../../components/action-button/action-button';
 import { BackButton } from '../../../components/back-button/back-button';
+import { LoadingComponent } from '../../../components/loading-component/loading-component';
 
 @Component({
   selector: 'app-edit-event',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, ActionButton, BackButton],
+  imports: [CommonModule, FormsModule, RouterLink, ActionButton, BackButton, LoadingComponent],
   templateUrl: './edit-event.html',
   styleUrl: './edit-event.html',
 })
