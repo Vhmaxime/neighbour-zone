@@ -50,7 +50,7 @@ export interface Post {
 export interface Event {
   id: string;
   title: string;
-  description: string;
+  description?: string;
   placeDisplayName: string;
   placeId: number;
   lat: string;
@@ -107,7 +107,7 @@ export interface CreatePostRequest {
 
 export interface CreateEventRequest {
   title: string;
-  description: string;
+  description?: string;
   placeDisplayName: string;
   placeId: number;
   lat: string;

@@ -2,13 +2,13 @@ import { Component, inject, signal } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
-import { Event } from '../../types/api.types';
+import { Event } from '../../../types/api.types';
 import { Title } from '@angular/platform-browser';
-import { EventService } from '../../services/event';
-import { BackButton } from '../../components/back-button/back-button';
-import { ActionButton } from '../../components/action-button/action-button';
-import { LikeButton } from '../../components/like-button/like-button';
-import { LoadingComponent } from '../../components/loading-component/loading-component';
+import { EventService } from '../../../services/event';
+import { BackButton } from '../../../components/back-button/back-button';
+import { ActionButton } from '../../../components/action-button/action-button';
+import { LikeButton } from '../../../components/like-button/like-button';
+import { LoadingComponent } from '../../../components/loading-component/loading-component';
 
 @Component({
   selector: 'app-event-details',
