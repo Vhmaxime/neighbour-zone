@@ -83,11 +83,6 @@ export const relations = defineRelations(schema, (r) => ({
       to: r.usersTable.id,
       optional: false,
     }),
-    marketplaceItem: r.one.marketplaceItemsTable({
-      from: r.conversationsTable.marketplaceItemId,
-      to: r.marketplaceItemsTable.id,
-      optional: false,
-    }),
   },
   messagesTable: {
     sender: r.one.usersTable({

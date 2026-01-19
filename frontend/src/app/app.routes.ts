@@ -16,6 +16,7 @@ import { CreateEvent } from './pages/events/create-event/create-event';
 import { Marketplace } from './pages/marketplace/marketplace';
 import { CreateItem } from './pages/marketplace/create-item/create-item';
 import { CreatePost } from './pages/posts/create-post/create-post';
+import { MailView } from './pages/mail-view/mail-view';
 
 export const routes: Routes = [
   { path: 'not-found', title: '404 - Page Not Found | Neighbour Zone', component: NotFound },
@@ -49,6 +50,8 @@ export const routes: Routes = [
       { path: 'explore', title: 'Explore | Neighbour Zone', component: Explore },
       { path: 'feed', title: 'Feed | Neighbour Zone', component: Feed },
       { path: 'settings', title: 'Settings | Neighbour Zone', component: Settings },
+      { path: 'messages', title: 'Inbox | Neighbour Zone', component: MailView },
+      { path: 'messages/:id', title: 'Chat | Neighbour Zone', component: MailView }, // Specific chat page
       { path: 'user/:id', loadComponent: () => import('./pages/user/user').then((m) => m.User) },
       {
         path: 'events',

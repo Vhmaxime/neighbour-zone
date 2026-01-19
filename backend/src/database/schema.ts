@@ -9,7 +9,6 @@ import {
   real,
   integer,
 } from "drizzle-orm/pg-core";
-import { send } from "node:process";
 
 export const userRoleEnum = pgEnum("user_role", ["user", "admin"]);
 
@@ -103,9 +102,6 @@ export const conversationsTable = pgTable("conversations", {
   participant2Id: uuid("participant_2_id")
     .notNull()
     .references(() => usersTable.id, { onDelete: "cascade" }),
-  marketplaceItemId: uuid("marketplace_item_id")
-    .notNull()
-    .references(() => marketplaceItemsTable.id, { onDelete: "cascade" }),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 

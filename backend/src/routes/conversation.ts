@@ -3,7 +3,7 @@ import { Variables } from "../types/index.js";
 import authMiddleware from "../middleware/auth.js";
 import { db } from "../database/index.js";
 import { zValidator } from "@hono/zod-validator";
-import { conversationSchema } from "../schemas/conversationSchema.js";
+import { conversationSchema } from "../schemas/conversation.js";
 import { conversationsTable, messagesTable } from "../database/schema.js";
 import { idSchema } from "../schemas/index.js";
 import { and, eq, or } from "drizzle-orm";
@@ -36,16 +36,6 @@ conversationRouter.get("/", async (c) => {
       id: true,
     },
     with: {
-      marketplaceItem: {
-        columns: {
-          id: true,
-          title: true,
-          price: true,
-          placeDisplayName: true,
-          category: true,
-          description: true,
-        },
-      },
       participant1: {
         columns: {
           id: true,
@@ -79,14 +69,13 @@ conversationRouter.post(
   async (c) => {
     const { sub: userId } = c.get("jwtPayload");
 
-    const { participantId, marketplaceItemId } = c.req.valid("json");
+    const { participantId } = c.req.valid("json");
 
     const [newConversation] = await db
       .insert(conversationsTable)
       .values({
         participant1Id: userId,
         participant2Id: participantId,
-        marketplaceItemId,
       })
       .returning();
 
@@ -96,16 +85,6 @@ conversationRouter.post(
         id: true,
       },
       with: {
-        marketplaceItem: {
-          columns: {
-            id: true,
-            title: true,
-            price: true,
-            placeDisplayName: true,
-            category: true,
-            description: true,
-          },
-        },
         participant1: {
           columns: {
             id: true,
@@ -122,7 +101,7 @@ conversationRouter.post(
     });
 
     return c.json({ conversation }, 201);
-  }
+  },
 );
 
 // Get a specific conversation by ID
@@ -146,16 +125,6 @@ conversationRouter.get(
         id: true,
       },
       with: {
-        marketplaceItem: {
-          columns: {
-            id: true,
-            title: true,
-            price: true,
-            placeDisplayName: true,
-            category: true,
-            description: true,
-          },
-        },
         participant1: {
           columns: {
             id: true,
@@ -193,7 +162,7 @@ conversationRouter.get(
     }
 
     return c.json({ conversation }, 200);
-  }
+  },
 );
 
 conversationRouter.delete(
@@ -230,7 +199,7 @@ conversationRouter.delete(
       .where(eq(conversationsTable.id, conversation.id));
 
     return c.json({ message: "ok" }, 200);
-  }
+  },
 );
 
 conversationRouter.post(
@@ -276,7 +245,7 @@ conversationRouter.post(
     });
 
     return c.json({ message: "ok" }, 201);
-  }
+  },
 );
 
 export default conversationRouter;
