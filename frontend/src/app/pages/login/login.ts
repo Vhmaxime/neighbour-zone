@@ -13,45 +13,53 @@ import { firstValueFrom } from 'rxjs';
   styleUrls: ['./login.css'],
 })
 export class Login {
+  // Inject dependencies
   private formBuilder = inject(FormBuilder);
   private authService = inject(AuthService);
   private router = inject(Router);
+
+  // Form definition
   public loginForm = this.formBuilder.nonNullable.group({
     email: ['', [Validators.required]],
     password: ['', [Validators.required]],
     rememberMe: [false, [Validators.required]],
   });
+
+  // State signals
   public isLoading = signal<boolean>(false);
   public error = signal<string | null>(null);
   public isSuccess = signal<boolean>(false);
 
+  // Form submission handler
   public onSubmit() {
     const { email, password, rememberMe } = this.loginForm.value;
+
     if (this.loginForm.invalid || !email || !password) {
       return;
     }
+
     this.isLoading.set(true);
+    this.error.set(null);
+    this.isSuccess.set(false);
+
     firstValueFrom(
       this.authService.login({
         email,
         password,
         rememberMe,
-      })
+      }),
     )
       .then(() => {
         this.isSuccess.set(true);
-        this.error.set(null);
         this.router.navigate(['/explore']);
       })
       .catch((error) => {
         if (error.error.message) {
           this.error.set(error.error.message);
-          this.isSuccess.set(false);
           return;
         }
         console.error('Error logging in:', error);
         this.error.set('An unexpected error occurred. Please try again.');
-        this.isSuccess.set(false);
       })
       .finally(() => {
         this.isLoading.set(false);
