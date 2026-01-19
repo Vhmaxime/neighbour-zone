@@ -12,171 +12,182 @@
     An error occurred while updating your profile. Please try again.
   </div>
 }
-
-<form
-  class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full"
-  [formGroup]="profileForm"
-  (ngSubmit)="onSubmit()"
->
-  <div class="flex flex-col mb-4">
-    <label
-      class="text-sm font-medium text-gray-700 mb-1 [.invalid]:text-red-500!"
-      [class.invalid]="
-        profileForm.get('firstname')?.invalid && profileForm.get('firstname')?.touched
-      "
-      for="firstname"
-      >First name</label
-    >
-    <input
-      id="firstname"
-      type="text"
-      formControlName="firstname"
-      [class.invalid]="
-        profileForm.get('firstname')?.invalid && profileForm.get('firstname')?.touched
-      "
-      class="border [.invalid]:border-red-500! [.invalid]:ring-red-500! [.invalid]:text-red-500! border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-    />
-    @if (profileForm.get('firstname')?.invalid && profileForm.get('firstname')?.touched) {
-      @if (profileForm.get('firstname')?.errors?.['required']) {
-        <span class="text-red-500 text-sm">required</span>
-      }
-      @if (profileForm.get('firstname')?.errors?.['minlength']) {
-        <span class="text-red-500 text-sm">minimal 2 characters</span>
-      }
-      @if (profileForm.get('firstname')?.errors?.['maxlength']) {
-        <span class="text-red-500 text-sm">maximal 30 characters</span>
-      }
-    }
-  </div>
-
-  <div class="flex flex-col mb-4">
-    <label
-      class="text-sm font-medium text-gray-700 mb-1 [.invalid]:text-red-500!"
-      [class.invalid]="profileForm.get('lastname')?.invalid && profileForm.get('lastname')?.touched"
-      for="lastname"
-      >Last name</label
-    >
-    <input
-      id="lastname"
-      type="text"
-      formControlName="lastname"
-      [class.invalid]="profileForm.get('lastname')?.invalid && profileForm.get('lastname')?.touched"
-      class="border [.invalid]:border-red-500! [.invalid]:ring-red-500! [.invalid]:text-red-500! border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-    />
-    @if (profileForm.get('lastname')?.invalid && profileForm.get('lastname')?.touched) {
-      @if (profileForm.get('lastname')?.errors?.['required']) {
-        <span class="text-red-500 text-sm">required</span>
-      } @else if (profileForm.get('lastname')?.errors?.['minlength']) {
-        <span class="text-red-500 text-sm">minimal 2 characters</span>
-      } @else if (profileForm.get('lastname')?.errors?.['maxlength']) {
-        <span class="text-red-500 text-sm">maximal 30 characters</span>
-      }
-    }
-  </div>
-
-  <div class="flex flex-col mb-4">
-    <label
-      class="text-sm font-medium text-gray-700 mb-1 [.invalid]:text-red-500!"
-      [class.invalid]="profileForm.get('username')?.invalid && profileForm.get('username')?.touched"
-      for="username"
-      >Username</label
-    >
-    <input
-      id="username"
-      type="text"
-      formControlName="username"
-      [class.invalid]="profileForm.get('username')?.invalid && profileForm.get('username')?.touched"
-      class="border [.invalid]:border-red-500! [.invalid]:ring-red-500! [.invalid]:text-red-500! border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-    />
-    @if (profileForm.get('username')?.invalid && profileForm.get('username')?.touched) {
-      @if (profileForm.get('username')?.errors?.['required']) {
-        <span class="text-red-500 text-sm">required</span>
-      } @else if (profileForm.get('username')?.errors?.['minlength']) {
-        <span class="text-red-500 text-sm">minimal 2 characters</span>
-      } @else if (profileForm.get('username')?.errors?.['maxlength']) {
-        <span class="text-red-500 text-sm">maximal 30 characters</span>
-      }
-    }
-  </div>
-
-  <div class="flex flex-col mb-4">
-    <label
-      class="text-sm font-medium text-gray-700 mb-1 [.invalid]:text-red-500!"
-      [class.invalid]="profileForm.get('email')?.invalid && profileForm.get('email')?.touched"
-      for="email"
-      >Email</label
-    >
-    <input
-      id="email"
-      type="email"
-      formControlName="email"
-      [class.invalid]="profileForm.get('email')?.invalid && profileForm.get('email')?.touched"
-      class="border [.invalid]:border-red-500! [.invalid]:ring-red-500! [.invalid]:text-red-500! border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-    />
-    @if (profileForm.get('email')?.invalid && profileForm.get('email')?.touched) {
-      @if (profileForm.get('email')?.errors?.['required']) {
-        <span class="text-red-500 text-sm">required</span>
-      } @else if (profileForm.get('email')?.errors?.['email']) {
-        <span class="text-red-500 text-sm">invalid email</span>
-      }
-    }
-  </div>
-
-  <div class="flex flex-col mb-4">
-    <label
-      class="text-sm font-medium text-gray-700 mb-1 [.invalid]:text-red-500!"
-      [class.invalid]="
-        profileForm.get('phoneNumber')?.invalid && profileForm.get('phoneNumber')?.touched
-      "
-      for="phoneNumber"
-      >Phone number</label
-    >
-    <input
-      id="phoneNumber"
-      type="tel"
-      formControlName="phoneNumber"
-      [class.invalid]="
-        profileForm.get('phoneNumber')?.invalid && profileForm.get('phoneNumber')?.touched
-      "
-      class="border [.invalid]:border-red-500! [.invalid]:ring-red-500! [.invalid]:text-red-500! border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-    />
-    @if (profileForm.get('phoneNumber')?.invalid && profileForm.get('phoneNumber')?.touched) {
-      @if (profileForm.get('phoneNumber')?.errors?.['minlength']) {
-        <span class="text-red-500 text-sm">minimal 10 characters</span>
-      } @else if (profileForm.get('phoneNumber')?.errors?.['maxlength']) {
-        <span class="text-red-500 text-sm">maximal 15 characters</span>
-      }
-    }
-  </div>
-
-  <div class="flex flex-col mb-4 col-span-1 md:col-span-2">
-    <label
-      class="text-sm font-medium text-gray-700 mb-1 [.invalid]:text-red-500!"
-      [class.invalid]="profileForm.get('bio')?.invalid && profileForm.get('bio')?.touched"
-      for="bio"
-      >Bio</label
-    >
-    <textarea
-      id="bio"
-      rows="4"
-      formControlName="bio"
-      [class.invalid]="profileForm.get('bio')?.invalid && profileForm.get('bio')?.touched"
-      class="border [.invalid]:border-red-500! [.invalid]:ring-red-500! [.invalid]:text-red-500! border-gray-300 rounded-lg px-3 py-2 min-h-25 resize-y focus:outline-none focus:ring-2 focus:ring-blue-500"
-    ></textarea>
-    <div class="text-right text-xs text-gray-400 mt-1">
-      {{ profileForm.get('bio')?.value?.length || 0 }} / {{ 160 }} characters
-    </div>
-    @if (profileForm.get('bio')?.invalid && profileForm.get('bio')?.touched) {
-      @if (profileForm.get('bio')?.errors?.['maxlength']) {
-        <span class="text-red-500 text-sm">maximal 160 characters</span>
-      }
-    }
-  </div>
-  <button
-    type="submit"
-    [disabled]="!profileForm.valid || isLoading()"
-    class="border-(--accent)! w-56 enabled:hover:text-(--accent)! border-2! enabled:hover:bg-transparent! rounded-lg! px-4! py-2! disabled:opacity-50! disabled:cursor-not-allowed! transition-all! bg-accent! text-white! font-medium!"
+@if (isLoading()) {
+  <app-loading-component class="mr-2" />
+} @else {
+  <form
+    class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full"
+    [formGroup]="profileForm"
+    (ngSubmit)="onSubmit()"
   >
-    Save
-  </button>
-</form>
+    <div class="flex flex-col mb-4">
+      <label
+        class="text-sm font-medium text-gray-700 mb-1 [.invalid]:text-red-500!"
+        [class.invalid]="
+          profileForm.get('firstname')?.invalid && profileForm.get('firstname')?.touched
+        "
+        for="firstname"
+        >First name</label
+      >
+      <input
+        id="firstname"
+        type="text"
+        formControlName="firstname"
+        [class.invalid]="
+          profileForm.get('firstname')?.invalid && profileForm.get('firstname')?.touched
+        "
+        class="border [.invalid]:border-red-500! [.invalid]:ring-red-500! [.invalid]:text-red-500! border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+      @if (profileForm.get('firstname')?.invalid && profileForm.get('firstname')?.touched) {
+        @if (profileForm.get('firstname')?.errors?.['required']) {
+          <span class="text-red-500 text-sm">required</span>
+        }
+        @if (profileForm.get('firstname')?.errors?.['minlength']) {
+          <span class="text-red-500 text-sm">minimal 2 characters</span>
+        }
+        @if (profileForm.get('firstname')?.errors?.['maxlength']) {
+          <span class="text-red-500 text-sm">maximal 30 characters</span>
+        }
+      }
+    </div>
+
+    <div class="flex flex-col mb-4">
+      <label
+        class="text-sm font-medium text-gray-700 mb-1 [.invalid]:text-red-500!"
+        [class.invalid]="
+          profileForm.get('lastname')?.invalid && profileForm.get('lastname')?.touched
+        "
+        for="lastname"
+        >Last name</label
+      >
+      <input
+        id="lastname"
+        type="text"
+        formControlName="lastname"
+        [class.invalid]="
+          profileForm.get('lastname')?.invalid && profileForm.get('lastname')?.touched
+        "
+        class="border [.invalid]:border-red-500! [.invalid]:ring-red-500! [.invalid]:text-red-500! border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+      @if (profileForm.get('lastname')?.invalid && profileForm.get('lastname')?.touched) {
+        @if (profileForm.get('lastname')?.errors?.['required']) {
+          <span class="text-red-500 text-sm">required</span>
+        } @else if (profileForm.get('lastname')?.errors?.['minlength']) {
+          <span class="text-red-500 text-sm">minimal 2 characters</span>
+        } @else if (profileForm.get('lastname')?.errors?.['maxlength']) {
+          <span class="text-red-500 text-sm">maximal 30 characters</span>
+        }
+      }
+    </div>
+
+    <div class="flex flex-col mb-4">
+      <label
+        class="text-sm font-medium text-gray-700 mb-1 [.invalid]:text-red-500!"
+        [class.invalid]="
+          profileForm.get('username')?.invalid && profileForm.get('username')?.touched
+        "
+        for="username"
+        >Username</label
+      >
+      <input
+        id="username"
+        type="text"
+        formControlName="username"
+        [class.invalid]="
+          profileForm.get('username')?.invalid && profileForm.get('username')?.touched
+        "
+        class="border [.invalid]:border-red-500! [.invalid]:ring-red-500! [.invalid]:text-red-500! border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+      @if (profileForm.get('username')?.invalid && profileForm.get('username')?.touched) {
+        @if (profileForm.get('username')?.errors?.['required']) {
+          <span class="text-red-500 text-sm">required</span>
+        } @else if (profileForm.get('username')?.errors?.['minlength']) {
+          <span class="text-red-500 text-sm">minimal 2 characters</span>
+        } @else if (profileForm.get('username')?.errors?.['maxlength']) {
+          <span class="text-red-500 text-sm">maximal 30 characters</span>
+        }
+      }
+    </div>
+
+    <div class="flex flex-col mb-4">
+      <label
+        class="text-sm font-medium text-gray-700 mb-1 [.invalid]:text-red-500!"
+        [class.invalid]="profileForm.get('email')?.invalid && profileForm.get('email')?.touched"
+        for="email"
+        >Email</label
+      >
+      <input
+        id="email"
+        type="email"
+        formControlName="email"
+        [class.invalid]="profileForm.get('email')?.invalid && profileForm.get('email')?.touched"
+        class="border [.invalid]:border-red-500! [.invalid]:ring-red-500! [.invalid]:text-red-500! border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+      @if (profileForm.get('email')?.invalid && profileForm.get('email')?.touched) {
+        @if (profileForm.get('email')?.errors?.['required']) {
+          <span class="text-red-500 text-sm">required</span>
+        } @else if (profileForm.get('email')?.errors?.['email']) {
+          <span class="text-red-500 text-sm">invalid email</span>
+        }
+      }
+    </div>
+
+    <div class="flex flex-col mb-4">
+      <label
+        class="text-sm font-medium text-gray-700 mb-1 [.invalid]:text-red-500!"
+        [class.invalid]="
+          profileForm.get('phoneNumber')?.invalid && profileForm.get('phoneNumber')?.touched
+        "
+        for="phoneNumber"
+        >Phone number</label
+      >
+      <input
+        id="phoneNumber"
+        type="tel"
+        formControlName="phoneNumber"
+        [class.invalid]="
+          profileForm.get('phoneNumber')?.invalid && profileForm.get('phoneNumber')?.touched
+        "
+        class="border [.invalid]:border-red-500! [.invalid]:ring-red-500! [.invalid]:text-red-500! border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+      @if (profileForm.get('phoneNumber')?.invalid && profileForm.get('phoneNumber')?.touched) {
+        @if (profileForm.get('phoneNumber')?.errors?.['minlength']) {
+          <span class="text-red-500 text-sm">minimal 10 characters</span>
+        } @else if (profileForm.get('phoneNumber')?.errors?.['maxlength']) {
+          <span class="text-red-500 text-sm">maximal 15 characters</span>
+        }
+      }
+    </div>
+
+    <div class="flex flex-col mb-4 col-span-1 md:col-span-2">
+      <label
+        class="text-sm font-medium text-gray-700 mb-1 [.invalid]:text-red-500!"
+        [class.invalid]="profileForm.get('bio')?.invalid && profileForm.get('bio')?.touched"
+        for="bio"
+        >Bio</label
+      >
+      <textarea
+        id="bio"
+        rows="4"
+        formControlName="bio"
+        [class.invalid]="profileForm.get('bio')?.invalid && profileForm.get('bio')?.touched"
+        class="border [.invalid]:border-red-500! [.invalid]:ring-red-500! [.invalid]:text-red-500! border-gray-300 rounded-lg px-3 py-2 min-h-25 resize-y focus:outline-none focus:ring-2 focus:ring-blue-500"
+      ></textarea>
+      <div class="text-right text-xs text-gray-400 mt-1">
+        {{ profileForm.get('bio')?.value?.length || 0 }} / {{ 160 }} characters
+      </div>
+      @if (profileForm.get('bio')?.invalid && profileForm.get('bio')?.touched) {
+        @if (profileForm.get('bio')?.errors?.['maxlength']) {
+          <span class="text-red-500 text-sm">maximal 160 characters</span>
+        }
+      }
+    </div>
+    <button
+      type="submit"
+      [disabled]="!profileForm.valid || isSubmitting()"
+      class="border-(--accent)! w-56 enabled:hover:text-(--accent)! border-2! enabled:hover:bg-transparent! rounded-lg! px-4! py-2! disabled:opacity-50! disabled:cursor-not-allowed! transition-all! bg-accent! text-white! font-medium!"
+    >
+      Save
+    </button>
+  </form>
+}

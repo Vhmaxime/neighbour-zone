@@ -4,7 +4,7 @@ import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angu
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { debounceTime, distinctUntilChanged, filter, firstValueFrom, switchMap } from 'rxjs';
 import { EventService } from '../../../services/event';
-import { CreateEventRequest, Event } from '../../../types/api.types';
+import { Event } from '../../../types/api.types';
 import { AuthService } from '../../../services/auth';
 import { ActionButton } from '../../../components/action-button/action-button';
 import { BackButton } from '../../../components/back-button/back-button';
@@ -49,6 +49,7 @@ export class EditEvent {
   public place = signal<NominatimLocation | null>(null);
 
   // State signals
+  public isSubmitting = signal(false);
   public isLoading = signal(true);
   public error = signal<string | null>(null);
   public isSuccess = signal(false);
@@ -69,9 +70,7 @@ export class EditEvent {
   });
 
   public ngOnInit() {
-    this.isLoading.set(true);
     this.loadEvent();
-    this.isLoading.set(false);
 
     this.eventForm.controls.placeDisplayName.valueChanges
       .pipe(
@@ -90,6 +89,7 @@ export class EditEvent {
   private loadEvent() {
     this.isLoading.set(true);
     this.error.set(null);
+    this.isSuccess.set(false);
 
     firstValueFrom(this.eventService.getEvent(this.eventId))
       .then(({ event }) => {
@@ -142,13 +142,13 @@ export class EditEvent {
       return;
     }
 
-    this.isLoading.set(true);
+    this.isSubmitting.set(true);
     this.error.set(null);
     this.isSuccess.set(false);
 
     if (!place) {
       this.error.set('Please search for a location and select one from the list.');
-      this.isLoading.set(false);
+      this.isSubmitting.set(false);
       return;
     }
 
@@ -173,7 +173,7 @@ export class EditEvent {
         console.error('Submission Error:', error);
       })
       .finally(() => {
-        this.isLoading.set(false);
+        this.isSubmitting.set(false);
       });
   }
 
