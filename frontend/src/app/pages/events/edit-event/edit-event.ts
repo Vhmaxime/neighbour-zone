@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { debounceTime, distinctUntilChanged, filter, firstValueFrom, switchMap } from 'rxjs';
@@ -35,6 +35,7 @@ export class EditEvent {
   private eventService = inject(EventService);
   private activatedRoute = inject(ActivatedRoute);
   private router = inject(Router);
+  private location = inject(Location);
   private authService = inject(AuthService);
   private formBuilder = inject(FormBuilder);
   private titleService = inject(Title);
@@ -94,12 +95,12 @@ export class EditEvent {
     firstValueFrom(this.eventService.getEvent(this.eventId))
       .then(({ event }) => {
         if (this.user?.sub !== event.organizer.id) {
-          this.router.navigate(['/events', this.eventId]);
+          this.router.navigate(['/not-found']);
           return;
         }
         this.event.set(event);
         this.setFormValues(event);
-        this.titleService.setTitle(event.title);
+        this.titleService.setTitle(`Edit Event - ${event.title}`);
       })
       .catch((err) => {
         if (err.status === 404) {
@@ -164,9 +165,9 @@ export class EditEvent {
         placeId: place.place_id,
       }),
     )
-      .then(({ event }) => {
+      .then(() => {
         this.isSuccess.set(true);
-        this.router.navigate(['/events', event.id]);
+        this.location.back();
       })
       .catch((error) => {
         this.error.set('Failed to create event. Please try again later.');
@@ -178,7 +179,7 @@ export class EditEvent {
   }
 
   public onEventDeleted() {
-    this.router.navigate(['/events']);
+    this.location.back();
   }
 
   // Location selection handler
