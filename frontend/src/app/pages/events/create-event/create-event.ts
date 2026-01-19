@@ -31,8 +31,8 @@ export class CreateEvent {
   public place = signal<NominatimLocation | null>(null);
 
   public eventForm = this.formBuilder.nonNullable.group({
-    title: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(100)]],
-    description: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(300)]],
+    title: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
+    description: ['', [Validators.maxLength(150)]],
     placeDisplayName: [
       '',
       [Validators.required, Validators.minLength(1), Validators.maxLength(100)],
