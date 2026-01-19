@@ -1,17 +1,18 @@
-import { Component, inject, signal, computed,OnInit } from '@angular/core';
+import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { DatePipe, Location, CurrencyPipe } from '@angular/common';
-import { ActivatedRoute, Router, RouterLink} from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { MarketplaceItem } from '../../types/api.types';
 import { MarketplaceService } from '../../services/marketplace';
 import { AuthService } from '../../services/auth';
 import { BackButton } from '../../components/back-button/back-button';
 import { ActionButton } from '../../components/action-button/action-button';
+import { LoadingComponent } from '../../components/loading-component/loading-component';
 
 @Component({
   selector: 'app-marketplace-details',
   standalone: true,
-  imports: [RouterLink, CurrencyPipe, DatePipe, BackButton, ActionButton],
+  imports: [RouterLink, CurrencyPipe, DatePipe, BackButton, ActionButton, LoadingComponent],
   templateUrl: './marketplace-details.html',
   styleUrl: './marketplace-details.css',
 })
@@ -29,7 +30,7 @@ export class MarketplaceDetails {
   public isError = signal(false);
 
   public isAuthor = computed<boolean>(
-    () => this.item()?.provider.id === this.authService.getUser()?.sub
+    () => this.item()?.provider.id === this.authService.getUser()?.sub,
   );
 
   ngOnInit() {
