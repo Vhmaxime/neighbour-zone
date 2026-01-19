@@ -1,38 +1,53 @@
 <div class="edit-container">
   @if (isLoading()) {
     <div class="loading">Loading event data...</div>
-  } 
-  
-  @else if (eventSource(); as e) {
-    <a routerLink="/events" class="text-blue-600 hover:underline text-sm mb-2 inline-block">&larr; Back to Events</a>
+
+  } @else if (eventSource(); as e) {
+    <app-back-button />
     <h2>Edit Event</h2>
 
     <form (ngSubmit)="onSubmit()" #editForm="ngForm">
       <div class="form-group">
         <label for="title">Title</label>
-        <input type="text" id="title" name="title" [(ngModel)]="eventData.title" required>
+        <input type="text" id="title" name="title" [(ngModel)]="eventData.title" required />
       </div>
 
       <div class="form-group">
         <label for="location">Location</label>
-        <input type="text" id="location" name="location" [(ngModel)]="eventData.placeDisplayName" required>
+        <input
+          type="text"
+          id="location"
+          name="location"
+          [(ngModel)]="eventData.placeDisplayName"
+          required
+        />
       </div>
 
       <div class="form-group">
         <label for="dateTime">Date and Time</label>
-        <input type="datetime-local" id="dateTime" name="dateTime" [(ngModel)]="eventData.dateTime" required>
+        <input
+          type="datetime-local"
+          id="dateTime"
+          name="dateTime"
+          [(ngModel)]="eventData.dateTime"
+          required
+        />
       </div>
 
       <div class="form-group">
         <label for="description">Description</label>
-        <textarea id="description" name="description" [(ngModel)]="eventData.description" rows="4"></textarea>
+        <textarea
+          id="description"
+          name="description"
+          [(ngModel)]="eventData.description"
+          rows="4"
+        ></textarea>
       </div>
 
       <div class="button-group flex items-center justify-between gap-4 mt-6">
-        
         <app-action-button
-          [itemId]="e.id" 
-          [authorId]="e.organizer.id" 
+          [itemId]="e.id"
+          [authorId]="e.organizer.id"
           [itemType]="'event'"
           [itemTitle]="eventData.title"
           mode="delete"
@@ -45,7 +60,6 @@
             {{ isSubmitting() ? 'Saving...' : 'Save Changes' }}
           </button>
         </div>
-
       </div>
     </form>
   }

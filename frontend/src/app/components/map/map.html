@@ -1,4 +1,17 @@
-<div 
-  id="map" 
-  class="h-[400px] w-[85%] mx-auto mt-6 rounded-3xl shadow-sm border border-gray-200 overflow-hidden z-0 relative"
-></div>
+<div id="map"
+  class="h-[400px] w-[85%] mx-auto mt-6 rounded-3xl shadow-sm border border-gray-200 overflow-hidden z-0 relative">
+</div>
+
+<div #popupTemplate class="hidden" ngNonBindable>
+  <div
+    class="relative min-w-[200px] max-w-[240px] bg-gradient-to-b from-white to-[#fffaf7] rounded-[14px] py-[12px] px-[14px] border border-[#D97757]/18 shadow-[0_20px_40px_rgba(0,0,0,0.12),0_4px_12px_rgba(217,119,87,0.12)] font-['Inter'] overflow-hidden">
+    <div
+      class="absolute top-[10px] bottom-[10px] left-[10px] w-[3px] rounded-[3px] bg-gradient-to-b from-[#D97757] to-[#E6A28B] opacity-85">
+    </div>
+
+    <div class="pl-[8px]">
+      <h3 class="text-[0.78rem] font-bold tracking-[0.01em] text-[#1f2937] m-0 break-words whitespace-normal">{{title}}
+      </h3>
+    </div>
+  </div>
+</div>

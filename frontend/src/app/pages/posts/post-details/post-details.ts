@@ -8,10 +8,11 @@ import { AuthService } from '../../../services/auth';
 import { BackButton } from '../../../components/back-button/back-button';
 import { ActionButton } from '../../../components/action-button/action-button';
 import { LikeButton } from '../../../components/like-button/like-button';
+import { LoadingComponent } from '../../../components/loading-component/loading-component';
 
 @Component({
   selector: 'app-post-details',
-  imports: [RouterLink, DatePipe, BackButton, ActionButton, LikeButton],
+  imports: [RouterLink, DatePipe, BackButton, ActionButton, LikeButton, LoadingComponent],
   templateUrl: './post-details.html',
   styleUrl: './post-details.css',
 })
@@ -25,7 +26,7 @@ export class PostDetails {
   public isLoading = signal(false);
   public isError = signal(false);
   public isAuthor = computed<boolean>(
-    () => this.post()?.author.id === this.authService.getUser()?.sub
+    () => this.post()?.author.id === this.authService.getUser()?.sub,
   );
 
   public ngOnInit() {

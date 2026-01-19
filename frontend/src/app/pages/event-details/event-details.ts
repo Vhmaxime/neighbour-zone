@@ -8,11 +8,20 @@ import { EventService } from '../../services/event';
 import { BackButton } from '../../components/back-button/back-button';
 import { ActionButton } from '../../components/action-button/action-button';
 import { LikeButton } from '../../components/like-button/like-button';
+import { LoadingComponent } from '../../components/loading-component/loading-component';
 
 @Component({
   selector: 'app-event-details',
   standalone: true,
-  imports: [CommonModule, RouterLink, DatePipe, BackButton, ActionButton, LikeButton],
+  imports: [
+    CommonModule,
+    RouterLink,
+    DatePipe,
+    BackButton,
+    ActionButton,
+    LikeButton,
+    LoadingComponent,
+  ],
   templateUrl: './event-details.html',
   styleUrl: './event-details.css',
 })
@@ -36,11 +45,11 @@ export class EventDetails {
     try {
       this.isLoading.set(true);
       const response = await firstValueFrom(this.eventService.getEvent(this.eventId));
-      
+
       // Safety: handles { event: {} } or direct {} responses
       const eventData = response?.event || response;
       this.event.set(eventData);
-      
+
       if (eventData) {
         this.titleService.setTitle(`${eventData.title} | Neighbour Zone`);
       }
