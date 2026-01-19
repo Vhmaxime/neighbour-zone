@@ -16,20 +16,11 @@
         </div>
         <div>
           <h3 class="font-semibold text-gray-900">{{ post().author.username }}</h3>
-          <p class="text-xs text-gray-500">{{ post().createdAt | date : 'short' }}</p>
+          <p class="text-xs text-gray-500">{{ post().createdAt | date: 'short' }}</p>
         </div>
       </a>
 
       <div class="flex items-center gap-2" (click)="$event.stopPropagation()">
-        <span
-          [class]="
-            post().type === 'news' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'
-          "
-          class="px-3 py-1 rounded-full text-xs font-medium capitalize"
-        >
-          {{ post().type }}
-        </span>
-
         <app-action-button
           [itemId]="post().id"
           [authorId]="post().author.id"
