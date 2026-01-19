@@ -31,8 +31,8 @@ export class MarketplaceService {
     });
   }
 
-  public getMarketplaceItem(itemId: string) {
-    return this.http.get<MarketplaceItemResponse>(`${this.apiUrl}/marketplace/${itemId}`);
+  public getMarketplaceItemById(itemId: string) {
+    return this.http.get<MarketplaceItem>(`${this.apiUrl}/marketplace/${itemId}`);
   }
 
   public createMarketplaceItem(data: CreateMarketplaceItemRequest) {

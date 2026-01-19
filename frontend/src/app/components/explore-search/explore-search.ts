@@ -45,7 +45,7 @@ export class ExploreSearch {
   }
 
   onSelectPost(postId: string) {
-    this.router.navigate(['/posts', postId]);
+    this.router.navigate(['/post', postId]);
   }
 
   onSelectEvent(eventId: string) {

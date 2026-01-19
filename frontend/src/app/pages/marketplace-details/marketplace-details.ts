@@ -20,7 +20,6 @@ export class MarketplaceDetails {
   private activatedRoute = inject(ActivatedRoute);
   private router = inject(Router);
   private marketplaceService = inject(MarketplaceService);
-  private location = inject(Location);
   private authService = inject(AuthService);
 
   private itemId = this.activatedRoute.snapshot.paramMap.get('id') as string;
@@ -39,10 +38,9 @@ export class MarketplaceDetails {
 
   private loadItem() {
     this.isLoading.set(true);
-    firstValueFrom(this.marketplaceService.getMarketplaceItem(this.itemId))
-      .then((data: any) => {
-        // Handle potential response wrapper
-        this.item.set(data.marketplace || data);
+    firstValueFrom(this.marketplaceService.getMarketplaceItemById(this.itemId))
+      .then((marketplaceItem) => {
+        this.item.set(marketplaceItem);
       })
       .catch((error) => {
         if (error.status === 404) {

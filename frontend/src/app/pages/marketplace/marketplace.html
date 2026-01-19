@@ -23,25 +23,26 @@
           [routerLink]="['/marketplace', item.id]"
         >
           <div class="p-5 flex flex-col flex-grow">
-            
             <div class="flex justify-between items-start gap-3 mb-3">
               <div class="flex-1 min-w-0">
                 <span
                   class="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full mb-1.5 inline-block"
                   [ngClass]="{
                     'bg-green-100 text-green-700': item.category === 'offered',
-                    'bg-orange-100 text-orange-700': item.category === 'wanted'
+                    'bg-orange-100 text-orange-700': item.category === 'wanted',
                   }"
                 >
                   {{ item.category }}
                 </span>
-                
+
                 <h3 class="font-bold text-gray-900 leading-tight line-clamp-2" [title]="item.title">
                   {{ item.title }}
                 </h3>
               </div>
 
-              <div class="shrink-0 bg-gray-50 px-2 py-1.5 rounded-md border border-gray-100 text-center min-w-[60px]">
+              <div
+                class="shrink-0 bg-gray-50 px-2 py-1.5 rounded-md border border-gray-100 text-center min-w-[60px]"
+              >
                 <div class="text-sm font-bold text-gray-900 leading-none">
                   @if (item.price) {
                     €{{ item.price }}
@@ -56,11 +57,12 @@
               {{ item.description }}
             </p>
 
-            <div class="pt-3 border-t border-gray-100 mt-auto flex items-center text-xs text-gray-400 gap-1">
+            <div
+              class="pt-3 border-t border-gray-100 mt-auto flex items-center text-xs text-gray-400 gap-1"
+            >
               <span>📍</span>
-              <span class="truncate">{{ item.location }}</span>
+              <span class="truncate">{{ item.placeDisplayName }}</span>
             </div>
-
           </div>
         </div>
       } @empty {

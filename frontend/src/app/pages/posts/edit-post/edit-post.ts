@@ -1,11 +1,14 @@
 import { Component, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { PostService } from '../../../services/post';
 import { firstValueFrom } from 'rxjs';
 import { ActionButton } from '../../../components/action-button/action-button';
 import { LoadingComponent } from '../../../components/loading-component/loading-component';
+import { Title } from '@angular/platform-browser';
+import { AuthService } from '../../../services/auth';
+import { Post } from '../../../types/api.types';
 
 @Component({
   selector: 'app-edit-post',
@@ -19,10 +22,14 @@ export class EditPost {
   private postService = inject(PostService);
   private activatedRoute = inject(ActivatedRoute);
   private router = inject(Router);
+  private location = inject(Location);
+  private titleService = inject(Title);
   private formBuilder = inject(FormBuilder);
+  private authService = inject(AuthService);
 
   // Get ID from route params
   public postId = this.activatedRoute.snapshot.paramMap.get('id') as string;
+  public user = this.authService.getUser();
 
   // State signals
   public isLoading = signal(true);
@@ -31,7 +38,7 @@ export class EditPost {
   public isSuccess = signal(false);
 
   // Store full post object for ActionButton usage
-  public post = signal<any>(null);
+  public post = signal<Post | null>(null);
 
   // Form definition
   public editForm = this.formBuilder.nonNullable.group({
@@ -48,24 +55,22 @@ export class EditPost {
     this.error.set(null);
     this.isSuccess.set(false);
 
-    if (!this.postId) {
-      this.router.navigate(['/feed']);
-      return;
-    }
-
     firstValueFrom(this.postService.getPost(this.postId))
-      .then((response: any) => {
-        const postData = response.post || response;
-        if (!postData) {
-          this.router.navigate(['/feed']);
+      .then((post) => {
+        if (this.user?.sub !== post.author.id) {
+          this.router.navigate(['/not-found']);
           return;
         }
-        this.post.set(postData);
-        this.setFormValues(postData);
+        this.post.set(post);
+        this.setFormValues(post);
+        this.titleService.setTitle(`Edit Post - ${post.title}`);
       })
       .catch((err) => {
+        if (err.status === 404) {
+          this.router.navigate(['/not-found']);
+          return;
+        }
         this.error.set('An error occurred while loading the post.');
-        console.error('rror loading post:', err);
       })
       .finally(() => {
         this.isLoading.set(false);
@@ -92,9 +97,9 @@ export class EditPost {
     this.isSuccess.set(false);
 
     firstValueFrom(this.postService.updatePost(this.postId, { title, content }))
-      .then((data) => {
+      .then(() => {
         this.isSuccess.set(true);
-        this.router.navigate(['/post', data.post.id]);
+        this.location.back();
       })
       .catch((err) => {
         this.error.set('Failed to update post. Please try again later.');
@@ -106,6 +111,6 @@ export class EditPost {
   }
 
   public onPostDeleted() {
-    this.router.navigate(['/feed']);
+    this.location.back();
   }
 }

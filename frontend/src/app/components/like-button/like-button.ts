@@ -5,6 +5,7 @@ import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-like-button',
+  standalone: true,
   imports: [],
   templateUrl: './like-button.html',
   styleUrl: './like-button.css',
@@ -22,11 +23,9 @@ export class LikeButton {
   public likeCounter = signal<number>(0);
   public likeState = signal<boolean>(false);
 
-  constructor() {
-    effect(() => {
-      this.likeCounter.set(this.likes());
-      this.likeState.set(this.isLiked());
-    });
+  ngOnInit() {
+    this.likeCounter.set(this.likes());
+    this.likeState.set(this.isLiked());
   }
 
   public async handleLike() {

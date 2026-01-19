@@ -32,7 +32,7 @@ marketplaceRouter.get(
         console.error("Validation error:", result.error);
         return c.json({ message: "Invalid request data" }, 400);
       }
-    }
+    },
   ),
   async (c) => {
     const { sub: userId } = c.get("jwtPayload");
@@ -62,12 +62,12 @@ marketplaceRouter.get(
         columns: {
           marketplaceItemId: true,
         },
-      }
+      },
     );
 
     const marketplaceSet = marketplace.map((item) => {
       const applied = appliedItemIds.some(
-        (application) => application.marketplaceItemId === item.id
+        (application) => application.marketplaceItemId === item.id,
       );
       return {
         ...item,
@@ -77,9 +77,9 @@ marketplaceRouter.get(
 
     return c.json(
       { marketplace: marketplaceSet, count: marketplaceSet.length },
-      200
+      200,
     );
-  }
+  },
 );
 
 // Create a new marketplace item
@@ -140,7 +140,7 @@ marketplaceRouter.post(
     });
 
     return c.json({ marketplace: marketplaceItem }, 201);
-  }
+  },
 );
 
 // Apply to a marketplace item
@@ -196,7 +196,7 @@ marketplaceRouter.post(
     });
 
     return c.json({ message: "ok" }, 200);
-  }
+  },
 );
 
 // Get a specific marketplace item by ID
@@ -261,14 +261,14 @@ marketplaceRouter.get(
               },
             },
           },
-        }
+        },
       );
 
       return c.json({ ...marketplace, applied, applications }, 200);
     }
 
-    return c.json({ marketplace, applied }, 200);
-  }
+    return c.json({ ...marketplace, applied }, 200);
+  },
 );
 
 // Update a specific marketplace item by ID
@@ -351,7 +351,7 @@ marketplaceRouter.patch(
     });
 
     return c.json({ marketplace }, 200);
-  }
+  },
 );
 
 // Delete a specific marketplace item by ID
@@ -386,7 +386,7 @@ marketplaceRouter.delete(
       .where(eq(marketplaceItemsTable.id, id));
 
     return c.json({ message: "ok" }, 200);
-  }
+  },
 );
 
 export default marketplaceRouter;

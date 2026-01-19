@@ -70,7 +70,7 @@
       <div class="flex items-center justify-between pt-4 border-t border-gray-50">
         <app-action-button
           [itemId]="post.id"
-          [authorId]="post.author?.id || post.author_id || ''"
+          [authorId]="post.author.id"
           [itemType]="'post'"
           [itemTitle]="editForm.get('title')?.value ?? ''"
           mode="delete"

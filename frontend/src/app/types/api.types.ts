@@ -69,7 +69,10 @@ export interface MarketplaceItem {
   title: string;
   description: string;
   price: number | null;
-  location: string;
+  placeDisplayName: string;
+  placeId: number;
+  lat: string;
+  lon: string;
   category: MarketplaceCategory;
   createdAt: string;
   provider: UserPublic;
