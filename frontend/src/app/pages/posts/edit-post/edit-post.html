@@ -4,6 +4,13 @@
     <p class="text-gray-500 mt-2">Update the details of your message below.</p>
   </div>
 
+  @if (error()) {
+        <div class="bg-red-50 text-red-600 p-3 rounded-lg border border-red-200">
+          {{ error() }}
+        </div>
+      }
+
+
   @if (isLoading()) {
     <app-loading-component />
 
@@ -13,36 +20,56 @@
       (ngSubmit)="onSubmit()"
       class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 space-y-6"
     >
-      <div>
-        <label class="block text-sm font-bold text-gray-700 mb-2">Title</label>
-        <input
-          type="text"
-          formControlName="title"
-          placeholder="Give your post a clear title"
-          class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-        />
-      </div>
+      <div class="w-full">
+      <label
+        class="block text-sm font-medium text-gray-700 mb-1 [.invalid]:text-red-500!"
+        [class.invalid]="editForm.get('title')?.invalid && editForm.get('title')?.touched"
+        for="title"
+        >Post Title</label
+      >
+      <input
+        id="title"
+        type="text"
+        formControlName="title"
+        [class.invalid]="editForm.get('title')?.invalid && editForm.get('title')?.touched"
+        class="block w-full border [.invalid]:border-red-500! [.invalid]:ring-red-500! [.invalid]:text-red-500! border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
 
-      <div>
-        <label class="block text-sm font-bold text-gray-700 mb-2">Post Type</label>
-        <select
-          formControlName="type"
-          class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-        >
-          <option value="news">News</option>
-          <option value="tip">Neighbourhood Tip</option>
-        </select>
-      </div>
+      @if (editForm.get('title')?.invalid && editForm.get('title')?.touched) {
+        @if (editForm.get('title')?.errors?.['required']) {
+          <span class="text-red-500 text-sm">Required</span>
+        } @else if (editForm.get('title')?.errors?.['minlength']) {
+          <span class="text-red-500 text-sm">Min 3 characters</span>
+        } @else if (editForm.get('title')?.errors?.['maxlength']) {
+          <span class="text-red-500 text-sm">Max 255 characters</span>
+        }
+      }
+    </div>
 
-      <div>
-        <label class="block text-sm font-bold text-gray-700 mb-2">Message</label>
-        <textarea
-          formControlName="content"
-          rows="6"
-          placeholder="Write your message here..."
-          class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none transition-all resize-none"
-        ></textarea>
-      </div>
+      <div class="flex flex-col">
+      <label
+        class="text-sm font-medium text-gray-700 mb-1 [.invalid]:text-red-500!"
+        [class.invalid]="
+          editForm.get('content')?.invalid && editForm.get('content')?.touched
+        "
+        for="content"
+        >Message</label
+      >
+      <textarea
+        id="content"
+        type="text"
+        formControlName="content"
+        [class.invalid]="
+          editForm.get('content')?.invalid && editForm.get('content')?.touched
+        "
+        class="border [.invalid]:border-red-500! [.invalid]:ring-red-500! [.invalid]:text-red-500! border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      ></textarea>
+      @if (editForm.get('content')?.invalid && editForm.get('content')?.touched) {
+        @if (editForm.get('content')?.errors?.['maxlength']) {
+          <span class="text-red-500 text-sm">Max 500 characters</span>
+        }
+      }
+    </div>
 
       <div class="flex items-center justify-between pt-4 border-t border-gray-50">
         <app-action-button

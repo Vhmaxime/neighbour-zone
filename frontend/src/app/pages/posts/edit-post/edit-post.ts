@@ -24,14 +24,13 @@ export class EditPost {
 
   public isLoading = signal(true);
   public isSaving = signal(false);
+  public error = signal<string | null>(null);
 
   public post = signal<any>(null);
 
-  // Added 'question' to types just in case
   public editForm = this.fb.group({
-    title: ['', [Validators.required, Validators.minLength(3)]],
-    content: ['', [Validators.required, Validators.minLength(10)]],
-    type: ['news', [Validators.required]],
+    title: ['', [Validators.required, Validators.minLength(3)], Validators.maxLength(255)],
+    content: ['', [Validators.maxLength(500)]]
   });
 
   constructor() {
@@ -68,8 +67,7 @@ export class EditPost {
       if (postData) {
         this.editForm.patchValue({
           title: postData.title,
-          content: postData.content,
-          type: postData.type,
+          content: postData.content
         });
       }
     } catch (err) {
