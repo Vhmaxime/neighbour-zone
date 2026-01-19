@@ -16,32 +16,20 @@ import { firstValueFrom } from 'rxjs';
 export class MailView {
   private mailService = inject(MailService);
   private authService = inject(AuthService);
-  private router = inject(Router);
 
   public inbox = signal<Inbox | null>(null);
-  activeThread: Conversation | null = null;
-  selectedId: string | null = null;
-  replyText: string = '';
-  myUserId: string = '';
+  public activeThread = signal<Conversation | null>(null);
+  private userId = this.authService.getUser()?.sub;
+  public message = '';
 
-  @Input()
-  set id(conversationId: string) {
-    this.selectedId = conversationId;
-  }
+  public isLoading = signal<boolean>(true);
+  public error = signal<string | null>(null);
 
   ngOnInit() {
-    const user = this.authService.getUser();
-
-    if (user && user.sub) {
-      this.myUserId = user.sub; // 'sub' is the ID in JWT
-    }
-
-    this.refreshThread();
-
     this.loadInbox();
   }
 
-  public loadInbox() {
+  private loadInbox() {
     firstValueFrom(this.mailService.getInbox())
       .then((inbox) => {
         this.inbox.set(inbox);
@@ -51,45 +39,45 @@ export class MailView {
       });
   }
 
-  selectThread(id: string) {
-    // Changes URL to messages/[ID]
-    // The Input setter above will trigger automatically and load the messages
-    this.router.navigate(['/messages', id]);
+  public loadThread(id: string) {
+    firstValueFrom(this.mailService.getThread(id))
+      .then((res) => {
+        this.activeThread.set(res);
+      })
+      .catch((err) => {
+        console.error('Error loading thread', err);
+      });
   }
 
-  refreshThread() {
-    if (!this.selectedId) return;
-
-    this.mailService.getThread(this.selectedId).subscribe({
-      next: (res: { conversation: Conversation }) => {
-        this.activeThread = res.conversation;
-      },
-      error: (err: any) => console.error('Error loading thread', err),
-    });
-  }
-
-  sendReply() {
-    if (!this.activeThread || !this.replyText.trim()) return;
-
-    this.mailService.sendReply(this.activeThread.id, this.replyText).subscribe({
-      next: () => {
-        this.replyText = ''; // Clear input
-        this.refreshThread(); // Reload messages to show the new one
-      },
-      error: (err: any) => alert('Failed to send message'),
-    });
-  }
-
-  // --- Helpers for HTML ---
-
-  isMe(senderId: string): boolean {
-    return senderId === this.myUserId;
-  }
-
-  getOtherUserName(convo: Conversation): string {
+  public getOtherUserName(convo: Conversation): string {
     if (!convo.participant1 || !convo.participant2) return 'Unknown';
-    return convo.participant1.id === this.myUserId
+    return convo.participant1.id === this.userId
       ? convo.participant2.username
       : convo.participant1.username;
+  }
+
+  public isMe(senderId: string): boolean {
+    return senderId === this.userId;
+  }
+
+  public handleSend() {
+    const conversation = this.activeThread();
+    if (!conversation) return;
+    if (this.message.trim() === '') return;
+
+    const messageContent = this.message.trim();
+
+    this.sendMessage(conversation.id, messageContent);
+  }
+
+  private sendMessage(conversationId: string, message: string) {
+    firstValueFrom(this.mailService.sendReply(conversationId, message))
+      .then(() => {
+        this.message = '';
+        this.loadThread(conversationId);
+      })
+      .catch((err) => {
+        console.error('Error sending message', err);
+      });
   }
 }

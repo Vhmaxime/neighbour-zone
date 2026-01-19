@@ -100,7 +100,7 @@ conversationRouter.post(
       },
     });
 
-    return c.json({ conversation }, 201);
+    return c.json(conversation, 201);
   },
 );
 
@@ -161,7 +161,7 @@ conversationRouter.get(
       return c.json({ message: "Forbidden" }, 403);
     }
 
-    return c.json({ conversation }, 200);
+    return c.json(conversation, 200);
   },
 );
 

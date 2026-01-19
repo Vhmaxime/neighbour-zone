@@ -13,7 +13,7 @@ export interface Conversation {
   participant1: { id: string; username: string };
   participant2: { id: string; username: string };
   marketplaceItem?: { title: string };
-  messages?: MailMessage[]; // Makes it only visible when fetching a specific conversation
+  messages?: MailMessage[];
 }
 
 export interface Inbox {
@@ -22,26 +22,28 @@ export interface Inbox {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class MailService {
   private http = inject(HttpClient);
 
-  private apiUrl = 'https://neighbour-zone.vercel.app/api'
+  private apiUrl = 'https://neighbour-zone.vercel.app/api';
 
   getInbox(): Observable<Inbox> {
     return this.http.get<Inbox>(`${this.apiUrl}/conversation`);
   }
 
-  getThread(id: string): Observable<{ conversation: Conversation }> {
-    return this.http.get<{ conversation: Conversation }>(`${this.apiUrl}/conversation/${id}`);
+  getThread(id: string): Observable<Conversation> {
+    return this.http.get<Conversation>(`${this.apiUrl}/conversation/${id}`);
   }
 
-  sendReply(conversationId: string, message: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/conversation/${conversationId}/message`, { message });
+  sendReply(conversationId: string, message: string): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/conversation/${conversationId}/message`, {
+      message,
+    });
   }
 
-  startConversation(participantId: string, marketplaceItemId: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/conversation`, { participantId, marketplaceItemId });
+  startConversation(participantId: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/conversation`, { participantId });
   }
 }
