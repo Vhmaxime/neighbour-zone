@@ -24,7 +24,7 @@ eventRouter.get(
         console.error("Validation error:", result.error);
         return c.json({ message: "Invalid request data" }, 400);
       }
-    }
+    },
   ),
   async (c) => {
     const { sub: userId } = c.get("jwtPayload");
@@ -68,7 +68,7 @@ eventRouter.get(
     });
 
     return c.json({ events: eventSet, count: eventSet.length }, 200);
-  }
+  },
 );
 
 // Create a new event
@@ -125,7 +125,7 @@ eventRouter.post(
     });
 
     return c.json({ event }, 201);
-  }
+  },
 );
 
 // Get a single event by ID
@@ -189,7 +189,7 @@ eventRouter.get(
     }
 
     return c.json({ event, liked }, 200);
-  }
+  },
 );
 
 // Update an event by ID
@@ -248,7 +248,7 @@ eventRouter.patch(
     });
 
     return c.json({ event }, 200);
-  }
+  },
 );
 
 // Delete an event by ID
@@ -280,7 +280,7 @@ eventRouter.delete(
     await db.delete(eventsTable).where(eq(eventsTable.id, eventId));
 
     return c.json({ message: "ok" }, 200);
-  }
+  },
 );
 
 // Like or unlike an event (specifieke route - moet voor algemene /:id routes komen)
@@ -317,8 +317,8 @@ eventRouter.post(
         .where(
           and(
             eq(eventLikesTable.userId, userId),
-            eq(eventLikesTable.eventId, eventId)
-          )
+            eq(eventLikesTable.eventId, eventId),
+          ),
         );
       return c.json({ message: "ok" }, 200);
     }
@@ -329,7 +329,7 @@ eventRouter.post(
     });
 
     return c.json({ message: "ok" }, 200);
-  }
+  },
 );
 
 export default eventRouter;

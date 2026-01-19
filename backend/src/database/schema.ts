@@ -35,7 +35,7 @@ export const postsTable = pgTable("posts", {
     .notNull()
     .references(() => usersTable.id, { onDelete: "cascade" }),
   title: text("title").notNull(),
-  content: text("content").notNull(),
+  content: text("content"),
   type: postTypeEnum("type").notNull().default("news"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
@@ -51,7 +51,7 @@ export const marketplaceItemsTable = pgTable("marketplace_items", {
     .notNull()
     .references(() => usersTable.id, { onDelete: "cascade" }),
   title: text("title").notNull(),
-  description: text("description").notNull(),
+  description: text("description"),
   price: real("price"),
   placeDisplayName: text("place_display_name").notNull(),
   placeId: integer("place_id").notNull(),
@@ -67,7 +67,7 @@ export const eventsTable = pgTable("events", {
     .notNull()
     .references(() => usersTable.id, { onDelete: "cascade" }),
   title: text("title").notNull(),
-  description: text("description").notNull(),
+  description: text("description"),
   placeDisplayName: text("place_display_name").notNull(),
   placeId: integer("place_id").notNull(),
   lat: text("lat").notNull(),
@@ -95,7 +95,7 @@ export const friendshipsTable = pgTable(
     status: friendshipStatusEnum("status").notNull().default("pending"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
-  (table) => [unique().on(table.userId1, table.userId2)]
+  (table) => [unique().on(table.userId1, table.userId2)],
 );
 
 export const conversationsTable = pgTable("conversations", {
@@ -135,7 +135,7 @@ export const postLikesTable = pgTable(
       .references(() => postsTable.id, { onDelete: "cascade" }),
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
-  (table) => [primaryKey({ columns: [table.userId, table.postId] })]
+  (table) => [primaryKey({ columns: [table.userId, table.postId] })],
 );
 
 export const eventLikesTable = pgTable(
@@ -149,7 +149,7 @@ export const eventLikesTable = pgTable(
       .references(() => eventsTable.id, { onDelete: "cascade" }),
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
-  (table) => [primaryKey({ columns: [table.userId, table.eventId] })]
+  (table) => [primaryKey({ columns: [table.userId, table.eventId] })],
 );
 
 export const marketplaceApplicationsTable = pgTable(
@@ -165,7 +165,7 @@ export const marketplaceApplicationsTable = pgTable(
     message: text("message"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
-  (table) => [unique().on(table.userId, table.marketplaceItemId)]
+  (table) => [unique().on(table.userId, table.marketplaceItemId)],
 );
 
 export const eventAttendanceTable = pgTable(
@@ -179,5 +179,5 @@ export const eventAttendanceTable = pgTable(
       .references(() => eventsTable.id, { onDelete: "cascade" }),
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
-  (table) => [primaryKey({ columns: [table.userId, table.eventId] })]
+  (table) => [primaryKey({ columns: [table.userId, table.eventId] })],
 );
