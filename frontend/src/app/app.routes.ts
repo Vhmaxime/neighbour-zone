@@ -51,7 +51,7 @@ export const routes: Routes = [
       { path: 'feed', title: 'Feed | Neighbour Zone', component: Feed },
       { path: 'settings', title: 'Settings | Neighbour Zone', component: Settings },
       { path: 'messages', title: 'Inbox | Neighbour Zone', component: MailView },
-      { path: 'conversation/:id', title: 'Chat | Neighbour Zone', component: MailView }, // Specific chat page
+      { path: 'messages/:id', title: 'Chat | Neighbour Zone', component: MailView }, // Specific chat page
       { path: 'user/:id', loadComponent: () => import('./pages/user/user').then((m) => m.User) },
       {
         path: 'events',
