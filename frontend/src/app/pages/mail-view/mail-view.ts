@@ -1,9 +1,10 @@
-import { Component, inject, Input } from '@angular/core';
+import { Component, inject, Input, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { MailService, Conversation, MailMessage } from '../../services/mail';
+import { MailService, Conversation, MailMessage, Inbox } from '../../services/mail';
 import { AuthService } from '../../services/auth';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-mail-view',
@@ -17,7 +18,7 @@ export class MailView {
   private authService = inject(AuthService);
   private router = inject(Router);
 
-  inbox: Conversation[] = [];
+  public inbox = signal<Inbox | null>(null);
   activeThread: Conversation | null = null;
   selectedId: string | null = null;
   replyText: string = '';
@@ -40,21 +41,14 @@ export class MailView {
     this.loadInbox();
   }
 
-  loadInbox() {
-    console.log('1. Starting loadInbox...'); // Check if function runs
-
-    this.mailService.getInbox().subscribe({
-      next: (res: { conversations: Conversation[] }) => { 
-        console.log('2. Data received from Service:', res); // See the raw object
-        
-        this.inbox = res.conversations || [];
-        console.log('3. Inbox variable set to:', this.inbox); // See the array
-        
-        // Check "Who am I?"
-        console.log('4. My User ID is:', this.myUserId); 
-      },
-      error: (err) => console.error('Error loading inbox', err)
-    });
+  public loadInbox() {
+    firstValueFrom(this.mailService.getInbox())
+      .then((inbox) => {
+        this.inbox.set(inbox);
+      })
+      .catch((err) => {
+        console.error('Error loading inbox', err);
+      });
   }
 
   selectThread(id: string) {
@@ -65,15 +59,14 @@ export class MailView {
 
   refreshThread() {
     if (!this.selectedId) return;
-    
+
     this.mailService.getThread(this.selectedId).subscribe({
       next: (res: { conversation: Conversation }) => {
         this.activeThread = res.conversation;
       },
-      error: (err: any) => console.error('Error loading thread', err)
+      error: (err: any) => console.error('Error loading thread', err),
     });
-  };
-  
+  }
 
   sendReply() {
     if (!this.activeThread || !this.replyText.trim()) return;
@@ -83,7 +76,7 @@ export class MailView {
         this.replyText = ''; // Clear input
         this.refreshThread(); // Reload messages to show the new one
       },
-      error: (err: any) => alert('Failed to send message')
+      error: (err: any) => alert('Failed to send message'),
     });
   }
 
@@ -95,9 +88,8 @@ export class MailView {
 
   getOtherUserName(convo: Conversation): string {
     if (!convo.participant1 || !convo.participant2) return 'Unknown';
-    return convo.participant1.id === this.myUserId 
-      ? convo.participant2.username 
+    return convo.participant1.id === this.myUserId
+      ? convo.participant2.username
       : convo.participant1.username;
   }
-
 }
