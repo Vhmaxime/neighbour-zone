@@ -17,12 +17,12 @@ export class CreatePost {
   private router = inject(Router);
 
   isSaving = signal(false);
+  public error = signal<string | null>(null);
 
   // Initialize form with empty values
   createForm = this.fb.group({
-    title: ['', [Validators.required, Validators.minLength(3)]],
-    content: ['', [Validators.required, Validators.minLength(10)]],
-    type: ['news', [Validators.required]] // Default to 'news'
+    title: ['', [Validators.required, Validators.minLength(3)], Validators.maxLength(255)],
+    content: ['', [Validators.maxLength(500)]],
   });
 
   async onSubmit() {
