@@ -1,21 +1,23 @@
-<form
-  class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full"
-  [formGroup]="profileForm"
-  (ngSubmit)="onSubmit()"
->
-  @if (isSuccess()){
+@if (isSuccess()) {
   <div
     class="col-span-1 md:col-span-2 p-4 mb-4 text-green-800 bg-green-100 border border-green-200 rounded-lg"
   >
     Profile updated successfully!
   </div>
-  } @if (isError()){
+}
+@if (isError()) {
   <div
     class="col-span-1 md:col-span-2 p-4 mb-4 text-red-800 bg-red-100 border border-red-200 rounded-lg"
   >
     An error occurred while updating your profile. Please try again.
   </div>
-  }
+}
+
+<form
+  class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full"
+  [formGroup]="profileForm"
+  (ngSubmit)="onSubmit()"
+>
   <div class="flex flex-col mb-4">
     <label
       class="text-sm font-medium text-gray-700 mb-1 [.invalid]:text-red-500!"
@@ -34,14 +36,17 @@
       "
       class="border [.invalid]:border-red-500! [.invalid]:ring-red-500! [.invalid]:text-red-500! border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
     />
-    @if (profileForm.get('firstname')?.invalid && profileForm.get('firstname')?.touched) { @if
-    (profileForm.get('firstname')?.errors?.['required']) {
-    <span class="text-red-500 text-sm">required</span>
-    } @if (profileForm.get('firstname')?.errors?.['minlength']) {
-    <span class="text-red-500 text-sm">minimal 2 characters</span>
-    } @if (profileForm.get('firstname')?.errors?.['maxlength']) {
-    <span class="text-red-500 text-sm">maximal 30 characters</span>
-    } }
+    @if (profileForm.get('firstname')?.invalid && profileForm.get('firstname')?.touched) {
+      @if (profileForm.get('firstname')?.errors?.['required']) {
+        <span class="text-red-500 text-sm">required</span>
+      }
+      @if (profileForm.get('firstname')?.errors?.['minlength']) {
+        <span class="text-red-500 text-sm">minimal 2 characters</span>
+      }
+      @if (profileForm.get('firstname')?.errors?.['maxlength']) {
+        <span class="text-red-500 text-sm">maximal 30 characters</span>
+      }
+    }
   </div>
 
   <div class="flex flex-col mb-4">
@@ -58,14 +63,15 @@
       [class.invalid]="profileForm.get('lastname')?.invalid && profileForm.get('lastname')?.touched"
       class="border [.invalid]:border-red-500! [.invalid]:ring-red-500! [.invalid]:text-red-500! border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
     />
-    @if (profileForm.get('lastname')?.invalid && profileForm.get('lastname')?.touched) { @if
-    (profileForm.get('lastname')?.errors?.['required']) {
-    <span class="text-red-500 text-sm">required</span>
-    } @else if (profileForm.get('lastname')?.errors?.['minlength']) {
-    <span class="text-red-500 text-sm">minimal 2 characters</span>
-    } @else if (profileForm.get('lastname')?.errors?.['maxlength']) {
-    <span class="text-red-500 text-sm">maximal 30 characters</span>
-    } }
+    @if (profileForm.get('lastname')?.invalid && profileForm.get('lastname')?.touched) {
+      @if (profileForm.get('lastname')?.errors?.['required']) {
+        <span class="text-red-500 text-sm">required</span>
+      } @else if (profileForm.get('lastname')?.errors?.['minlength']) {
+        <span class="text-red-500 text-sm">minimal 2 characters</span>
+      } @else if (profileForm.get('lastname')?.errors?.['maxlength']) {
+        <span class="text-red-500 text-sm">maximal 30 characters</span>
+      }
+    }
   </div>
 
   <div class="flex flex-col mb-4">
@@ -82,14 +88,15 @@
       [class.invalid]="profileForm.get('username')?.invalid && profileForm.get('username')?.touched"
       class="border [.invalid]:border-red-500! [.invalid]:ring-red-500! [.invalid]:text-red-500! border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
     />
-    @if (profileForm.get('username')?.invalid && profileForm.get('username')?.touched) { @if
-    (profileForm.get('username')?.errors?.['required']) {
-    <span class="text-red-500 text-sm">required</span>
-    } @else if (profileForm.get('username')?.errors?.['minlength']) {
-    <span class="text-red-500 text-sm">minimal 2 characters</span>
-    } @else if (profileForm.get('username')?.errors?.['maxlength']) {
-    <span class="text-red-500 text-sm">maximal 30 characters</span>
-    } }
+    @if (profileForm.get('username')?.invalid && profileForm.get('username')?.touched) {
+      @if (profileForm.get('username')?.errors?.['required']) {
+        <span class="text-red-500 text-sm">required</span>
+      } @else if (profileForm.get('username')?.errors?.['minlength']) {
+        <span class="text-red-500 text-sm">minimal 2 characters</span>
+      } @else if (profileForm.get('username')?.errors?.['maxlength']) {
+        <span class="text-red-500 text-sm">maximal 30 characters</span>
+      }
+    }
   </div>
 
   <div class="flex flex-col mb-4">
@@ -106,12 +113,13 @@
       [class.invalid]="profileForm.get('email')?.invalid && profileForm.get('email')?.touched"
       class="border [.invalid]:border-red-500! [.invalid]:ring-red-500! [.invalid]:text-red-500! border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
     />
-    @if (profileForm.get('email')?.invalid && profileForm.get('email')?.touched) { @if
-    (profileForm.get('email')?.errors?.['required']) {
-    <span class="text-red-500 text-sm">required</span>
-    } @else if (profileForm.get('email')?.errors?.['email']) {
-    <span class="text-red-500 text-sm">invalid email</span>
-    } }
+    @if (profileForm.get('email')?.invalid && profileForm.get('email')?.touched) {
+      @if (profileForm.get('email')?.errors?.['required']) {
+        <span class="text-red-500 text-sm">required</span>
+      } @else if (profileForm.get('email')?.errors?.['email']) {
+        <span class="text-red-500 text-sm">invalid email</span>
+      }
+    }
   </div>
 
   <div class="flex flex-col mb-4">
@@ -132,12 +140,13 @@
       "
       class="border [.invalid]:border-red-500! [.invalid]:ring-red-500! [.invalid]:text-red-500! border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
     />
-    @if (profileForm.get('phoneNumber')?.invalid && profileForm.get('phoneNumber')?.touched) { @if
-    (profileForm.get('phoneNumber')?.errors?.['minlength']) {
-    <span class="text-red-500 text-sm">minimal 10 characters</span>
-    } @else if (profileForm.get('phoneNumber')?.errors?.['maxlength']) {
-    <span class="text-red-500 text-sm">maximal 15 characters</span>
-    } }
+    @if (profileForm.get('phoneNumber')?.invalid && profileForm.get('phoneNumber')?.touched) {
+      @if (profileForm.get('phoneNumber')?.errors?.['minlength']) {
+        <span class="text-red-500 text-sm">minimal 10 characters</span>
+      } @else if (profileForm.get('phoneNumber')?.errors?.['maxlength']) {
+        <span class="text-red-500 text-sm">maximal 15 characters</span>
+      }
+    }
   </div>
 
   <div class="flex flex-col mb-4 col-span-1 md:col-span-2">
@@ -157,10 +166,11 @@
     <div class="text-right text-xs text-gray-400 mt-1">
       {{ profileForm.get('bio')?.value?.length || 0 }} / {{ 160 }} characters
     </div>
-    @if (profileForm.get('bio')?.invalid && profileForm.get('bio')?.touched) { @if
-    (profileForm.get('bio')?.errors?.['maxlength']) {
-    <span class="text-red-500 text-sm">maximal 160 characters</span>
-    } }
+    @if (profileForm.get('bio')?.invalid && profileForm.get('bio')?.touched) {
+      @if (profileForm.get('bio')?.errors?.['maxlength']) {
+        <span class="text-red-500 text-sm">maximal 160 characters</span>
+      }
+    }
   </div>
   <button
     type="submit"

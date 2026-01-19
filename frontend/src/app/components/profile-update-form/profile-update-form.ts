@@ -22,6 +22,7 @@ export class ProfileUpdateForm {
     phoneNumber: ['', [Validators.minLength(10), Validators.maxLength(15)]],
     bio: ['', [Validators.maxLength(160)]],
   });
+
   public isLoading = signal<boolean>(true);
   public isError = signal<boolean>(false);
   public isSuccess = signal<boolean>(false);
@@ -56,6 +57,7 @@ export class ProfileUpdateForm {
     }
     this.isLoading.set(true);
     const formData = this.profileForm.value;
+    console.log('Submitting form data:', formData);
     firstValueFrom(
       this.userService.updateCurrentUser({
         firstname: formData.firstname || undefined,
@@ -63,10 +65,10 @@ export class ProfileUpdateForm {
         username: formData.username || undefined,
         phoneNumber: formData.phoneNumber || undefined,
         bio: formData.bio || undefined,
-      })
+      }),
     )
       .then((data) => {
-        this.setFormValues(data.user);
+        this.setFormValues(data);
         this.isSuccess.set(true);
         this.isError.set(false);
       })
