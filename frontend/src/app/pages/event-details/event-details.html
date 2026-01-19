@@ -1,6 +1,8 @@
 @if (isLoading()) {
   <app-loading-component />
-} @else if (event(); as e) {
+}
+
+@if (event(); as e) {
   <div class="max-w-2xl mx-auto py-10 px-4">
     <div class="flex items-center justify-between mb-8">
       <app-back-button />
@@ -56,13 +58,13 @@
       </div>
     </article>
   </div>
-} @else {
+}
+@if (error()) {
   <div class="max-w-2xl mx-auto py-20 px-4 text-center">
     <div class="bg-gray-50 rounded-3xl p-12 border-2 border-dashed border-gray-200">
-      <div class="text-4xl mb-4">🔍</div>
-      <h2 class="text-xl font-bold text-gray-900 mb-2">Event Not Found</h2>
+      <h2 class="text-xl font-bold text-gray-900 mb-2">Oops! Something went wrong.</h2>
       <p class="text-gray-500 mb-8">
-        Could not load event details. It may have been removed or the link is incorrect.
+        {{ error() }}
       </p>
       <app-back-button />
     </div>

@@ -26,40 +26,43 @@ import { LoadingComponent } from '../../components/loading-component/loading-com
   styleUrl: './event-details.css',
 })
 export class EventDetails {
+  // Inject dependencies
   private activatedRoute = inject(ActivatedRoute);
   private router = inject(Router);
   private eventService = inject(EventService);
   private titleService = inject(Title);
 
-  // Captures ID from route snapshot
+  // Get event ID from route parameters
   private eventId = this.activatedRoute.snapshot.paramMap.get('id') as string;
 
+  // State signals
   public isLoading = signal(true);
+  public error = signal<string | null>(null);
   public event = signal<Event | null>(null);
 
-  ngOnInit() {
+  public ngOnInit() {
     this.loadEvent();
   }
 
+  // Load event by ID
   private async loadEvent() {
-    try {
-      this.isLoading.set(true);
-      const response = await firstValueFrom(this.eventService.getEvent(this.eventId));
+    this.isLoading.set(true);
+    this.error.set(null);
 
-      // Safety: handles { event: {} } or direct {} responses
-      const eventData = response?.event || response;
-      this.event.set(eventData);
-
-      if (eventData) {
-        this.titleService.setTitle(`${eventData.title} | Neighbour Zone`);
-      }
-    } catch (error: any) {
-      if (error.status === 404) {
-        this.router.navigate(['/not-found']);
-      }
-      console.error('Error fetching event:', error);
-    } finally {
-      this.isLoading.set(false);
-    }
+    firstValueFrom(this.eventService.getEvent(this.eventId))
+      .then(({ event }) => {
+        this.event.set(event);
+        this.titleService.setTitle(event.title);
+      })
+      .catch((err) => {
+        if (err.status === 404) {
+          this.router.navigate(['/not-found']);
+          return;
+        }
+        this.error.set('An error occurred while loading the event.');
+      })
+      .finally(() => {
+        this.isLoading.set(false);
+      });
   }
 }
