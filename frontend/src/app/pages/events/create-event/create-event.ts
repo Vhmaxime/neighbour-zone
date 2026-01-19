@@ -90,7 +90,7 @@ export class CreateEvent {
       .then(({ event }) => {
         this.isSuccess.set(true);
         this.error.set(null);
-        this.router.navigate(['/events']);
+        this.router.navigate(['/events', event.id]);
       })
       .catch((error) => {
         console.error('Submission Error:', error);

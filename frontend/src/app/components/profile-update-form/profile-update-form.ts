@@ -14,7 +14,7 @@ import { User } from '../../types/api.types';
 export class ProfileUpdateForm {
   private formBuilder = inject(FormBuilder);
   private userService = inject(UserService);
-  public profileForm = this.formBuilder.group({
+  public profileForm = this.formBuilder.nonNullable.group({
     firstname: ['', [Validators.minLength(2), Validators.maxLength(30), Validators.required]],
     lastname: ['', [Validators.minLength(2), Validators.maxLength(30), Validators.required]],
     username: ['', [Validators.minLength(2), Validators.maxLength(30), Validators.required]],
@@ -56,15 +56,16 @@ export class ProfileUpdateForm {
       return;
     }
     this.isLoading.set(true);
-    const formData = this.profileForm.value;
-    console.log('Submitting form data:', formData);
+
+    const { firstname, lastname, username, email, phoneNumber, bio } = this.profileForm.value;
+
     firstValueFrom(
       this.userService.updateCurrentUser({
-        firstname: formData.firstname || undefined,
-        lastname: formData.lastname || undefined,
-        username: formData.username || undefined,
-        phoneNumber: formData.phoneNumber || undefined,
-        bio: formData.bio || undefined,
+        firstname,
+        lastname,
+        username,
+        phoneNumber,
+        bio,
       }),
     )
       .then((data) => {

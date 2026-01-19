@@ -16,30 +16,34 @@ export class CreatePost {
   private postService = inject(PostService);
   private router = inject(Router);
 
-  isSaving = signal(false);
+  public isLoading = signal(false);
   public error = signal<string | null>(null);
 
   // Initialize form with empty values
-  createForm = this.fb.group({
-    title: ['', [Validators.required, Validators.minLength(3)], Validators.maxLength(255)],
+  public createForm = this.fb.nonNullable.group({
+    title: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(255)]],
     content: ['', [Validators.maxLength(500)]],
   });
 
-  async onSubmit() {
+  public onSubmit() {
     if (this.createForm.invalid) return;
 
-    this.isSaving.set(true);
-    try {
+    const { content, title } = this.createForm.value;
 
-      await firstValueFrom(
-        this.postService.createPost(this.createForm.value as any)
-      );
-      // Go back to feed after success
-      this.router.navigate(['/feed']);
-    } catch (err) {
-      console.error('Failed to create post:', err);
-    } finally {
-      this.isSaving.set(false);
-    }
+    if (!title) return;
+
+    this.isLoading.set(true);
+    this.error.set(null);
+
+    firstValueFrom(this.postService.createPost({ title, content }))
+      .then((data) => {
+        this.router.navigate(['/post', data.post.id]);
+      })
+      .catch(() => {
+        this.error.set('An unknown error occurred.');
+      })
+      .finally(() => {
+        this.isLoading.set(false);
+      });
   }
 }
