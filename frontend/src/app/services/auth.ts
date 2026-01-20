@@ -3,7 +3,7 @@ import type { RegisterRequest, LoginRequest, AuthResponse } from '../types/api.t
 import { Router } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
 import { HttpClient } from '@angular/common/http';
-import { tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
 export interface JwtPayload {
   sub: string;
@@ -73,17 +73,17 @@ export class AuthService {
 
   public register(data: RegisterRequest) {
     return this.http.post<AuthResponse>(`${this.apiUrl}/auth/register`, data).pipe(
-      tap((response) => {
+      map((response) => {
         this.authenticate(response.accessToken);
-      })
+      }),
     );
   }
 
   public login(data: LoginRequest) {
     return this.http.post<AuthResponse>(`${this.apiUrl}/auth/login`, data).pipe(
-      tap((response) => {
+      map((response) => {
         this.authenticate(response.accessToken, data.rememberMe);
-      })
+      }),
     );
   }
 
