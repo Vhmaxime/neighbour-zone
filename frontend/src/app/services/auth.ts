@@ -50,7 +50,7 @@ export class AuthService {
     return localStorage.getItem(this.accessToken) || sessionStorage.getItem(this.accessToken);
   }
 
-  private authenticate(token: string, rememberMe: boolean = false): void {
+  public authenticate(token: string, rememberMe: boolean = false): void {
     if (rememberMe) {
       localStorage.setItem(this.accessToken, token);
     } else {
@@ -72,19 +72,11 @@ export class AuthService {
   // =================================================================
 
   public register(data: RegisterRequest) {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/auth/register`, data).pipe(
-      map((response) => {
-        this.authenticate(response.accessToken);
-      }),
-    );
+    return this.http.post<AuthResponse>(`${this.apiUrl}/auth/register`, data);
   }
 
   public login(data: LoginRequest) {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/auth/login`, data).pipe(
-      map((response) => {
-        this.authenticate(response.accessToken, data.rememberMe);
-      }),
-    );
+    return this.http.post<AuthResponse>(`${this.apiUrl}/auth/login`, data);
   }
 
   public resetPassword(email: string) {

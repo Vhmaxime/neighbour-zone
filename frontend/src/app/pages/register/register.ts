@@ -65,8 +65,9 @@ export class Register {
         password,
       }),
     )
-      .then(() => {
+      .then((response) => {
         this.isSuccess.set(true);
+        this.authService.authenticate(response.accessToken, false);
         this.router.navigate(['/explore']);
       })
       .catch((error) => {

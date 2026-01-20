@@ -49,8 +49,9 @@ export class Login {
         rememberMe,
       }),
     )
-      .then(() => {
+      .then((response) => {
         this.isSuccess.set(true);
+        this.authService.authenticate(response.accessToken, rememberMe);
         this.router.navigate(['/explore']);
       })
       .catch((error) => {
