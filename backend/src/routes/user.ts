@@ -139,6 +139,20 @@ userRouter.patch(
   }
 );
 
+// Get all users
+userRouter.get("/", async (c) => {
+  const users = await db.query.usersTable.findMany({
+    columns: {
+      id: true,
+      username: true,
+      email: true,
+      bio: true,
+    },
+  });
+
+  return c.json({ users }, 200);
+});
+
 // Get user info by ID
 userRouter.get(
   "/:id",
