@@ -5,11 +5,12 @@ import { firstValueFrom, Observable } from 'rxjs';
 import { MarketplaceService } from '../../services/marketplace';
 import { MarketplaceItem } from '../../types/api.types';
 import { LoadingComponent } from '../../components/loading-component/loading-component';
+import { SaveButton } from '../../components/save-button/save-button';
 
 @Component({
   selector: 'app-marketplace',
   standalone: true,
-  imports: [CommonModule, RouterLink, LoadingComponent],
+  imports: [CommonModule, RouterLink, LoadingComponent, SaveButton],
   templateUrl: './marketplace.html',
   styleUrl: './marketplace.css',
 })
