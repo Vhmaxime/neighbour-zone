@@ -9,6 +9,7 @@ export const relations = defineRelations(schema, (r) => ({
     postLikes: r.many.postLikesTable(),
     eventLikes: r.many.eventLikesTable(),
     marketplaceApplications: r.many.marketplaceApplicationsTable(),
+    marketplaceSaves: r.many.marketplaceSavesTable(),
     eventAttendances: r.many.eventAttendanceTable(),
     friendshipsAsUser1: r.many.friendshipsTable({
       alias: "user1Friendships",
@@ -37,6 +38,10 @@ export const relations = defineRelations(schema, (r) => ({
     applications: r.many.marketplaceApplicationsTable({
       from: r.marketplaceItemsTable.id,
       to: r.marketplaceApplicationsTable.marketplaceItemId,
+    }),
+    saves: r.many.marketplaceSavesTable({
+      from: r.marketplaceItemsTable.id,
+      to: r.marketplaceSavesTable.marketplaceItemId,
     }),
   },
   eventsTable: {
@@ -141,6 +146,18 @@ export const relations = defineRelations(schema, (r) => ({
     event: r.one.eventsTable({
       from: r.eventAttendanceTable.eventId,
       to: r.eventsTable.id,
+      optional: false,
+    }),
+  },
+  marketplaceSavesTable: {
+    user: r.one.usersTable({
+      from: r.marketplaceSavesTable.userId,
+      to: r.usersTable.id,
+      optional: false,
+    }),
+    marketplaceItem: r.one.marketplaceItemsTable({
+      from: r.marketplaceSavesTable.marketplaceItemId,
+      to: r.marketplaceItemsTable.id,
       optional: false,
     }),
   },

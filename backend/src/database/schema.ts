@@ -175,3 +175,17 @@ export const eventAttendanceTable = pgTable(
   },
   (table) => [primaryKey({ columns: [table.userId, table.eventId] })],
 );
+
+export const marketplaceSavesTable = pgTable(
+  "marketplace_saves",
+  {
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => usersTable.id, { onDelete: "cascade" }),
+    marketplaceItemId: uuid("marketplace_item_id")
+      .notNull()
+      .references(() => marketplaceItemsTable.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [primaryKey({ columns: [table.userId, table.marketplaceItemId] })],
+);
