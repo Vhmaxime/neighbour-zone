@@ -8,13 +8,16 @@ import {
   UserPublic,
   UserResponse,
 } from '../types/api.types';
+import { EnvironmentService } from './environment.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
-  private readonly apiUrl = 'https://neighbour-zone.vercel.app/api';
+  private envService: EnvironmentService = inject(EnvironmentService);
   private http = inject(HttpClient);
+
+  private readonly apiUrl = this.envService.getAPI_URL();
 
   public getCurrentUser() {
     return this.http.get<CurrentUser>(`${this.apiUrl}/user/me`);

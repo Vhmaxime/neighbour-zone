@@ -1,13 +1,16 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { CreateEventRequest, EventResponse, EventsResponse } from '../types/api.types';
+import { EnvironmentService } from './environment.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class EventService {
-  private readonly apiUrl = 'https://neighbour-zone.vercel.app/api';
+  private envService: EnvironmentService = inject(EnvironmentService);
   private http = inject(HttpClient);
+
+  private readonly apiUrl = this.envService.getAPI_URL();
 
   public getEvents() {
     return this.http.get<EventsResponse>(`${this.apiUrl}/event`);

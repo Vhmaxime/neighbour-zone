@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { EnvironmentService } from './environment.service';
 
 export interface MailMessage {
   content: string;
@@ -25,9 +26,10 @@ export interface Inbox {
   providedIn: 'root',
 })
 export class MailService {
+  private envService: EnvironmentService = inject(EnvironmentService);
   private http = inject(HttpClient);
 
-  private apiUrl = 'https://neighbour-zone.vercel.app/api';
+  private readonly apiUrl = this.envService.getAPI_URL();
 
   getInbox(): Observable<Inbox> {
     return this.http.get<Inbox>(`${this.apiUrl}/conversation`);

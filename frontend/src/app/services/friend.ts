@@ -1,13 +1,16 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { FriendshipResponse, FriendsResponse } from '../types/api.types';
+import { EnvironmentService } from './environment.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FriendService {
-  private readonly apiUrl = 'https://neighbour-zone.vercel.app/api';
+  private envService: EnvironmentService = inject(EnvironmentService);
   private http = inject(HttpClient);
+
+  private readonly apiUrl = this.envService.getAPI_URL();
 
   public getFriends() {
     return this.http.get<FriendsResponse>(`${this.apiUrl}/friend`);

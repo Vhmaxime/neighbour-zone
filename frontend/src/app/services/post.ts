@@ -7,13 +7,16 @@ import {
   PostResponse,
   PostsResponse,
 } from '../types/api.types';
+import { EnvironmentService } from './environment.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PostService {
-  private readonly apiUrl = 'https://neighbour-zone.vercel.app/api';
+  private envService: EnvironmentService = inject(EnvironmentService);
   private http = inject(HttpClient);
+
+  private readonly apiUrl = this.envService.getAPI_URL();
 
   public getPosts() {
     return this.http.get<PostsResponse>(`${this.apiUrl}/post`);

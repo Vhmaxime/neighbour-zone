@@ -49,8 +49,8 @@ export class MessagingService {
    */
   async loadMessages(conversationId: string): Promise<Message[]> {
     try {
-      const url = `${this.envService.getAPI_URL()}/api/messages/${conversationId}`;
-      
+      const url = `${this.envService.getAPI_URL()}/messages/${conversationId}`;
+
       const response = await fetch(url, {
         headers: {
           Authorization: `Bearer ${this.authService.getToken()}`,
@@ -77,7 +77,7 @@ export class MessagingService {
   async sendMessage(conversationId: string, content: string): Promise<Message | null> {
     try {
       const response = await fetch(
-        `${this.envService.getAPI_URL()}/api/messages/${conversationId}`,
+        `${this.envService.getAPI_URL()}/messages/${conversationId}`,
         {
           method: 'POST',
           headers: {
@@ -93,7 +93,7 @@ export class MessagingService {
       }
 
       const message = await response.json();
-      
+
       // Add to local state
       const currentMessages = this.messagesSubject.value;
       this.messagesSubject.next([...currentMessages, message]);
@@ -111,7 +111,7 @@ export class MessagingService {
   async deleteMessage(messageId: string): Promise<boolean> {
     try {
       const response = await fetch(
-        `${this.envService.getAPI_URL()}/api/messages/${messageId}`,
+        `${this.envService.getAPI_URL()}/messages/${messageId}`,
         {
           method: 'DELETE',
           headers: {
@@ -142,7 +142,7 @@ export class MessagingService {
   async markAsRead(messageId: string): Promise<boolean> {
     try {
       const response = await fetch(
-        `${this.envService.getAPI_URL()}/api/messages/${messageId}/read`,
+        `${this.envService.getAPI_URL()}/messages/${messageId}/read`,
         {
           method: 'PUT',
           headers: {
@@ -212,7 +212,7 @@ export class MessagingService {
   async getOrCreateConversation(otherUserId: string): Promise<Conversation | null> {
     try {
       const response = await fetch(
-        `${this.envService.getAPI_URL()}/api/conversation`,
+        `${this.envService.getAPI_URL()}/conversation`,
         {
           method: 'POST',
           headers: {
@@ -228,7 +228,7 @@ export class MessagingService {
       }
 
       const data = await response.json();
-      
+
       // Transform backend response to match Conversation interface
       const conversation: Conversation = {
         id: data.id,
@@ -238,7 +238,7 @@ export class MessagingService {
         participant2: data.participant2,
         createdAt: data.createdAt || new Date().toISOString(),
       };
-      
+
       return conversation;
     } catch (error) {
       console.error('Error creating conversation:', error);
@@ -252,7 +252,7 @@ export class MessagingService {
   async loadConversations(): Promise<Conversation[]> {
     try {
       const response = await fetch(
-        `${this.envService.getAPI_URL()}/api/conversation`,
+        `${this.envService.getAPI_URL()}/conversation`,
         {
           headers: {
             Authorization: `Bearer ${this.authService.getToken()}`,
@@ -273,7 +273,7 @@ export class MessagingService {
         participant2: conv.participant2,
         createdAt: conv.createdAt || new Date().toISOString(),
       }));
-      
+
       this.conversationsSubject.next(conversations);
       return conversations;
     } catch (error) {
@@ -287,9 +287,9 @@ export class MessagingService {
    */
   async deleteConversation(conversationId: string): Promise<boolean> {
     try {
-      const url = `${this.envService.getAPI_URL()}/api/conversation/${conversationId}`;
+      const url = `${this.envService.getAPI_URL()}/conversation/${conversationId}`;
       console.log('Deleting conversation:', conversationId, 'URL:', url);
-      
+
       const response = await fetch(url, {
         method: 'DELETE',
         headers: {
