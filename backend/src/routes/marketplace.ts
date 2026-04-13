@@ -4,8 +4,9 @@ import { db } from "../database/index.js";
 import {
   marketplaceItemsTable,
   marketplaceApplicationsTable,
+  marketplaceSavesTable,
 } from "../database/schema.js";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import { zValidator } from "@hono/zod-validator";
 import { idSchema } from "../schemas/index.js";
 import {
@@ -65,13 +66,22 @@ marketplaceRouter.get(
       },
     );
 
+    const savedItemIds = await db.query.marketplaceSavesTable.findMany({
+      where: { userId: { eq: userId } },
+      columns: {
+        marketplaceItemId: true,
+      },
+    });
+
     const marketplaceSet = marketplace.map((item) => {
       const applied = appliedItemIds.some(
         (application) => application.marketplaceItemId === item.id,
       );
+      const saved = savedItemIds.some((s) => s.marketplaceItemId === item.id);
       return {
         ...item,
         applied,
+        saved,
       };
     });
 
@@ -81,6 +91,44 @@ marketplaceRouter.get(
     );
   },
 );
+
+// Get all marketplace items saved by the current user
+marketplaceRouter.get("/saved", async (c) => {
+  const { sub: userId } = c.get("jwtPayload");
+
+  const savedEntries = await db.query.marketplaceSavesTable.findMany({
+    where: { userId: { eq: userId } },
+    columns: { marketplaceItemId: true },
+  });
+
+  const itemIds = savedEntries.map((e) => e.marketplaceItemId);
+
+  if (itemIds.length === 0) {
+    return c.json({ marketplace: [], count: 0 }, 200);
+  }
+
+  const items = await db.query.marketplaceItemsTable.findMany({
+    where: { id: { in: itemIds } },
+    columns: { userId: false },
+    with: {
+      provider: { columns: { id: true, username: true } },
+    },
+    orderBy: { createdAt: "desc" },
+  });
+
+  const appliedItemIds = await db.query.marketplaceApplicationsTable.findMany({
+    where: { userId: { eq: userId } },
+    columns: { marketplaceItemId: true },
+  });
+
+  const result = items.map((item) => ({
+    ...item,
+    applied: appliedItemIds.some((a) => a.marketplaceItemId === item.id),
+    saved: true,
+  }));
+
+  return c.json({ marketplace: result, count: result.length }, 200);
+});
 
 // Create a new marketplace item
 marketplaceRouter.post(
@@ -244,6 +292,15 @@ marketplaceRouter.get(
       },
     }));
 
+    const saved = !!(await db.query.marketplaceSavesTable.findFirst({
+      where: {
+        AND: [
+          { marketplaceItemId: { eq: marketplaceItemId } },
+          { userId: { eq: userId } },
+        ],
+      },
+    }));
+
     if (marketplace.provider?.id === userId) {
       const applications = await db.query.marketplaceApplicationsTable.findMany(
         {
@@ -264,10 +321,51 @@ marketplaceRouter.get(
         },
       );
 
-      return c.json({ ...marketplace, applied, applications }, 200);
+      return c.json({ ...marketplace, applied, saved, applications }, 200);
     }
 
-    return c.json({ ...marketplace, applied }, 200);
+    return c.json({ ...marketplace, applied, saved }, 200);
+  },
+);
+
+// Toggle save on a marketplace item
+marketplaceRouter.post(
+  "/:id/save",
+  zValidator("param", idSchema, (result, c) => {
+    if (!result.success) {
+      console.error("Validation error:", result.error);
+      return c.json({ message: "Invalid request data" }, 400);
+    }
+  }),
+  async (c) => {
+    const { id: marketplaceItemId } = c.req.valid("param");
+    const { sub: userId } = c.get("jwtPayload");
+
+    const existing = await db.query.marketplaceSavesTable.findFirst({
+      where: {
+        AND: [
+          { marketplaceItemId: { eq: marketplaceItemId } },
+          { userId: { eq: userId } },
+        ],
+      },
+    });
+
+    if (existing) {
+      await db
+        .delete(marketplaceSavesTable)
+        .where(
+          and(
+            eq(marketplaceSavesTable.userId, userId),
+            eq(marketplaceSavesTable.marketplaceItemId, marketplaceItemId),
+          ),
+        );
+    } else {
+      await db
+        .insert(marketplaceSavesTable)
+        .values({ userId, marketplaceItemId });
+    }
+
+    return c.json({ saved: !existing }, 200);
   },
 );
 
