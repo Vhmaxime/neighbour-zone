@@ -75,7 +75,7 @@ friendRouter.post(
       status: "pending",
     });
 
-    return c.json({ message: "ok" }, 200);
+    return c.json({ message: "ok" }, 201);
   }
 );
 
@@ -109,7 +109,7 @@ friendRouter.delete(
       .delete(friendshipsTable)
       .where(eq(friendshipsTable.id, friendship.id));
 
-    return c.json({ message: "ok" }, 200);
+    return c.body(null, 204);
   }
 );
 
@@ -177,7 +177,7 @@ friendRouter.delete(
       .delete(friendshipsTable)
       .where(eq(friendshipsTable.id, friendship.id));
 
-    return c.json({ message: "ok" }, 200);
+    return c.body(null, 204);
   }
 );
 
@@ -209,7 +209,7 @@ friendRouter.delete(
       .delete(friendshipsTable)
       .where(eq(friendshipsTable.id, friendship.id));
 
-    return c.json({ message: "ok" }, 200);
+    return c.body(null, 204);
   }
 );
 
