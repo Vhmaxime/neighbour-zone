@@ -52,4 +52,12 @@ export class MarketplaceService {
   public applyForItem(itemId: string, data: CreateMarketplaceApplicationRequest) {
     return this.http.post<void>(`${this.apiUrl}/marketplace/${itemId}/apply`, data);
   }
+
+  public saveItem(itemId: string) {
+    return this.http.post<{ saved: boolean }>(`${this.apiUrl}/marketplace/${itemId}/save`, {});
+  }
+
+  public getSavedItems() {
+    return this.http.get<MarketplaceItemsResponse>(`${this.apiUrl}/marketplace/saved`);
+  }
 }

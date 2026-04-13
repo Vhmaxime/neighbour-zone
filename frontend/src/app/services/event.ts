@@ -39,4 +39,8 @@ export class EventService {
   public likeEvent(eventId: string) {
     return this.http.post<{ liked: boolean }>(`${this.apiUrl}/event/${eventId}/like`, {});
   }
+
+  public getLikedEvents() {
+    return this.http.get<EventsResponse>(`${this.apiUrl}/event/liked`);
+  }
 }
