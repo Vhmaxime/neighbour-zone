@@ -52,7 +52,7 @@ userRouter.patch(
   async (c) => {
     const { sub: id } = c.get("jwtPayload");
     const { username, firstname, lastname, bio, email } = await c.req.valid(
-      "json"
+      "json",
     );
 
     const [updatedUser] = await db
@@ -84,7 +84,7 @@ userRouter.patch(
     });
 
     return c.json(user, 200);
-  }
+  },
 );
 
 // Delete current user account
@@ -123,7 +123,7 @@ userRouter.patch(
 
     const isCurrentPasswordValid = await verifyPassword(
       currentPassword,
-      user.password
+      user.password,
     );
 
     if (!isCurrentPasswordValid) {
@@ -136,7 +136,7 @@ userRouter.patch(
       .where(eq(usersTable.id, id));
 
     return c.json({ message: "ok" }, 200);
-  }
+  },
 );
 
 // Get all users
@@ -181,7 +181,7 @@ userRouter.get(
     }
 
     return c.json(user, 200);
-  }
+  },
 );
 
 export default userRouter;

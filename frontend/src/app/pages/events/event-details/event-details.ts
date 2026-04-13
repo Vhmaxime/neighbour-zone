@@ -2,7 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
-import { Event } from '../../../types/api.types';
+import { Event as ApiEvent } from '../../../types/api.types';
 import { Title } from '@angular/platform-browser';
 import { EventService } from '../../../services/event';
 import { BackButton } from '../../../components/back-button/back-button';
@@ -38,7 +38,7 @@ export class EventDetails {
   // State signals
   public isLoading = signal(true);
   public error = signal<string | null>(null);
-  public event = signal<Event | null>(null);
+  public event = signal<ApiEvent | null>(null);
 
   public ngOnInit() {
     this.loadEvent();
@@ -50,7 +50,7 @@ export class EventDetails {
     this.error.set(null);
 
     firstValueFrom(this.eventService.getEvent(this.eventId))
-      .then(({ event }) => {
+      .then((event) => {
         this.event.set(event);
         this.titleService.setTitle(event.title);
       })

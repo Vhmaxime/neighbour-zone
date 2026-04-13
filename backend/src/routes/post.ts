@@ -114,6 +114,39 @@ postRouter.post(
   },
 );
 
+// Get all posts liked by the current user
+postRouter.get("/liked", async (c) => {
+  const { sub: userId } = c.get("jwtPayload");
+
+  const likedEntries = await db.query.postLikesTable.findMany({
+    where: { userId: { eq: userId } },
+    columns: { postId: true },
+  });
+
+  const postIds = likedEntries.map((e) => e.postId);
+
+  if (postIds.length === 0) {
+    return c.json({ posts: [], count: 0 }, 200);
+  }
+
+  const posts = await db.query.postsTable.findMany({
+    where: { id: { in: postIds } },
+    columns: { authorId: false },
+    with: {
+      author: { columns: { id: true, username: true } },
+    },
+    extras: {
+      likes: (table) =>
+        db.$count(postLikesTable, eq(table.id, postLikesTable.postId)),
+    },
+    orderBy: { createdAt: "desc" },
+  });
+
+  const result = posts.map((post) => ({ ...post, liked: true }));
+
+  return c.json({ posts: result, count: result.length }, 200);
+});
+
 // Get a single post by ID
 postRouter.get(
   "/:id",

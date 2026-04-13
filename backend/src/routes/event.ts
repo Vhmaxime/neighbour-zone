@@ -128,6 +128,39 @@ eventRouter.post(
   },
 );
 
+// Get all events liked by the current user
+eventRouter.get("/liked", async (c) => {
+  const { sub: userId } = c.get("jwtPayload");
+
+  const likedEntries = await db.query.eventLikesTable.findMany({
+    where: { userId: { eq: userId } },
+    columns: { eventId: true },
+  });
+
+  const eventIds = likedEntries.map((e) => e.eventId);
+
+  if (eventIds.length === 0) {
+    return c.json({ events: [], count: 0 }, 200);
+  }
+
+  const events = await db.query.eventsTable.findMany({
+    where: { id: { in: eventIds } },
+    columns: { userId: false },
+    with: {
+      organizer: { columns: { id: true, username: true } },
+    },
+    extras: {
+      likes: (table) =>
+        db.$count(eventLikesTable, eq(table.id, eventLikesTable.eventId)),
+    },
+    orderBy: { createdAt: "desc" },
+  });
+
+  const result = events.map((event) => ({ ...event, liked: true }));
+
+  return c.json({ events: result, count: result.length }, 200);
+});
+
 // Get a single event by ID
 eventRouter.get(
   "/:id",

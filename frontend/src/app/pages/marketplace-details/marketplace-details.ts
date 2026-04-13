@@ -8,11 +8,12 @@ import { AuthService } from '../../services/auth';
 import { BackButton } from '../../components/back-button/back-button';
 import { ActionButton } from '../../components/action-button/action-button';
 import { LoadingComponent } from '../../components/loading-component/loading-component';
+import { SaveButton } from '../../components/save-button/save-button';
 
 @Component({
   selector: 'app-marketplace-details',
   standalone: true,
-  imports: [RouterLink, CurrencyPipe, DatePipe, BackButton, ActionButton, LoadingComponent],
+  imports: [RouterLink, CurrencyPipe, DatePipe, BackButton, ActionButton, LoadingComponent, SaveButton],
   templateUrl: './marketplace-details.html',
   styleUrl: './marketplace-details.css',
 })

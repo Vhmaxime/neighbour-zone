@@ -32,7 +32,7 @@ authRouter.post(
     if (existingEmail) {
       return c.json(
         { message: "An account with this email already exists" },
-        409
+        409,
       );
     }
 
@@ -43,7 +43,7 @@ authRouter.post(
     if (existingUsername) {
       return c.json(
         { message: "An account with this username already exists" },
-        409
+        409,
       );
     }
 
@@ -69,7 +69,7 @@ authRouter.post(
         role: newUser.role,
         exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7, // 7 days expiration
       },
-      constants.jwtSecret
+      constants.jwtSecret,
     );
 
     const refreshToken = await sign(
@@ -77,7 +77,7 @@ authRouter.post(
         sub: newUser.id,
         exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7, // 7 dagen expiration
       },
-      constants.jwtRefreshSecret
+      constants.jwtRefreshSecret,
     );
 
     setCookie(c, "refresh_token", refreshToken, {
@@ -88,11 +88,10 @@ authRouter.post(
       maxAge: 60 * 60 * 24 * 7,
     });
 
-    return c.json({ accessToken }, 200);
-  }
+    return c.json({ accessToken }, 201);
+  },
 );
 
-// Login an existing user
 authRouter.post(
   "/login",
   zValidator("json", loginSchema, (result, c) => {
@@ -125,7 +124,7 @@ authRouter.post(
         role: user.role,
         exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7, // 7 days expiration
       },
-      constants.jwtSecret
+      constants.jwtSecret,
     );
 
     const refreshToken = await sign(
@@ -133,7 +132,7 @@ authRouter.post(
         sub: user.id,
         exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7, // 7 days expiration
       },
-      constants.jwtRefreshSecret
+      constants.jwtRefreshSecret,
     );
 
     setCookie(c, "refresh_token", refreshToken, {
@@ -145,7 +144,7 @@ authRouter.post(
     });
 
     return c.json({ accessToken }, 200);
-  }
+  },
 );
 
 // Refresh access token

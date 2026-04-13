@@ -18,6 +18,7 @@ import { CreateItem } from './pages/marketplace/create-item/create-item';
 import { CreatePost } from './pages/posts/create-post/create-post';
 import { MailView } from './pages/mail-view/mail-view';
 import { SocialComponent } from './pages/social/social';
+import { Favorites } from './pages/favorites/favorites';
 
 export const routes: Routes = [
   { path: 'not-found', title: '404 - Page Not Found | Neighbour Zone', component: NotFound },
@@ -51,6 +52,7 @@ export const routes: Routes = [
       { path: 'explore', title: 'Explore | Neighbour Zone', component: Explore },
       { path: 'feed', title: 'Feed | Neighbour Zone', component: Feed },
       { path: 'social', title: 'Social - Messages | Neighbour Zone', component: SocialComponent },
+      { path: 'favorites', title: 'Favorites | Neighbour Zone', component: Favorites },
       { path: 'settings', title: 'Settings | Neighbour Zone', component: Settings },
       { path: 'messages', title: 'Inbox | Neighbour Zone', component: MailView },
       { path: 'messages/:id', title: 'Chat | Neighbour Zone', component: MailView }, // Specific chat page

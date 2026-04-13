@@ -63,7 +63,7 @@ conversationRouter.post(
   zValidator("json", conversationSchema, (result, c) => {
     if (!result.success) {
       console.error("Validation error:", result.error);
-      return c.json({ error: "Invalid request data" }, 400);
+      return c.json({ message: "Invalid request data" }, 400);
     }
   }),
   async (c) => {
@@ -198,7 +198,7 @@ conversationRouter.delete(
       .delete(conversationsTable)
       .where(eq(conversationsTable.id, conversation.id));
 
-    return c.json({ message: "ok" }, 200);
+    return c.body(null, 204);
   },
 );
 

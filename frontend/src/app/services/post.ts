@@ -7,13 +7,16 @@ import {
   PostResponse,
   PostsResponse,
 } from '../types/api.types';
+import { EnvironmentService } from './environment.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PostService {
-  private readonly apiUrl = 'https://neighbour-zone.vercel.app/api';
+  private envService: EnvironmentService = inject(EnvironmentService);
   private http = inject(HttpClient);
+
+  private readonly apiUrl = this.envService.getAPI_URL();
 
   public getPosts() {
     return this.http.get<PostsResponse>(`${this.apiUrl}/post`);
@@ -40,6 +43,10 @@ export class PostService {
   }
 
   public likePost(postId: string) {
-    return this.http.post<void>(`${this.apiUrl}/post/${postId}/like`, {});
+    return this.http.post<{ liked: boolean }>(`${this.apiUrl}/post/${postId}/like`, {});
+  }
+
+  public getLikedPosts() {
+    return this.http.get<PostsResponse>(`${this.apiUrl}/post/liked`);
   }
 }
