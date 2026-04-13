@@ -77,6 +77,7 @@ export interface MarketplaceItem {
   createdAt: string;
   provider: UserPublic;
   applied: boolean;
+  saved: boolean;
   applications?: MarketplaceApplication[];
 }
 
@@ -84,7 +85,7 @@ export interface MarketplaceApplication {
   id: string;
   message: string | null;
   createdAt: string;
-  applicant: UserPublic;
+  user: UserPublic;
 }
 
 // Request
