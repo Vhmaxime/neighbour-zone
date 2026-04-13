@@ -115,6 +115,7 @@ export const messagesTable = pgTable("messages", {
     .references(() => conversationsTable.id, { onDelete: "cascade" }),
   content: text("content").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
+  readAt: timestamp("read_at"),
 });
 
 export const postLikesTable = pgTable(

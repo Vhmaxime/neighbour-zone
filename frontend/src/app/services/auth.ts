@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
+import { EnvironmentService } from './environment.service';
 
 export interface JwtPayload {
   sub: string;
@@ -19,9 +20,10 @@ export interface JwtPayload {
 export class AuthService {
   private router = inject(Router);
   private http = inject(HttpClient);
+  private environmentService = inject(EnvironmentService);
 
   // Ensure this API URL matches the backend configuration
-  private readonly apiUrl = 'https://neighbour-zone.vercel.app/api';
+  private readonly apiUrl = this.environmentService.getAPI_URL();
   private readonly accessToken = 'accessToken';
 
   private readonly user = signal<JwtPayload | null>(null);
