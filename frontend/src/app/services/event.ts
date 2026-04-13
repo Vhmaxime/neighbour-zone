@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { CreateEventRequest, EventResponse, EventsResponse } from '../types/api.types';
+import { CreateEventRequest, Event, EventResponse, EventsResponse } from '../types/api.types';
 import { EnvironmentService } from './environment.service';
 
 @Injectable({
@@ -21,7 +21,7 @@ export class EventService {
   }
 
   public getEvent(eventId: string) {
-    return this.http.get<EventResponse>(`${this.apiUrl}/event/${eventId}`);
+    return this.http.get<Event>(`${this.apiUrl}/event/${eventId}`);
   }
 
   public createEvent(data: CreateEventRequest) {
@@ -37,6 +37,6 @@ export class EventService {
   }
 
   public likeEvent(eventId: string) {
-    return this.http.post<void>(`${this.apiUrl}/event/${eventId}/like`, {});
+    return this.http.post<{ liked: boolean }>(`${this.apiUrl}/event/${eventId}/like`, {});
   }
 }

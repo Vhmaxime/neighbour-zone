@@ -43,6 +43,6 @@ export class PostService {
   }
 
   public likePost(postId: string) {
-    return this.http.post<void>(`${this.apiUrl}/post/${postId}/like`, {});
+    return this.http.post<{ liked: boolean }>(`${this.apiUrl}/post/${postId}/like`, {});
   }
 }
