@@ -56,13 +56,11 @@ communityRouter.post(
       .returning();
 
     // Creator automatically becomes admin member
-    await db
-      .insert(communityMembersTable)
-      .values({
-        communityId: newCommunity.id,
-        userId: creatorId,
-        role: "admin",
-      });
+    await db.insert(communityMembersTable).values({
+      communityId: newCommunity.id,
+      userId: creatorId,
+      role: "admin",
+    });
 
     const community = await db.query.communitiesTable.findFirst({
       where: { id: { eq: newCommunity.id } },
@@ -148,9 +146,7 @@ communityRouter.patch(
     const data = c.req.valid("json");
 
     const membership = await db.query.communityMembersTable.findFirst({
-      where: {
-        AND: [{ communityId: { eq: communityId } }, { userId: { eq: userId } }],
-      },
+      where: { communityId: { eq: communityId }, userId: { eq: userId } },
     });
 
     if (!membership || membership.role !== "admin") {
@@ -181,9 +177,7 @@ communityRouter.delete(
     const { sub: userId } = c.get("jwtPayload");
 
     const membership = await db.query.communityMembersTable.findFirst({
-      where: {
-        AND: [{ communityId: { eq: communityId } }, { userId: { eq: userId } }],
-      },
+      where: { communityId: { eq: communityId }, userId: { eq: userId } },
     });
 
     if (!membership || membership.role !== "admin") {
@@ -215,9 +209,7 @@ communityRouter.post(
     if (!community) return c.json({ message: "Community not found" }, 404);
 
     const existing = await db.query.communityMembersTable.findFirst({
-      where: {
-        AND: [{ communityId: { eq: communityId } }, { userId: { eq: userId } }],
-      },
+      where: { communityId: { eq: communityId }, userId: { eq: userId } },
     });
     if (existing) return c.json({ message: "Already a member" }, 409);
 
@@ -241,21 +233,14 @@ communityRouter.delete(
     const { sub: userId } = c.get("jwtPayload");
 
     const membership = await db.query.communityMembersTable.findFirst({
-      where: {
-        AND: [{ communityId: { eq: communityId } }, { userId: { eq: userId } }],
-      },
+      where: { communityId: { eq: communityId }, userId: { eq: userId } },
     });
     if (!membership) return c.json({ message: "Not a member" }, 404);
 
     if (membership.role === "admin") {
       // Check if there are other admins
       const otherAdmins = await db.query.communityMembersTable.findMany({
-        where: {
-          AND: [
-            { communityId: { eq: communityId } },
-            { role: { eq: "admin" } },
-          ],
-        },
+        where: { communityId: { eq: communityId }, role: { eq: "admin" } },
       });
       if (otherAdmins.length <= 1) {
         return c.json(
@@ -293,9 +278,7 @@ communityRouter.get(
     const { sub: userId } = c.get("jwtPayload");
 
     const membership = await db.query.communityMembersTable.findFirst({
-      where: {
-        AND: [{ communityId: { eq: communityId } }, { userId: { eq: userId } }],
-      },
+      where: { communityId: { eq: communityId }, userId: { eq: userId } },
     });
     if (!membership)
       return c.json({ message: "Not a member of this community" }, 403);
@@ -342,9 +325,7 @@ communityRouter.get(
     const { sub: userId } = c.get("jwtPayload");
 
     const membership = await db.query.communityMembersTable.findFirst({
-      where: {
-        AND: [{ communityId: { eq: communityId } }, { userId: { eq: userId } }],
-      },
+      where: { communityId: { eq: communityId }, userId: { eq: userId } },
     });
     if (!membership)
       return c.json({ message: "Not a member of this community" }, 403);
@@ -389,9 +370,7 @@ communityRouter.get(
     const { sub: userId } = c.get("jwtPayload");
 
     const membership = await db.query.communityMembersTable.findFirst({
-      where: {
-        AND: [{ communityId: { eq: communityId } }, { userId: { eq: userId } }],
-      },
+      where: { communityId: { eq: communityId }, userId: { eq: userId } },
     });
     if (!membership)
       return c.json({ message: "Not a member of this community" }, 403);
