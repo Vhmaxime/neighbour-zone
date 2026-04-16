@@ -17,6 +17,7 @@ import friendRouter from "./routes/friend.js";
 import searchRouter from "./routes/search.js";
 import conversationRouter from "./routes/conversation.js";
 import messagesRouter from "./routes/messages.js";
+import communityRouter from "./routes/community.js";
 
 const app = new Hono<{ Variables: Variables }>().basePath("/api");
 
@@ -45,6 +46,7 @@ app.route("/event", eventRouter);
 app.route("/search", searchRouter);
 app.route("/conversation", conversationRouter);
 app.route("/messages", messagesRouter);
+app.route("/community", communityRouter);
 
 // Swagger UI and OpenAPI Document
 app.get("/doc", (c) => c.json(openApiDoc));
