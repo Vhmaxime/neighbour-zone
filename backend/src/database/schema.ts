@@ -31,6 +31,7 @@ export const postsTable = pgTable("posts", {
   authorId: uuid("author_id")
     .notNull()
     .references(() => usersTable.id, { onDelete: "cascade" }),
+  communityId: uuid("community_id"),
   title: text("title").notNull(),
   content: text("content"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -46,6 +47,7 @@ export const marketplaceItemsTable = pgTable("marketplace_items", {
   userId: uuid("user_id")
     .notNull()
     .references(() => usersTable.id, { onDelete: "cascade" }),
+  communityId: uuid("community_id"),
   title: text("title").notNull(),
   description: text("description"),
   price: real("price"),
@@ -62,6 +64,7 @@ export const eventsTable = pgTable("events", {
   userId: uuid("user_id")
     .notNull()
     .references(() => usersTable.id, { onDelete: "cascade" }),
+  communityId: uuid("community_id"),
   title: text("title").notNull(),
   description: text("description"),
   placeDisplayName: text("place_display_name").notNull(),
@@ -188,4 +191,34 @@ export const marketplaceSavesTable = pgTable(
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
   (table) => [primaryKey({ columns: [table.userId, table.marketplaceItemId] })],
+);
+
+export const communityMemberRoleEnum = pgEnum("community_member_role", [
+  "admin",
+  "member",
+]);
+
+export const communitiesTable = pgTable("communities", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  name: text("name").notNull().unique(),
+  description: text("description"),
+  creatorId: uuid("creator_id")
+    .notNull()
+    .references(() => usersTable.id, { onDelete: "cascade" }),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const communityMembersTable = pgTable(
+  "community_members",
+  {
+    communityId: uuid("community_id")
+      .notNull()
+      .references(() => communitiesTable.id, { onDelete: "cascade" }),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => usersTable.id, { onDelete: "cascade" }),
+    role: communityMemberRoleEnum("role").notNull().default("member"),
+    joinedAt: timestamp("joined_at").defaultNow().notNull(),
+  },
+  (table) => [primaryKey({ columns: [table.communityId, table.userId] })],
 );

@@ -19,6 +19,8 @@ import { CreatePost } from './pages/posts/create-post/create-post';
 import { MailView } from './pages/mail-view/mail-view';
 import { SocialComponent } from './pages/social/social';
 import { Favorites } from './pages/favorites/favorites';
+import { Communities } from './pages/communities/communities';
+import { CreateCommunity } from './pages/communities/create-community/create-community';
 
 export const routes: Routes = [
   { path: 'not-found', title: '404 - Page Not Found | Neighbour Zone', component: NotFound },
@@ -57,6 +59,29 @@ export const routes: Routes = [
       { path: 'messages', title: 'Inbox | Neighbour Zone', component: MailView },
       { path: 'messages/:id', title: 'Chat | Neighbour Zone', component: MailView }, // Specific chat page
       { path: 'user/:id', loadComponent: () => import('./pages/user/user').then((m) => m.User) },
+      {
+        path: 'communities',
+        children: [
+          {
+            path: '',
+            title: 'Communities | Neighbour Zone',
+            component: Communities,
+          },
+          {
+            path: 'create',
+            title: 'Create Community | Neighbour Zone',
+            component: CreateCommunity,
+          },
+          {
+            path: ':id',
+            title: 'Community | Neighbour Zone',
+            loadComponent: () =>
+              import('./pages/communities/community-detail/community-detail').then(
+                (m) => m.CommunityDetail,
+              ),
+          },
+        ],
+      },
       {
         path: 'events',
         children: [

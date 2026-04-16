@@ -1,7 +1,11 @@
 import { Hono } from "hono";
 import { Variables } from "../types/index.js";
 import { db } from "../database/index.js";
-import { postsTable, postLikesTable } from "../database/schema.js";
+import {
+  postsTable,
+  postLikesTable,
+  communityMembersTable,
+} from "../database/schema.js";
 import { eq, and } from "drizzle-orm";
 import { zValidator } from "@hono/zod-validator";
 import { postSchema } from "../schemas/post.js";
@@ -32,7 +36,9 @@ postRouter.get(
     const { postBy } = c.req.valid("query");
 
     const posts = await db.query.postsTable.findMany({
-      where: postBy ? { authorId: { eq: postBy } } : undefined,
+      where: postBy
+        ? { authorId: postBy, communityId: { isNull: true } }
+        : { communityId: { isNull: true } },
       columns: {
         authorId: false,
       },
@@ -82,7 +88,7 @@ postRouter.post(
     }
   }),
   async (c) => {
-    const { title, content } = c.req.valid("json");
+    const { title, content, communityId } = c.req.valid("json");
 
     const { sub: authorId } = c.get("jwtPayload");
 
@@ -92,6 +98,7 @@ postRouter.post(
         authorId,
         title,
         content,
+        communityId: communityId ?? null,
       })
       .returning();
 
@@ -184,10 +191,20 @@ postRouter.get(
       return c.json({ message: "Post not found" }, 404);
     }
 
+    if (post.communityId) {
+      const isMember = await db.query.communityMembersTable.findFirst({
+        where: {
+          communityId: { eq: post.communityId },
+          userId: { eq: userId },
+        },
+      });
+      if (!isMember) {
+        return c.json({ message: "Forbidden" }, 403);
+      }
+    }
+
     const liked = !!(await db.query.postLikesTable.findFirst({
-      where: {
-        AND: [{ postId: { eq: postId } }, { userId: { eq: userId } }],
-      },
+      where: { postId: { eq: postId }, userId: { eq: userId } },
     }));
 
     if (post.author?.id === userId) {
@@ -325,9 +342,7 @@ postRouter.post(
     }
 
     const existing = await db.query.postLikesTable.findFirst({
-      where: {
-        AND: [{ postId: { eq: postId } }, { userId: { eq: userId } }],
-      },
+      where: { postId: { eq: postId }, userId: { eq: userId } },
     });
 
     if (existing) {

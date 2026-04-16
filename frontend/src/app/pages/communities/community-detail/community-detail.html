@@ -1,0 +1,150 @@
+<div class="max-w-4xl mx-auto py-8 px-4">
+    @if (isLoading()) {
+    <app-loading-component [message]="'Loading community...'" />
+    } @else if (community(); as c) {
+    <!-- Header -->
+    <div class="mb-6">
+        <app-back-button />
+        <div class="flex items-start justify-between gap-4 mt-2">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">{{ c.name }}</h1>
+                @if (c.description) {
+                <p class="text-gray-600 mt-1">{{ c.description }}</p>
+                }
+                <p class="text-sm text-gray-500 mt-2">
+                    {{ c.memberCount }} {{ c.memberCount === 1 ? 'member' : 'members' }} ·
+                    Created by
+                    <a [routerLink]="['/user', c.creator.id]" class="font-medium hover:underline">
+                        {{ c.creator.username }}
+                    </a>
+                </p>
+            </div>
+
+            <div class="flex flex-col items-end gap-2 shrink-0">
+                @if (c.role === 'admin') {
+                <span class="text-xs bg-amber-100 text-amber-700 px-2 py-1 rounded-full font-medium">
+                    Admin
+                </span>
+                }
+                @if (c.creator.id !== currentUserId()) {
+                <button (click)="toggleMembership()" [disabled]="isActionLoading()"
+                    class="px-4 py-2 rounded-lg text-sm font-semibold transition-colors disabled:opacity-50"
+                    [class.bg-gray-900]="!c.isMember" [class.text-white]="!c.isMember"
+                    [class.hover:bg-gray-700]="!c.isMember" [class.bg-red-50]="c.isMember"
+                    [class.text-red-600]="c.isMember" [class.hover:bg-red-100]="c.isMember">
+                    @if (isActionLoading()) {
+                    ...
+                    } @else if (c.isMember) {
+                    Leave
+                    } @else {
+                    Join
+                    }
+                </button>
+                }
+            </div>
+        </div>
+
+        @if (error()) {
+        <div class="mt-3 bg-red-50 text-red-600 p-3 rounded-lg border border-red-200 text-sm">
+            {{ error() }}
+        </div>
+        }
+    </div>
+
+    @if (!c.isMember) {
+    <!-- Non-member view -->
+    <div class="text-center py-20 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
+        <p class="text-gray-500 text-lg mb-2">This community is members only.</p>
+        <p class="text-gray-400 text-sm">Join to see posts, events and marketplace items.</p>
+    </div>
+    } @else {
+    <!-- Member view: tabs -->
+    <div class="border-b border-gray-200 mb-6">
+        <nav class="flex gap-6">
+            <button (click)="setTab('posts')" class="pb-3 text-sm font-medium border-b-2 transition-colors"
+                [class.border-[#D97757]]="activeTab() === 'posts'" [class.text-[#D97757]]="activeTab() === 'posts'"
+                [class.border-transparent]="activeTab() !== 'posts'" [class.text-gray-500]="activeTab() !== 'posts'">
+                Posts
+            </button>
+            <button (click)="setTab('events')" class="pb-3 text-sm font-medium border-b-2 transition-colors"
+                [class.border-[#D97757]]="activeTab() === 'events'" [class.text-[#D97757]]="activeTab() === 'events'"
+                [class.border-transparent]="activeTab() !== 'events'" [class.text-gray-500]="activeTab() !== 'events'">
+                Events
+            </button>
+            <button (click)="setTab('marketplace')" class="pb-3 text-sm font-medium border-b-2 transition-colors"
+                [class.border-[#D97757]]="activeTab() === 'marketplace'"
+                [class.text-[#D97757]]="activeTab() === 'marketplace'"
+                [class.border-transparent]="activeTab() !== 'marketplace'"
+                [class.text-gray-500]="activeTab() !== 'marketplace'">
+                Marketplace
+            </button>
+        </nav>
+    </div>
+
+    <!-- Create actions -->
+    <div class="flex gap-3 mb-6">
+        @if (activeTab() === 'posts') {
+        <a [routerLink]="['/post/create']" [queryParams]="{ communityId: c.id }"
+            class="bg-[#D97757] text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-[#c0694a] transition-colors">
+            + New Post
+        </a>
+        }
+        @if (activeTab() === 'events') {
+        <a [routerLink]="['/events/create']" [queryParams]="{ communityId: c.id }"
+            class="bg-[#D97757] text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-[#c0694a] transition-colors">
+            + New Event
+        </a>
+        }
+        @if (activeTab() === 'marketplace') {
+        <a [routerLink]="['/marketplace/create']" [queryParams]="{ communityId: c.id }"
+            class="bg-[#D97757] text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-[#c0694a] transition-colors">
+            + New Listing
+        </a>
+        }
+    </div>
+
+    @if (isContentLoading()) {
+    <app-loading-component [message]="'Loading...'" />
+    } @else {
+    <!-- Posts tab -->
+    @if (activeTab() === 'posts') {
+    <div class="flex flex-col gap-6">
+        @for (post of posts(); track post.id) {
+        <app-post-tile [post]="post" (deleted)="handlePostDeleted($event)" />
+        } @empty {
+        <div class="text-center py-12 bg-gray-50 rounded-xl border border-dashed border-gray-200">
+            <p class="text-gray-500">No posts yet.</p>
+        </div>
+        }
+    </div>
+    }
+
+    <!-- Events tab -->
+    @if (activeTab() === 'events') {
+    <div class="flex flex-col gap-6">
+        @for (event of events(); track event.id) {
+        <app-event-tile [event]="event" />
+        } @empty {
+        <div class="text-center py-12 bg-gray-50 rounded-xl border border-dashed border-gray-200">
+            <p class="text-gray-500">No events yet.</p>
+        </div>
+        }
+    </div>
+    }
+
+    <!-- Marketplace tab -->
+    @if (activeTab() === 'marketplace') {
+    <div class="flex flex-col gap-6">
+        @for (item of marketplace(); track item.id) {
+        <app-marketplace-tile [item]="item" (deleted)="handleMarketplaceDeleted($event)" />
+        } @empty {
+        <div class="text-center py-12 bg-gray-50 rounded-xl border border-dashed border-gray-200">
+            <p class="text-gray-500">No listings yet.</p>
+        </div>
+        }
+    </div>
+    }
+    }
+    }
+    }
+</div>

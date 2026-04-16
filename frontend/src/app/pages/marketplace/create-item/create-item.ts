@@ -1,7 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators, FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MarketplaceService } from '../../../services/marketplace';
 import { NominatimService } from '../../../services/nominatim';
 import { NominatimLocation } from '../../../types/nominatom-types';
@@ -21,12 +21,14 @@ export class CreateItem {
   private fb = inject(FormBuilder);
   private marketplaceService = inject(MarketplaceService);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private nominatimService = inject(NominatimService);
 
   public isSubmitting = signal<boolean>(false);
   public isLoading = signal<boolean>(false);
   public isSuccess = signal<boolean>(false);
   public error = signal<string | null>(null);
+  public communityId = signal<string | null>(null);
 
   public searchResults = signal<NominatimLocation[]>([]);
   public place = signal<NominatimLocation | null>(null);
@@ -43,6 +45,9 @@ export class CreateItem {
   });
 
   public ngOnInit() {
+    const cid = this.route.snapshot.queryParamMap.get('communityId');
+    if (cid) this.communityId.set(cid);
+
     this.itemForm.controls.placeDisplayName.valueChanges
       .pipe(
         filter((query) => !!query && query.length >= 3),
@@ -79,6 +84,8 @@ export class CreateItem {
       return;
     }
 
+    const communityId = this.communityId();
+
     firstValueFrom(
       this.marketplaceService.createMarketplaceItem({
         title,
@@ -89,11 +96,16 @@ export class CreateItem {
         category: category as 'offered' | 'wanted',
         lat: place.lat,
         lon: place.lon,
+        ...(communityId ? { communityId } : {}),
       }),
     )
       .then((data) => {
         this.isSuccess.set(true);
-        this.router.navigate(['/marketplace', data.marketplace.id]);
+        if (communityId) {
+          this.router.navigate(['/communities', communityId]);
+        } else {
+          this.router.navigate(['/marketplace', data.marketplace.id]);
+        }
       })
       .catch((error) => {
         this.error.set('Failed to post item. Please try again.');
