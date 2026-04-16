@@ -1,7 +1,11 @@
 import { Hono } from "hono";
 import { Variables } from "../types/index.js";
 import { db } from "../database/index.js";
-import { eventLikesTable, eventsTable } from "../database/schema.js";
+import {
+  eventLikesTable,
+  eventsTable,
+  communityMembersTable,
+} from "../database/schema.js";
 import { eq, and } from "drizzle-orm";
 import { zValidator } from "@hono/zod-validator";
 import { idSchema } from "../schemas/index.js";
@@ -200,6 +204,18 @@ eventRouter.get(
 
     if (!event) {
       return c.json({ message: "Event not found" }, 404);
+    }
+
+    if (event.communityId) {
+      const isMember = await db.query.communityMembersTable.findFirst({
+        where: {
+          communityId: { eq: event.communityId },
+          userId: { eq: userId },
+        },
+      });
+      if (!isMember) {
+        return c.json({ message: "Forbidden" }, 403);
+      }
     }
 
     const liked = !!(await db.query.eventLikesTable.findFirst({

@@ -1,7 +1,11 @@
 import { Hono } from "hono";
 import { Variables } from "../types/index.js";
 import { db } from "../database/index.js";
-import { postsTable, postLikesTable } from "../database/schema.js";
+import {
+  postsTable,
+  postLikesTable,
+  communityMembersTable,
+} from "../database/schema.js";
 import { eq, and } from "drizzle-orm";
 import { zValidator } from "@hono/zod-validator";
 import { postSchema } from "../schemas/post.js";
@@ -185,6 +189,18 @@ postRouter.get(
 
     if (!post) {
       return c.json({ message: "Post not found" }, 404);
+    }
+
+    if (post.communityId) {
+      const isMember = await db.query.communityMembersTable.findFirst({
+        where: {
+          communityId: { eq: post.communityId },
+          userId: { eq: userId },
+        },
+      });
+      if (!isMember) {
+        return c.json({ message: "Forbidden" }, 403);
+      }
     }
 
     const liked = !!(await db.query.postLikesTable.findFirst({

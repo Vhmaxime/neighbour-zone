@@ -5,6 +5,7 @@ import {
   marketplaceItemsTable,
   marketplaceApplicationsTable,
   marketplaceSavesTable,
+  communityMembersTable,
 } from "../database/schema.js";
 import { eq, and } from "drizzle-orm";
 import { zValidator } from "@hono/zod-validator";
@@ -283,6 +284,18 @@ marketplaceRouter.get(
 
     if (!marketplace) {
       return c.json({ message: "Marketplace item not found" }, 404);
+    }
+
+    if (marketplace.communityId) {
+      const isMember = await db.query.communityMembersTable.findFirst({
+        where: {
+          communityId: { eq: marketplace.communityId },
+          userId: { eq: userId },
+        },
+      });
+      if (!isMember) {
+        return c.json({ message: "Forbidden" }, 403);
+      }
     }
 
     const applied = !!(await db.query.marketplaceApplicationsTable.findFirst({
