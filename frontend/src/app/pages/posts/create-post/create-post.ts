@@ -1,7 +1,7 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { PostService } from '../../../services/post';
 import { firstValueFrom } from 'rxjs';
 
@@ -11,13 +11,20 @@ import { firstValueFrom } from 'rxjs';
   templateUrl: './create-post.html',
   styleUrl: './create-post.css',
 })
-export class CreatePost {
+export class CreatePost implements OnInit {
   private fb = inject(FormBuilder);
   private postService = inject(PostService);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
   public isSubmitting = signal(false);
   public error = signal<string | null>(null);
+  public communityId = signal<string | null>(null);
+
+  ngOnInit() {
+    const cid = this.route.snapshot.queryParamMap.get('communityId');
+    if (cid) this.communityId.set(cid);
+  }
 
   // Initialize form with empty values
   public createForm = this.fb.nonNullable.group({
@@ -35,9 +42,17 @@ export class CreatePost {
     this.isSubmitting.set(true);
     this.error.set(null);
 
-    firstValueFrom(this.postService.createPost({ title, content }))
+    const communityId = this.communityId();
+
+    firstValueFrom(
+      this.postService.createPost({ title, content, ...(communityId ? { communityId } : {}) }),
+    )
       .then((data) => {
-        this.router.navigate(['/post', data.post.id]);
+        if (communityId) {
+          this.router.navigate(['/communities', communityId]);
+        } else {
+          this.router.navigate(['/post', data.post.id]);
+        }
       })
       .catch(() => {
         this.error.set('An unknown error occurred.');
