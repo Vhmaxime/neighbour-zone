@@ -40,7 +40,9 @@ marketplaceRouter.get(
     const { itemBy } = c.req.valid("query");
 
     const marketplace = await db.query.marketplaceItemsTable.findMany({
-      where: itemBy ? { userId: { eq: itemBy } } : undefined,
+      where: itemBy
+        ? { userId: itemBy, communityId: { isNull: true } }
+        : { communityId: { isNull: true } },
       columns: {
         userId: false,
       },
@@ -149,6 +151,7 @@ marketplaceRouter.post(
       lon,
       price,
       category,
+      communityId,
     } = c.req.valid("json");
 
     const { sub: userId } = c.get("jwtPayload");
@@ -165,6 +168,7 @@ marketplaceRouter.post(
         price: price ?? null,
         userId,
         category,
+        communityId: communityId ?? null,
       })
       .returning();
 
@@ -226,10 +230,8 @@ marketplaceRouter.post(
     const alreadyApplied =
       await db.query.marketplaceApplicationsTable.findFirst({
         where: {
-          AND: [
-            { marketplaceItemId: { eq: marketplaceItemId } },
-            { userId: { eq: userId } },
-          ],
+          marketplaceItemId: { eq: marketplaceItemId },
+          userId: { eq: userId },
         },
       });
 
@@ -285,19 +287,15 @@ marketplaceRouter.get(
 
     const applied = !!(await db.query.marketplaceApplicationsTable.findFirst({
       where: {
-        AND: [
-          { marketplaceItemId: { eq: marketplaceItemId } },
-          { userId: { eq: userId } },
-        ],
+        marketplaceItemId: { eq: marketplaceItemId },
+        userId: { eq: userId },
       },
     }));
 
     const saved = !!(await db.query.marketplaceSavesTable.findFirst({
       where: {
-        AND: [
-          { marketplaceItemId: { eq: marketplaceItemId } },
-          { userId: { eq: userId } },
-        ],
+        marketplaceItemId: { eq: marketplaceItemId },
+        userId: { eq: userId },
       },
     }));
 
@@ -343,10 +341,8 @@ marketplaceRouter.post(
 
     const existing = await db.query.marketplaceSavesTable.findFirst({
       where: {
-        AND: [
-          { marketplaceItemId: { eq: marketplaceItemId } },
-          { userId: { eq: userId } },
-        ],
+        marketplaceItemId: { eq: marketplaceItemId },
+        userId: { eq: userId },
       },
     });
 

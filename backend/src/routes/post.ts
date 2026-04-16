@@ -32,7 +32,9 @@ postRouter.get(
     const { postBy } = c.req.valid("query");
 
     const posts = await db.query.postsTable.findMany({
-      where: postBy ? { authorId: { eq: postBy } } : undefined,
+      where: postBy
+        ? { authorId: postBy, communityId: { isNull: true } }
+        : { communityId: { isNull: true } },
       columns: {
         authorId: false,
       },
@@ -82,7 +84,7 @@ postRouter.post(
     }
   }),
   async (c) => {
-    const { title, content } = c.req.valid("json");
+    const { title, content, communityId } = c.req.valid("json");
 
     const { sub: authorId } = c.get("jwtPayload");
 
@@ -92,6 +94,7 @@ postRouter.post(
         authorId,
         title,
         content,
+        communityId: communityId ?? null,
       })
       .returning();
 
@@ -185,9 +188,7 @@ postRouter.get(
     }
 
     const liked = !!(await db.query.postLikesTable.findFirst({
-      where: {
-        AND: [{ postId: { eq: postId } }, { userId: { eq: userId } }],
-      },
+      where: { postId: { eq: postId }, userId: { eq: userId } },
     }));
 
     if (post.author?.id === userId) {
@@ -325,9 +326,7 @@ postRouter.post(
     }
 
     const existing = await db.query.postLikesTable.findFirst({
-      where: {
-        AND: [{ postId: { eq: postId } }, { userId: { eq: userId } }],
-      },
+      where: { postId: { eq: postId }, userId: { eq: userId } },
     });
 
     if (existing) {
