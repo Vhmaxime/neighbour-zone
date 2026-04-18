@@ -50,7 +50,8 @@ export class EventDetails {
     this.error.set(null);
 
     firstValueFrom(this.eventService.getEvent(this.eventId))
-      .then((event) => {
+      .then((data) => {
+        const event = { ...data.event, liked: data.liked, likedBy: data.likedBy };
         this.event.set(event);
         this.titleService.setTitle(event.title);
       })

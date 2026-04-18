@@ -3,12 +3,7 @@
   <div class="backdrop"></div>
   }
 
-  <input
-    [formControl]="searchControl"
-    type="text"
-    placeholder="Search events or items..."
-    class="search-input"
-  />
+  <input [formControl]="searchControl" type="text" placeholder="Search events or items..." class="search-input" />
 
   @if (searchControl.value) {
   <div class="results-dropdown">

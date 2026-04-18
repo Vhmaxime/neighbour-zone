@@ -13,8 +13,6 @@ export interface User {
   role: UserRole;
   bio: string | null;
   phoneNumber: string;
-  createdAt: string;
-  updatedAt: string;
 }
 
 export interface UserPublic {
@@ -32,14 +30,13 @@ export interface CurrentUser {
   role: UserRole;
   bio: string | null;
   phoneNumber: string;
-  createdAt: string;
-  updatedAt: string;
 }
 
 export interface Post {
   id: string;
   title: string;
-  content?: string;
+  content: string | null;
+  communityId: string | null;
   createdAt: string;
   author: UserPublic;
   likes: number;
@@ -50,13 +47,14 @@ export interface Post {
 export interface Event {
   id: string;
   title: string;
-  description?: string;
+  description: string | null;
   placeDisplayName: string;
   placeId: number;
   lat: string;
   lon: string;
   dateTime: string;
   endAt: string | null;
+  communityId: string | null;
   createdAt: string;
   organizer: UserPublic;
   likes: number;
@@ -67,13 +65,14 @@ export interface Event {
 export interface MarketplaceItem {
   id: string;
   title: string;
-  description: string;
+  description: string | null;
   price: number | null;
   placeDisplayName: string;
   placeId: number;
   lat: string;
   lon: string;
   category: MarketplaceCategory;
+  communityId: string | null;
   createdAt: string;
   provider: UserPublic;
   applied: boolean;
@@ -177,6 +176,12 @@ export interface EventResponse {
   event: Event;
 }
 
+export interface EventDetailResponse {
+  event: Event;
+  liked: boolean;
+  likedBy?: UserPublic[];
+}
+
 export interface EventsResponse {
   events: Event[];
   count: number;
@@ -200,7 +205,7 @@ export interface FriendsResponse {
 export interface FriendshipResponse {
   friendship: {
     id: string;
-    createdAt: Date;
+    createdAt: string;
     userId1: string;
     userId2: string;
     status: 'pending' | 'accepted';
@@ -230,14 +235,14 @@ export interface EventSearchResult {
 export interface MarketplaceItemSearchResult {
   id: string;
   title: string;
-  description: string;
+  description: string | null;
 }
 
 export interface SearchResponse {
-  users: UserPublic[];
-  posts: Post[];
-  events: Event[];
-  marketplace: MarketplaceItem[];
+  users: UserSearchResult[];
+  posts: PostSearchResult[];
+  events: EventSearchResult[];
+  marketplace: MarketplaceItemSearchResult[];
 }
 
 // Community

@@ -93,7 +93,8 @@ export class EditEvent {
     this.isSuccess.set(false);
 
     firstValueFrom(this.eventService.getEvent(this.eventId))
-      .then((event) => {
+      .then((data) => {
+        const event = { ...data.event, liked: data.liked, likedBy: data.likedBy };
         if (this.user?.sub !== event.organizer.id) {
           this.router.navigate(['/not-found']);
           return;
@@ -118,7 +119,7 @@ export class EditEvent {
     const { title, description, placeDisplayName, dateTime, endAt, lat, lon, placeId } = event;
     this.eventForm.patchValue({
       title,
-      description,
+      description: description ?? undefined,
       placeDisplayName,
       dateTime,
       endAt: endAt ?? undefined,

@@ -1,6 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { CreateEventRequest, Event, EventResponse, EventsResponse } from '../types/api.types';
+import {
+  CreateEventRequest,
+  EventDetailResponse,
+  EventResponse,
+  EventsResponse,
+} from '../types/api.types';
 import { EnvironmentService } from './environment.service';
 
 @Injectable({
@@ -21,7 +26,7 @@ export class EventService {
   }
 
   public getEvent(eventId: string) {
-    return this.http.get<Event>(`${this.apiUrl}/event/${eventId}`);
+    return this.http.get<EventDetailResponse>(`${this.apiUrl}/event/${eventId}`);
   }
 
   public createEvent(data: CreateEventRequest) {
