@@ -93,7 +93,7 @@ export class MessagingService {
       }
 
       const message = await response.json();
-
+      
       // Add to local state
       const currentMessages = this.messagesSubject.value;
       this.messagesSubject.next([...currentMessages, message]);
