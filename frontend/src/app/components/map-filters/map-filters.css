@@ -1,6 +1,12 @@
 .map-filters {
   position: relative;
   width: max-content;
+  user-select: none;
+  will-change: transform;
+}
+
+.map-filters--dragging {
+  cursor: grabbing;
 }
 
 .filter-toggle {
@@ -14,7 +20,8 @@
   padding: 8px 12px;
   font-size: 0.85rem;
   font-weight: 600;
-  cursor: pointer;
+  cursor: grab;
+  touch-action: none;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
 }
 
