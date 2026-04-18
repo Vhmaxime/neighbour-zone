@@ -43,7 +43,7 @@
       @for (item of searchResults.marketplace ; track item.id) {
       <div class="result-item" (click)="onSelectMarketplace(item.id)">
         <span class="title">{{ item.title }}</span>
-        <span class="meta">{{ item.description.slice(0, 30) }}...</span>
+        <span class="meta">{{ (item.description || '').slice(0, 30) }}...</span>
       </div>
       }
     </div>
