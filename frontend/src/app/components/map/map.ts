@@ -94,6 +94,8 @@ export class MapComponent implements AfterViewInit, OnChanges, OnDestroy {
     if (!this.popupTemplate) return;
 
     const templateHtml = this.popupTemplate.nativeElement.innerHTML;
+    const supportsHover =
+      typeof window !== 'undefined' && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
     for (const event of this.events) {
       const lat = Number(event.lat);
@@ -112,6 +114,12 @@ export class MapComponent implements AfterViewInit, OnChanges, OnDestroy {
       })
         .addTo(this.map)
         .bindPopup(popupContent);
+
+      if (supportsHover) {
+        marker.off('click');
+        marker.on('mouseover', () => marker.openPopup());
+        marker.on('mouseout', () => marker.closePopup());
+      }
 
       this.markers.push(marker);
 

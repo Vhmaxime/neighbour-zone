@@ -1,0 +1,69 @@
+<div
+  #dragRoot
+  class="map-filters"
+  [class.map-filters--dragging]="isDragging()"
+  [style.transform]="'translate(' + dragOffset().x + 'px, ' + dragOffset().y + 'px)'"
+>
+  <button
+    type="button"
+    class="filter-toggle"
+    [attr.aria-expanded]="isOpen()"
+    aria-controls="map-filter-panel"
+    (pointerdown)="startDrag($event)"
+    (click)="onToggleClick()"
+  >
+    <span class="filter-toggle__label">Filters</span>
+    @if (activeCount() > 0) {
+      <span class="filter-toggle__badge">{{ activeCount() }}</span>
+    }
+  </button>
+
+  @if (isOpen()) {
+    <div id="map-filter-panel" class="filter-panel" role="group" aria-label="Map filters">
+      <p class="filter-panel__title">Filter map events</p>
+
+      <div class="filter-chips">
+        <button
+          type="button"
+          class="filter-chip"
+          [class.filter-chip--active]="state().upcoming"
+          (click)="toggleFilter('upcoming')"
+        >
+          Upcoming
+        </button>
+
+        <button
+          type="button"
+          class="filter-chip"
+          [class.filter-chip--active]="state().today"
+          (click)="toggleFilter('today')"
+        >
+          Today
+        </button>
+
+        <button
+          type="button"
+          class="filter-chip"
+          [class.filter-chip--active]="state().thisWeek"
+          (click)="toggleFilter('thisWeek')"
+        >
+          This Week
+        </button>
+
+        <button
+          type="button"
+          class="filter-chip"
+          [class.filter-chip--active]="state().liked"
+          (click)="toggleFilter('liked')"
+        >
+          Liked
+        </button>
+      </div>
+
+      <div class="filter-footer">
+        <span class="filter-count">{{ visibleCount() }} / {{ totalCount() }} visible</span>
+        <button type="button" class="reset-button" (click)="resetFilters()">Reset</button>
+      </div>
+    </div>
+  }
+</div>
