@@ -9,15 +9,17 @@ import {
   MarketplaceItemResponse,
   MarketplaceItemsResponse,
 } from '../types/api.types';
+import { EnvironmentService } from './environment.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MarketplaceService {
   // Localhost for development
-  private readonly apiUrl = 'https://neighbour-zone.vercel.app/api';
-
+  private envService: EnvironmentService = inject(EnvironmentService);
   private http = inject(HttpClient);
+
+  private readonly apiUrl = this.envService.getAPI_URL();
 
   public getMarketplaceItems(): Observable<MarketplaceItem[]> {
     return this.http
@@ -49,5 +51,13 @@ export class MarketplaceService {
 
   public applyForItem(itemId: string, data: CreateMarketplaceApplicationRequest) {
     return this.http.post<void>(`${this.apiUrl}/marketplace/${itemId}/apply`, data);
+  }
+
+  public saveItem(itemId: string) {
+    return this.http.post<{ saved: boolean }>(`${this.apiUrl}/marketplace/${itemId}/save`, {});
+  }
+
+  public getSavedItems() {
+    return this.http.get<MarketplaceItemsResponse>(`${this.apiUrl}/marketplace/saved`);
   }
 }

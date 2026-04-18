@@ -93,7 +93,7 @@ export class EditEvent {
     this.isSuccess.set(false);
 
     firstValueFrom(this.eventService.getEvent(this.eventId))
-      .then(({ event }) => {
+      .then((event) => {
         if (this.user?.sub !== event.organizer.id) {
           this.router.navigate(['/not-found']);
           return;

@@ -77,6 +77,7 @@ export interface MarketplaceItem {
   createdAt: string;
   provider: UserPublic;
   applied: boolean;
+  saved: boolean;
   applications?: MarketplaceApplication[];
 }
 
@@ -84,7 +85,7 @@ export interface MarketplaceApplication {
   id: string;
   message: string | null;
   createdAt: string;
-  applicant: UserPublic;
+  user: UserPublic;
 }
 
 // Request
@@ -106,6 +107,7 @@ export interface LoginRequest {
 export interface CreatePostRequest {
   title: string;
   content?: string;
+  communityId?: string;
 }
 
 export interface CreateEventRequest {
@@ -117,6 +119,7 @@ export interface CreateEventRequest {
   lon: string;
   dateTime: Date | string;
   endAt?: Date | string;
+  communityId?: string;
 }
 
 export interface CreateMarketplaceItemRequest {
@@ -128,6 +131,7 @@ export interface CreateMarketplaceItemRequest {
   lat: string;
   lon: string;
   category: MarketplaceCategory;
+  communityId?: string;
 }
 
 export interface CreateMarketplaceApplicationRequest {
@@ -234,4 +238,50 @@ export interface SearchResponse {
   posts: Post[];
   events: Event[];
   marketplace: MarketplaceItem[];
+}
+
+// Community
+export type CommunityMemberRole = 'admin' | 'member';
+
+export interface CommunityMember {
+  user: UserPublic;
+  role: CommunityMemberRole;
+  joinedAt: string;
+}
+
+export interface Community {
+  id: string;
+  name: string;
+  description: string | null;
+  creator: UserPublic;
+  members: CommunityMember[];
+  memberCount: number;
+  isMember: boolean;
+  role: CommunityMemberRole | null;
+  createdAt: string;
+}
+
+export interface CommunityListItem {
+  id: string;
+  name: string;
+  description: string | null;
+  creator: UserPublic;
+  memberCount: number;
+  isMember: boolean;
+  role: CommunityMemberRole | null;
+  createdAt: string;
+}
+
+export interface CreateCommunityRequest {
+  name: string;
+  description?: string;
+}
+
+export interface CommunityResponse {
+  community: Community;
+}
+
+export interface CommunitiesResponse {
+  communities: CommunityListItem[];
+  count: number;
 }

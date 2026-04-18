@@ -9,6 +9,7 @@ export const relations = defineRelations(schema, (r) => ({
     postLikes: r.many.postLikesTable(),
     eventLikes: r.many.eventLikesTable(),
     marketplaceApplications: r.many.marketplaceApplicationsTable(),
+    marketplaceSaves: r.many.marketplaceSavesTable(),
     eventAttendances: r.many.eventAttendanceTable(),
     friendshipsAsUser1: r.many.friendshipsTable({
       alias: "user1Friendships",
@@ -16,6 +17,8 @@ export const relations = defineRelations(schema, (r) => ({
     friendshipsAsUser2: r.many.friendshipsTable({
       alias: "user2Friendships",
     }),
+    communityMemberships: r.many.communityMembersTable(),
+    createdCommunities: r.many.communitiesTable(),
   },
   postsTable: {
     author: r.one.usersTable({
@@ -27,6 +30,11 @@ export const relations = defineRelations(schema, (r) => ({
       from: r.postsTable.id,
       to: r.postLikesTable.postId,
     }),
+    community: r.one.communitiesTable({
+      from: r.postsTable.communityId,
+      to: r.communitiesTable.id,
+      optional: true,
+    }),
   },
   marketplaceItemsTable: {
     provider: r.one.usersTable({
@@ -37,6 +45,15 @@ export const relations = defineRelations(schema, (r) => ({
     applications: r.many.marketplaceApplicationsTable({
       from: r.marketplaceItemsTable.id,
       to: r.marketplaceApplicationsTable.marketplaceItemId,
+    }),
+    saves: r.many.marketplaceSavesTable({
+      from: r.marketplaceItemsTable.id,
+      to: r.marketplaceSavesTable.marketplaceItemId,
+    }),
+    community: r.one.communitiesTable({
+      from: r.marketplaceItemsTable.communityId,
+      to: r.communitiesTable.id,
+      optional: true,
     }),
   },
   eventsTable: {
@@ -52,6 +69,11 @@ export const relations = defineRelations(schema, (r) => ({
     attendances: r.many.eventAttendanceTable({
       from: r.eventsTable.id,
       to: r.eventAttendanceTable.eventId,
+    }),
+    community: r.one.communitiesTable({
+      from: r.eventsTable.communityId,
+      to: r.communitiesTable.id,
+      optional: true,
     }),
   },
   friendshipsTable: {
@@ -141,6 +163,53 @@ export const relations = defineRelations(schema, (r) => ({
     event: r.one.eventsTable({
       from: r.eventAttendanceTable.eventId,
       to: r.eventsTable.id,
+      optional: false,
+    }),
+  },
+  marketplaceSavesTable: {
+    user: r.one.usersTable({
+      from: r.marketplaceSavesTable.userId,
+      to: r.usersTable.id,
+      optional: false,
+    }),
+    marketplaceItem: r.one.marketplaceItemsTable({
+      from: r.marketplaceSavesTable.marketplaceItemId,
+      to: r.marketplaceItemsTable.id,
+      optional: false,
+    }),
+  },
+  communitiesTable: {
+    creator: r.one.usersTable({
+      from: r.communitiesTable.creatorId,
+      to: r.usersTable.id,
+      optional: false,
+    }),
+    members: r.many.communityMembersTable({
+      from: r.communitiesTable.id,
+      to: r.communityMembersTable.communityId,
+    }),
+    posts: r.many.postsTable({
+      from: r.communitiesTable.id,
+      to: r.postsTable.communityId,
+    }),
+    events: r.many.eventsTable({
+      from: r.communitiesTable.id,
+      to: r.eventsTable.communityId,
+    }),
+    marketplaceItems: r.many.marketplaceItemsTable({
+      from: r.communitiesTable.id,
+      to: r.marketplaceItemsTable.communityId,
+    }),
+  },
+  communityMembersTable: {
+    community: r.one.communitiesTable({
+      from: r.communityMembersTable.communityId,
+      to: r.communitiesTable.id,
+      optional: false,
+    }),
+    user: r.one.usersTable({
+      from: r.communityMembersTable.userId,
+      to: r.usersTable.id,
       optional: false,
     }),
   },

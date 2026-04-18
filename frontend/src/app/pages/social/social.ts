@@ -69,7 +69,7 @@ interface Message {
                     {{ conv.createdAt | date: 'short' }}
                   </p>
                 </div>
-                <button 
+                <button
                   class="delete-conversation-btn"
                   (click)="deleteConversation($event, conv.id)"
                   title="Delete conversation"
@@ -106,11 +106,7 @@ interface Message {
       </div>
 
       <!-- New Chat Modal -->
-      <div
-        class="modal-overlay"
-        *ngIf="showNewChatModal"
-        (click)="closeNewChat()"
-      >
+      <div class="modal-overlay" *ngIf="showNewChatModal" (click)="closeNewChat()">
         <div class="modal-content" (click)="$event.stopPropagation()">
           <h2>Start New Chat</h2>
           <input
@@ -160,7 +156,7 @@ interface Message {
         align-items: center;
         padding: 20px;
         background: white;
-        border: 3px solid #D97757;
+        border: 3px solid #d97757;
         border-radius: 8px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         margin: 16px 16px 0 16px;
@@ -170,12 +166,12 @@ interface Message {
           font-size: 32px;
           font-weight: 700;
           font-family: 'DM Sans', sans-serif;
-          color: #1C1917;
+          color: #1c1917;
         }
 
         .new-chat-btn {
           padding: 8px 16px;
-          background-color: #D97757;
+          background-color: #d97757;
           color: white;
           border: none;
           border-radius: 4px;
@@ -195,7 +191,7 @@ interface Message {
         gap: 0;
         overflow: hidden;
         min-height: 0;
-        border: 3px solid #D97757;
+        border: 3px solid #d97757;
         border-radius: 8px;
         margin: 0 16px 16px 16px;
       }
@@ -204,7 +200,7 @@ interface Message {
         width: 320px;
         min-width: 320px;
         background: white;
-        border-right: 3px solid #D97757;
+        border-right: 3px solid #d97757;
         display: flex;
         flex-direction: column;
         overflow: hidden;
@@ -224,7 +220,7 @@ interface Message {
           }
 
           .conversation-count {
-            background: #D97757;
+            background: #d97757;
             color: white;
             border-radius: 12px;
             padding: 2px 8px;
@@ -274,7 +270,7 @@ interface Message {
 
           &.active {
             background-color: #e3f2fd;
-            border-left: 3px solid #D97757;
+            border-left: 3px solid #d97757;
             box-shadow: 0 2px 8px rgba(0, 123, 255, 0.15);
           }
 
@@ -282,7 +278,7 @@ interface Message {
             width: 44px;
             height: 44px;
             border-radius: 50%;
-            background: #D97757;
+            background: #d97757;
             color: white;
             display: flex;
             align-items: center;
@@ -319,8 +315,8 @@ interface Message {
 
           .delete-conversation-btn {
             background: white;
-            border: 2px solid #D97757;
-            color: #D97757;
+            border: 2px solid #d97757;
+            color: #d97757;
             cursor: pointer;
             font-size: 18px;
             padding: 6px;
@@ -399,7 +395,7 @@ interface Message {
 
           .new-chat-btn {
             padding: 10px 20px;
-            background-color: #D97757;
+            background-color: #d97757;
             color: white;
             border: none;
             border-radius: 4px;
@@ -435,7 +431,7 @@ interface Message {
           display: flex;
           flex-direction: column;
           box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-          border: 3px solid #D97757;
+          border: 3px solid #d97757;
 
           h2 {
             margin: 0 0 16px 0;
@@ -497,7 +493,7 @@ interface Message {
                 width: 40px;
                 height: 40px;
                 border-radius: 50%;
-                background: #D97757;
+                background: #d97757;
                 color: white;
                 display: flex;
                 align-items: center;
@@ -532,7 +528,7 @@ interface Message {
 
           .cancel-btn {
             padding: 10px 16px;
-            background: #D97757;
+            background: #d97757;
             border: none;
             border-radius: 4px;
             cursor: pointer;
@@ -561,7 +557,7 @@ export class SocialComponent implements OnInit, OnDestroy {
     private messagingService: MessagingService,
     private authService: AuthService,
     private cdr: ChangeDetectorRef,
-    private envService: EnvironmentService
+    private envService: EnvironmentService,
   ) {}
 
   async ngOnInit() {
@@ -587,14 +583,11 @@ export class SocialComponent implements OnInit, OnDestroy {
   async loadAllUsers() {
     try {
       // Fetch users from backend
-      const response = await fetch(
-        `${this.envService.getAPI_URL()}/api/user`,
-        {
-          headers: {
-            Authorization: `Bearer ${this.authService.getToken()}`,
-          },
-        }
-      );
+      const response = await fetch(`${this.envService.getAPI_URL()}/user`, {
+        headers: {
+          Authorization: `Bearer ${this.authService.getToken()}`,
+        },
+      });
 
       if (response.ok) {
         const data = await response.json();
@@ -620,8 +613,6 @@ export class SocialComponent implements OnInit, OnDestroy {
     return conversation.participant2?.username || 'Unknown';
   }
 
-
-
   selectConversation(conversation: Conversation) {
     this.selectedConversation = conversation;
     this.cdr.markForCheck();
@@ -641,7 +632,7 @@ export class SocialComponent implements OnInit, OnDestroy {
 
   async deleteConversation(event: Event, conversationId: string) {
     event.stopPropagation();
-    
+
     if (confirm('Are you sure you want to delete this conversation?')) {
       const success = await this.messagingService.deleteConversation(conversationId);
       if (success) {
@@ -655,9 +646,7 @@ export class SocialComponent implements OnInit, OnDestroy {
 
   async startChatWithUser(user: any) {
     try {
-      const conversation = await this.messagingService.getOrCreateConversation(
-        user.id
-      );
+      const conversation = await this.messagingService.getOrCreateConversation(user.id);
 
       if (conversation) {
         this.selectedConversation = conversation as Conversation;
@@ -683,9 +672,8 @@ export class SocialComponent implements OnInit, OnDestroy {
 
     this.filteredUsers = this.allUsers.filter(
       (user) =>
-        user.username
-          .toLowerCase()
-          .includes(this.searchQuery.toLowerCase()) && user.id !== this.currentUserId
+        user.username.toLowerCase().includes(this.searchQuery.toLowerCase()) &&
+        user.id !== this.currentUserId,
     );
     this.cdr.markForCheck();
   }

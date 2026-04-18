@@ -10,6 +10,7 @@ export const marketplaceItemSchema = z.object({
   lat: z.string().min(1),
   lon: z.string().min(1),
   category: z.enum(marketplaceCategoryEnum.enumValues).default("offered"),
+  communityId: z.uuid().optional(),
 });
 
 export const marketplaceApplicationSchema = z.object({

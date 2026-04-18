@@ -12,4 +12,5 @@ export const eventSchema = z.object({
     .datetime()
     .optional()
     .transform((str) => (str ? new Date(str) : undefined)),
+  communityId: z.uuid().optional(),
 });

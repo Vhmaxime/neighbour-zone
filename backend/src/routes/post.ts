@@ -1,7 +1,11 @@
 import { Hono } from "hono";
 import { Variables } from "../types/index.js";
 import { db } from "../database/index.js";
-import { postsTable, postLikesTable } from "../database/schema.js";
+import {
+  postsTable,
+  postLikesTable,
+  communityMembersTable,
+} from "../database/schema.js";
 import { eq, and } from "drizzle-orm";
 import { zValidator } from "@hono/zod-validator";
 import { postSchema } from "../schemas/post.js";
@@ -32,7 +36,9 @@ postRouter.get(
     const { postBy } = c.req.valid("query");
 
     const posts = await db.query.postsTable.findMany({
-      where: postBy ? { authorId: { eq: postBy } } : undefined,
+      where: postBy
+        ? { authorId: postBy, communityId: { isNull: true } }
+        : { communityId: { isNull: true } },
       columns: {
         authorId: false,
       },
@@ -82,7 +88,7 @@ postRouter.post(
     }
   }),
   async (c) => {
-    const { title, content } = c.req.valid("json");
+    const { title, content, communityId } = c.req.valid("json");
 
     const { sub: authorId } = c.get("jwtPayload");
 
@@ -92,6 +98,7 @@ postRouter.post(
         authorId,
         title,
         content,
+        communityId: communityId ?? null,
       })
       .returning();
 
@@ -113,6 +120,39 @@ postRouter.post(
     return c.json({ post }, 201);
   },
 );
+
+// Get all posts liked by the current user
+postRouter.get("/liked", async (c) => {
+  const { sub: userId } = c.get("jwtPayload");
+
+  const likedEntries = await db.query.postLikesTable.findMany({
+    where: { userId: { eq: userId } },
+    columns: { postId: true },
+  });
+
+  const postIds = likedEntries.map((e) => e.postId);
+
+  if (postIds.length === 0) {
+    return c.json({ posts: [], count: 0 }, 200);
+  }
+
+  const posts = await db.query.postsTable.findMany({
+    where: { id: { in: postIds } },
+    columns: { authorId: false },
+    with: {
+      author: { columns: { id: true, username: true } },
+    },
+    extras: {
+      likes: (table) =>
+        db.$count(postLikesTable, eq(table.id, postLikesTable.postId)),
+    },
+    orderBy: { createdAt: "desc" },
+  });
+
+  const result = posts.map((post) => ({ ...post, liked: true }));
+
+  return c.json({ posts: result, count: result.length }, 200);
+});
 
 // Get a single post by ID
 postRouter.get(
@@ -151,10 +191,20 @@ postRouter.get(
       return c.json({ message: "Post not found" }, 404);
     }
 
+    if (post.communityId) {
+      const isMember = await db.query.communityMembersTable.findFirst({
+        where: {
+          communityId: { eq: post.communityId },
+          userId: { eq: userId },
+        },
+      });
+      if (!isMember) {
+        return c.json({ message: "Forbidden" }, 403);
+      }
+    }
+
     const liked = !!(await db.query.postLikesTable.findFirst({
-      where: {
-        AND: [{ postId: { eq: postId } }, { userId: { eq: userId } }],
-      },
+      where: { postId: { eq: postId }, userId: { eq: userId } },
     }));
 
     if (post.author?.id === userId) {
@@ -292,9 +342,7 @@ postRouter.post(
     }
 
     const existing = await db.query.postLikesTable.findFirst({
-      where: {
-        AND: [{ postId: { eq: postId } }, { userId: { eq: userId } }],
-      },
+      where: { postId: { eq: postId }, userId: { eq: userId } },
     });
 
     if (existing) {

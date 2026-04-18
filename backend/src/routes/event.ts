@@ -1,7 +1,11 @@
 import { Hono } from "hono";
 import { Variables } from "../types/index.js";
 import { db } from "../database/index.js";
-import { eventLikesTable, eventsTable } from "../database/schema.js";
+import {
+  eventLikesTable,
+  eventsTable,
+  communityMembersTable,
+} from "../database/schema.js";
 import { eq, and } from "drizzle-orm";
 import { zValidator } from "@hono/zod-validator";
 import { idSchema } from "../schemas/index.js";
@@ -31,7 +35,9 @@ eventRouter.get(
     const { eventBy } = c.req.valid("query");
 
     const events = await db.query.eventsTable.findMany({
-      where: eventBy ? { userId: { eq: eventBy } } : undefined,
+      where: eventBy
+        ? { userId: eventBy, communityId: { isNull: true } }
+        : { communityId: { isNull: true } },
       columns: {
         userId: false,
       },
@@ -90,6 +96,7 @@ eventRouter.post(
       lat,
       lon,
       endAt,
+      communityId,
     } = c.req.valid("json");
 
     const { sub: userId } = c.get("jwtPayload");
@@ -106,6 +113,7 @@ eventRouter.post(
         lat,
         lon,
         endAt,
+        communityId: communityId ?? null,
       })
       .returning();
 
@@ -127,6 +135,39 @@ eventRouter.post(
     return c.json({ event }, 201);
   },
 );
+
+// Get all events liked by the current user
+eventRouter.get("/liked", async (c) => {
+  const { sub: userId } = c.get("jwtPayload");
+
+  const likedEntries = await db.query.eventLikesTable.findMany({
+    where: { userId: { eq: userId } },
+    columns: { eventId: true },
+  });
+
+  const eventIds = likedEntries.map((e) => e.eventId);
+
+  if (eventIds.length === 0) {
+    return c.json({ events: [], count: 0 }, 200);
+  }
+
+  const events = await db.query.eventsTable.findMany({
+    where: { id: { in: eventIds } },
+    columns: { userId: false },
+    with: {
+      organizer: { columns: { id: true, username: true } },
+    },
+    extras: {
+      likes: (table) =>
+        db.$count(eventLikesTable, eq(table.id, eventLikesTable.eventId)),
+    },
+    orderBy: { createdAt: "desc" },
+  });
+
+  const result = events.map((event) => ({ ...event, liked: true }));
+
+  return c.json({ events: result, count: result.length }, 200);
+});
 
 // Get a single event by ID
 eventRouter.get(
@@ -165,10 +206,20 @@ eventRouter.get(
       return c.json({ message: "Event not found" }, 404);
     }
 
+    if (event.communityId) {
+      const isMember = await db.query.communityMembersTable.findFirst({
+        where: {
+          communityId: { eq: event.communityId },
+          userId: { eq: userId },
+        },
+      });
+      if (!isMember) {
+        return c.json({ message: "Forbidden" }, 403);
+      }
+    }
+
     const liked = !!(await db.query.eventLikesTable.findFirst({
-      where: {
-        AND: [{ eventId: { eq: eventId } }, { userId: { eq: userId } }],
-      },
+      where: { eventId: { eq: eventId }, userId: { eq: userId } },
     }));
 
     if (event.organizer?.id === userId) {
@@ -306,9 +357,7 @@ eventRouter.post(
     }
 
     const existing = await db.query.eventLikesTable.findFirst({
-      where: {
-        AND: [{ eventId: { eq: eventId } }, { userId: { eq: userId } }],
-      },
+      where: { eventId: { eq: eventId }, userId: { eq: userId } },
     });
 
     if (existing) {

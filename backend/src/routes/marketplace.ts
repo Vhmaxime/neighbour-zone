@@ -4,8 +4,10 @@ import { db } from "../database/index.js";
 import {
   marketplaceItemsTable,
   marketplaceApplicationsTable,
+  marketplaceSavesTable,
+  communityMembersTable,
 } from "../database/schema.js";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import { zValidator } from "@hono/zod-validator";
 import { idSchema } from "../schemas/index.js";
 import {
@@ -39,7 +41,9 @@ marketplaceRouter.get(
     const { itemBy } = c.req.valid("query");
 
     const marketplace = await db.query.marketplaceItemsTable.findMany({
-      where: itemBy ? { userId: { eq: itemBy } } : undefined,
+      where: itemBy
+        ? { userId: itemBy, communityId: { isNull: true } }
+        : { communityId: { isNull: true } },
       columns: {
         userId: false,
       },
@@ -65,13 +69,22 @@ marketplaceRouter.get(
       },
     );
 
+    const savedItemIds = await db.query.marketplaceSavesTable.findMany({
+      where: { userId: { eq: userId } },
+      columns: {
+        marketplaceItemId: true,
+      },
+    });
+
     const marketplaceSet = marketplace.map((item) => {
       const applied = appliedItemIds.some(
         (application) => application.marketplaceItemId === item.id,
       );
+      const saved = savedItemIds.some((s) => s.marketplaceItemId === item.id);
       return {
         ...item,
         applied,
+        saved,
       };
     });
 
@@ -81,6 +94,44 @@ marketplaceRouter.get(
     );
   },
 );
+
+// Get all marketplace items saved by the current user
+marketplaceRouter.get("/saved", async (c) => {
+  const { sub: userId } = c.get("jwtPayload");
+
+  const savedEntries = await db.query.marketplaceSavesTable.findMany({
+    where: { userId: { eq: userId } },
+    columns: { marketplaceItemId: true },
+  });
+
+  const itemIds = savedEntries.map((e) => e.marketplaceItemId);
+
+  if (itemIds.length === 0) {
+    return c.json({ marketplace: [], count: 0 }, 200);
+  }
+
+  const items = await db.query.marketplaceItemsTable.findMany({
+    where: { id: { in: itemIds } },
+    columns: { userId: false },
+    with: {
+      provider: { columns: { id: true, username: true } },
+    },
+    orderBy: { createdAt: "desc" },
+  });
+
+  const appliedItemIds = await db.query.marketplaceApplicationsTable.findMany({
+    where: { userId: { eq: userId } },
+    columns: { marketplaceItemId: true },
+  });
+
+  const result = items.map((item) => ({
+    ...item,
+    applied: appliedItemIds.some((a) => a.marketplaceItemId === item.id),
+    saved: true,
+  }));
+
+  return c.json({ marketplace: result, count: result.length }, 200);
+});
 
 // Create a new marketplace item
 marketplaceRouter.post(
@@ -101,6 +152,7 @@ marketplaceRouter.post(
       lon,
       price,
       category,
+      communityId,
     } = c.req.valid("json");
 
     const { sub: userId } = c.get("jwtPayload");
@@ -117,6 +169,7 @@ marketplaceRouter.post(
         price: price ?? null,
         userId,
         category,
+        communityId: communityId ?? null,
       })
       .returning();
 
@@ -178,10 +231,8 @@ marketplaceRouter.post(
     const alreadyApplied =
       await db.query.marketplaceApplicationsTable.findFirst({
         where: {
-          AND: [
-            { marketplaceItemId: { eq: marketplaceItemId } },
-            { userId: { eq: userId } },
-          ],
+          marketplaceItemId: { eq: marketplaceItemId },
+          userId: { eq: userId },
         },
       });
 
@@ -235,12 +286,29 @@ marketplaceRouter.get(
       return c.json({ message: "Marketplace item not found" }, 404);
     }
 
+    if (marketplace.communityId) {
+      const isMember = await db.query.communityMembersTable.findFirst({
+        where: {
+          communityId: { eq: marketplace.communityId },
+          userId: { eq: userId },
+        },
+      });
+      if (!isMember) {
+        return c.json({ message: "Forbidden" }, 403);
+      }
+    }
+
     const applied = !!(await db.query.marketplaceApplicationsTable.findFirst({
       where: {
-        AND: [
-          { marketplaceItemId: { eq: marketplaceItemId } },
-          { userId: { eq: userId } },
-        ],
+        marketplaceItemId: { eq: marketplaceItemId },
+        userId: { eq: userId },
+      },
+    }));
+
+    const saved = !!(await db.query.marketplaceSavesTable.findFirst({
+      where: {
+        marketplaceItemId: { eq: marketplaceItemId },
+        userId: { eq: userId },
       },
     }));
 
@@ -264,10 +332,49 @@ marketplaceRouter.get(
         },
       );
 
-      return c.json({ ...marketplace, applied, applications }, 200);
+      return c.json({ ...marketplace, applied, saved, applications }, 200);
     }
 
-    return c.json({ ...marketplace, applied }, 200);
+    return c.json({ ...marketplace, applied, saved }, 200);
+  },
+);
+
+// Toggle save on a marketplace item
+marketplaceRouter.post(
+  "/:id/save",
+  zValidator("param", idSchema, (result, c) => {
+    if (!result.success) {
+      console.error("Validation error:", result.error);
+      return c.json({ message: "Invalid request data" }, 400);
+    }
+  }),
+  async (c) => {
+    const { id: marketplaceItemId } = c.req.valid("param");
+    const { sub: userId } = c.get("jwtPayload");
+
+    const existing = await db.query.marketplaceSavesTable.findFirst({
+      where: {
+        marketplaceItemId: { eq: marketplaceItemId },
+        userId: { eq: userId },
+      },
+    });
+
+    if (existing) {
+      await db
+        .delete(marketplaceSavesTable)
+        .where(
+          and(
+            eq(marketplaceSavesTable.userId, userId),
+            eq(marketplaceSavesTable.marketplaceItemId, marketplaceItemId),
+          ),
+        );
+    } else {
+      await db
+        .insert(marketplaceSavesTable)
+        .values({ userId, marketplaceItemId });
+    }
+
+    return c.json({ saved: !existing }, 200);
   },
 );
 
