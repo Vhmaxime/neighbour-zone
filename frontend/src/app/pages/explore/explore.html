@@ -9,8 +9,21 @@
     </div>
 
     <div class="relative flex-1 w-full overflow-hidden bg-gray-50">
+      <div class="absolute left-4 top-4 z-40">
+        <app-map-filters
+          [state]="mapFilters()"
+          [isOpen]="mapFiltersOpen()"
+          [activeCount]="activeMapFilterCount()"
+          [visibleCount]="filteredMapEvents().length"
+          [totalCount]="events().length"
+          (panelToggled)="toggleMapFiltersPanel()"
+          (stateChanged)="updateMapFilters($event)"
+          (resetClicked)="resetMapFilters()"
+        ></app-map-filters>
+      </div>
+
       <div class="absolute inset-0">
-        @if (events(); as events) {
+        @if (filteredMapEvents(); as events) {
           <app-map [events]="events" class="block w-full h-full"></app-map>
         }
       </div>
