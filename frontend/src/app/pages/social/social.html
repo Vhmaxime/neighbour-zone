@@ -1,0 +1,104 @@
+<div class="social-container">
+  <!-- Header -->
+  <div class="social-header">
+    <h1>Social</h1>
+    <button class="new-chat-btn" (click)="openNewChat()">+ New Chat</button>
+  </div>
+
+  <div class="social-content">
+    <!-- Conversations List -->
+    <div class="conversations-panel">
+      <div class="conversations-header">
+        <h2>Conversations</h2>
+      </div>
+
+      <div class="conversations-list">
+        <ng-container *ngIf="conversations.length > 0; else noConversations">
+          <div
+            *ngFor="let conv of conversations"
+            [class.active]="selectedConversation?.id === conv.id"
+            class="conversation-item"
+            (click)="selectConversation(conv)"
+          >
+            <div class="conversation-avatar">
+              {{ getOtherParticipantName(conv).charAt(0).toUpperCase() }}
+            </div>
+            <div class="conversation-info">
+              <h3 class="conversation-name">
+                {{ getOtherParticipantName(conv) }}
+              </h3>
+              <p class="conversation-date">
+                {{ conv.createdAt | date: 'short' }}
+              </p>
+            </div>
+            <button
+              class="delete-conversation-btn"
+              (click)="deleteConversation($event, conv.id)"
+              title="Delete conversation"
+            >
+              🗑️
+            </button>
+          </div>
+        </ng-container>
+        <ng-template #noConversations>
+          <div class="empty-state">
+            <p>No conversations yet</p>
+            <small>Start a new chat with a friend</small>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+
+    <!-- Chat Panel -->
+    <div class="chat-panel">
+      <ng-container *ngIf="selectedConversation; else noConversationSelected">
+        <app-chat
+          [conversationId]="selectedConversation.id"
+          [currentUserId]="currentUserId"
+        ></app-chat>
+      </ng-container>
+      <ng-template #noConversationSelected>
+        <div class="empty-chat-state">
+          <div class="empty-icon">💬</div>
+          <h2>Select a conversation</h2>
+          <p>Choose a conversation from the list to start messaging</p>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+
+  <!-- New Chat Modal -->
+  <div class="modal-overlay" *ngIf="showNewChatModal" (click)="closeNewChat()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <h2>Start New Chat</h2>
+      <input
+        type="text"
+        [(ngModel)]="searchQuery"
+        (input)="onSearchChange($event)"
+        placeholder="Search users by username..."
+        class="search-input"
+      />
+      <div class="search-results">
+        <ng-container *ngIf="filteredUsers.length > 0; else noResults">
+          <div
+            *ngFor="let user of filteredUsers"
+            class="user-result"
+            (click)="startChatWithUser(user)"
+          >
+            <div class="user-avatar">{{ user.username.charAt(0).toUpperCase() }}</div>
+            <div>
+              <h4>{{ user.username }}</h4>
+            </div>
+          </div>
+        </ng-container>
+        <ng-template #noResults>
+          <div class="empty-results">
+            <p *ngIf="searchQuery">No users found</p>
+            <p *ngIf="!searchQuery">Type to search for users</p>
+          </div>
+        </ng-template>
+      </div>
+      <button class="cancel-btn" (click)="closeNewChat()">Cancel</button>
+    </div>
+  </div>
+</div>
