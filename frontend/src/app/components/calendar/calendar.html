@@ -1,13 +1,13 @@
 <div class="w-full bg-surface rounded-xl shadow-[0_4px_20px_rgba(217,119,87,0.1)] overflow-hidden font-body border border-gray-100">
   
-  <div class="grid grid-cols-[45px_1fr_45px] items-center py-3.5 px-2.5 bg-accent min-h-[60px]">
-    <button (click)="prevMonth()" class="bg-white/20 hover:bg-white/35 text-[0.9rem] text-white w-[38px] h-[28px] flex items-center justify-center rounded-md transition-colors duration-200 justify-self-center cursor-pointer">
+  <div class="grid grid-cols-[50px_1fr_50px] items-center py-3.5 px-2.5 bg-accent min-h-[60px]">
+    <button (click)="prevMonth()" class="bg-white/20 hover:bg-white/35 text-white w-[44px] h-[34px] flex items-center justify-center rounded-md transition-colors duration-200 justify-self-center cursor-pointer relative z-50">
       &larr;
     </button>
     <h2 class="text-[0.85rem] font-bold text-white tracking-wide uppercase text-center whitespace-nowrap">
       {{ viewDate.toFormat('MMMM yyyy', { locale: 'en' }) }}
     </h2>
-    <button (click)="nextMonth()" class="bg-white/20 hover:bg-white/35 text-[0.9rem] text-white w-[38px] h-[28px] flex items-center justify-center rounded-md transition-colors duration-200 justify-self-center cursor-pointer">
+    <button (click)="nextMonth()" class="bg-white/20 hover:bg-white/35 text-white w-[44px] h-[34px] flex items-center justify-center rounded-md transition-colors duration-200 justify-self-center cursor-pointer relative z-50">
       &rarr;
     </button>
   </div>
@@ -19,9 +19,11 @@
   </div>
 
   <div class="grid grid-cols-7 grid-rows-6 p-2 h-[220px]">
+    
     <div
       *ngFor="let date of days; let i = index"
-      class="flex items-center justify-center relative cursor-pointer group hover:z-50"
+      class="flex items-center justify-center relative cursor-pointer group focus:outline-none"
+      (click)="toggleDate(date, $event)"
     >
       
       <span
@@ -29,7 +31,7 @@
         [ngClass]="{
           'bg-accent text-white font-bold shadow-[0_4px_10px_rgba(217,119,87,0.3)]': isToday(date),
           'text-gray-300 opacity-50': date.month !== viewDate.month && !isToday(date),
-          'text-gray-600 font-medium group-hover:bg-accent/10': date.month === viewDate.month && !isToday(date)
+          'text-gray-600 font-medium lg:group-hover:bg-accent/10': date.month === viewDate.month && !isToday(date)
         }"
       >
         {{ date.day }}
@@ -38,11 +40,13 @@
       <span class="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-accent z-20" *ngIf="hasEventOnDate(date)"></span>
 
       <div
-        class="absolute bottom-[calc(100%+10px)] min-w-[200px] max-w-[240px] bg-gradient-to-b from-white to-[#fffaf7] rounded-[14px] p-3 border border-accent/20 shadow-[0_20px_40px_rgba(0,0,0,0.12),0_4px_12px_rgba(217,119,87,0.12)] opacity-0 invisible pointer-events-none group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 translate-y-2 transition-all duration-200 z-30 before:absolute before:top-2.5 before:left-2.5 before:w-[3px] before:h-[calc(100%-20px)] before:rounded-full before:bg-gradient-to-b before:from-accent before:to-[#E6A28B] before:opacity-85 pl-6"
+        class="absolute bottom-[calc(100%+10px)] min-w-[200px] max-w-[240px] bg-gradient-to-b from-white to-[#fffaf7] rounded-[14px] p-3 border border-accent/20 shadow-[0_20px_40px_rgba(0,0,0,0.12),0_4px_12px_rgba(217,119,87,0.12)] transition-all duration-200 z-30 before:absolute before:top-2.5 before:left-2.5 before:w-[3px] before:h-[calc(100%-20px)] before:rounded-full before:bg-gradient-to-b before:from-accent before:to-[#E6A28B] before:opacity-85 pl-6 text-left"
         [ngClass]="{
            '-left-2.5 translate-x-0': (i % 7 === 0) || (i % 7 === 1),
            '-right-2.5 left-auto translate-x-0': (i % 7 === 5) || (i % 7 === 6),
-           'left-1/2 -translate-x-1/2': (i % 7 > 1) && (i % 7 < 5)
+           'left-1/2 -translate-x-1/2': (i % 7 > 1) && (i % 7 < 5),
+           'opacity-100 visible translate-y-0': activeDateISO === date.toISODate(),
+           'opacity-0 invisible translate-y-2 lg:group-hover:opacity-100 lg:group-hover:visible lg:group-hover:translate-y-0': activeDateISO !== date.toISODate()
          }"
         *ngIf="hasEventOnDate(date)"
       >
