@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 export interface MapFilterState {
   upcoming: boolean;
   today: boolean;
-  thisWeek: boolean;
+  friends: boolean;
   liked: boolean;
 }
 
