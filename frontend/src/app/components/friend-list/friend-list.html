@@ -1,5 +1,56 @@
-<div class="w-full bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden font-body">
-  <div class="flex border-b border-gray-100 bg-gray-50/50">
+<div class="w-full bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden font-body flex flex-col max-h-[600px]">
+  
+  <div class="p-3 border-b border-gray-100 bg-white relative z-20">
+    <div class="relative">
+      <input 
+        type="text" 
+        [value]="searchQuery()"
+        (input)="onSearchInput($event)"
+        placeholder="Find new friends..." 
+        class="w-full bg-gray-50 border border-gray-200 text-pri placeholder-gray-400 text-sm rounded-lg pl-9 pr-4 py-2.5 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all"
+      >
+      <svg class="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+      
+      @if (searchQuery().length > 0) {
+        <button (click)="clearSearch()" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-500 cursor-pointer bg-transparent border-none p-0 m-0">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+      }
+    </div>
+
+    @if (searchQuery().length > 0) {
+      <div class="absolute left-3 right-3 top-[calc(100%+4px)] bg-white border border-gray-100 rounded-lg shadow-xl overflow-hidden z-50 max-h-[250px] overflow-y-auto">
+        @if (isSearching()) {
+          <div class="p-4 text-center text-sec text-xs font-medium animate-pulse">Searching users...</div>
+        } @else if (searchResults().length > 0) {
+          <div class="flex flex-col divide-y divide-gray-50">
+            @for (user of searchResults(); track user.id) {
+              <div 
+                [routerLink]="['/user', user.id]" 
+                (click)="clearSearch()" 
+                class="flex items-center justify-between p-3 hover:bg-gray-50 transition-colors group cursor-pointer border-b border-gray-50 last:border-none"
+              >
+                <div class="flex items-center gap-3 overflow-hidden">
+                  <div class="w-8 h-8 rounded-full bg-accent flex items-center justify-center text-white font-bold text-xs shrink-0 shadow-sm">
+                    {{ user.username.charAt(0).toUpperCase() }}
+                  </div>
+                  <span class="font-bold text-pri text-sm truncate">{{ user.username }}</span>
+                </div>
+
+                <div (click)="$event.stopPropagation()" class="shrink-0 scale-90 origin-right">
+                  <app-friend-button [friendId]="user.id" />
+                </div>
+              </div>
+            }
+          </div>
+        } @else {
+          <div class="p-4 text-center text-sec text-xs font-medium">No users found for "{{ searchQuery() }}"</div>
+        }
+      </div>
+    }
+  </div>
+
+  <div class="flex border-b border-gray-100 bg-gray-50/50 shrink-0">
     @for (tab of tabs; track tab) {
       <button
         (click)="setActiveTab(tab)"
@@ -17,7 +68,7 @@
     }
   </div>
 
-  <div class="p-4">
+  <div class="p-4 overflow-y-auto custom-scrollbar flex-1 relative z-10">
     @if (isLoading()) {
       <div class="flex justify-center py-8">
          <svg class="animate-spin h-6 w-6 text-accent" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
@@ -38,7 +89,7 @@
           @if (friends()?.friends && friends()!.friends.length > 0) {
             @for (friend of friends()?.friends; track friend.id) {
               <div class="flex items-center justify-between p-3 bg-white border border-gray-100 rounded-xl shadow-sm">
-                <span class="font-bold text-pri text-sm">{{ friend.username }}</span>
+                <a [routerLink]="['/user', friend.id]" class="font-bold text-pri text-sm hover:text-accent transition-colors no-underline cursor-pointer">{{ friend.username }}</a>
                 @if (actionState() === 'deleting' && targetUserId() === friend.id) {
                   <span class="text-xs text-sec font-medium">Removing...</span>
                 } @else {
@@ -61,7 +112,7 @@
           @if (friends()?.requests && friends()!.requests.length > 0) {
             @for (request of friends()?.requests; track request.id) {
               <div class="flex items-center justify-between p-3 bg-white border border-gray-100 rounded-xl shadow-sm">
-                <span class="font-bold text-pri text-sm truncate mr-2">{{ request.username }}</span>
+                <a [routerLink]="['/user', request.id]" class="font-bold text-pri text-sm truncate mr-2 hover:text-accent transition-colors no-underline cursor-pointer">{{ request.username }}</a>
                 <div class="flex gap-1 shrink-0">
                   @if (actionState() === 'accepting' && targetUserId() === request.id) {
                     <span class="text-xs text-sec font-medium">Accepting...</span>
@@ -90,7 +141,7 @@
           @if (friends()?.sent && friends()!.sent.length > 0) {
             @for (request of friends()?.sent; track request.id) {
               <div class="flex items-center justify-between p-3 bg-white border border-gray-100 rounded-xl shadow-sm">
-                <span class="font-bold text-pri text-sm">{{ request.username }}</span>
+                <a [routerLink]="['/user', request.id]" class="font-bold text-pri text-sm hover:text-accent transition-colors no-underline cursor-pointer">{{ request.username }}</a>
                 @if (actionState() === 'cancelling' && targetUserId() === request.id) {
                   <span class="text-xs text-sec font-medium">Cancelling...</span>
                 } @else {
