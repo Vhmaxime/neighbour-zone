@@ -1,14 +1,14 @@
-<div class="flex w-full h-full bg-gray-100">
-  <main class="flex-1 flex flex-col min-w-0">
-    <div
-      class="bg-white border-b border-r border-gray-200 px-4 py-3 shadow-sm z-20 flex justify-center shrink-0 mr-4 rounded-tr-xl rounded-br-xl"
-    >
+<div class="flex flex-col lg:flex-row w-full lg:h-[calc(100vh-6rem)] bg-surface lg:bg-gray-100 rounded-2xl lg:overflow-hidden shadow-sm lg:border border-gray-200">
+  
+  <main class="flex-1 flex flex-col min-w-0 w-full">
+    
+    <div class="sticky top-16 lg:top-0 bg-white/95 backdrop-blur-sm border-b border-gray-200 px-4 py-3 shadow-sm z-40 flex justify-center shrink-0 w-full">
       <div class="w-full max-w-2xl">
         <app-explore-search class="block w-full"></app-explore-search>
       </div>
     </div>
 
-    <div class="relative flex-1 w-full overflow-hidden bg-gray-50" data-map-filter-boundary>
+    <div class="relative w-full h-[400px] lg:h-full lg:flex-1 bg-gray-50 z-10" data-map-filter-boundary>
       <div class="absolute left-4 top-4 z-40">
         <app-map-filters
           [state]="mapFilters()"
@@ -30,21 +30,20 @@
     </div>
   </main>
 
-  <aside class="w-80 bg-white border-l border-gray-200 flex flex-col shrink-0 z-30">
-    <div class="p-2 border-b border-gray-100">
-      <div
-        class="w-[90%] mx-auto bg-gray-50 rounded-xl border border-gray-100 overflow-hidden text-xs"
-      >
+  <aside class="w-full lg:w-80 bg-white border-t lg:border-t-0 lg:border-l border-gray-200 flex flex-col shrink-0 z-30">
+    <div class="p-6 lg:p-2 border-b border-gray-100">
+      <div class="w-full lg:w-[90%] mx-auto bg-main rounded-xl lg:border border-gray-100 overflow-hidden text-xs">
         @if (events(); as events) {
           <app-calendar [events]="events"></app-calendar>
         }
       </div>
     </div>
 
-    <div class="flex-1 flex flex-col min-h-0">
-      <div class="overflow-y-auto p-4 custom-scrollbar">
+    <div class="flex-1 flex flex-col lg:min-h-0">
+      <div class="overflow-y-auto p-4 lg:h-full custom-scrollbar">
         <app-friend-list></app-friend-list>
       </div>
     </div>
   </aside>
+
 </div>
