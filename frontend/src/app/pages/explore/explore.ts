@@ -6,8 +6,9 @@ import { Calendar } from '../../components/calendar/calendar';
 import { MapComponent } from '../../components/map/map';
 import { MapFilterState, MapFiltersComponent } from '../../components/map-filters/map-filters';
 import { EventService } from '../../services/event';
+import { FriendService } from '../../services/friend';
 import { firstValueFrom } from 'rxjs';
-import { Event } from '../../types/api.types';
+import { Event, UserPublic } from '../../types/api.types';
 
 @Component({
   selector: 'app-explore',
@@ -17,14 +18,18 @@ import { Event } from '../../types/api.types';
 })
 export class Explore {
   private eventService = inject(EventService);
+  private friendService = inject(FriendService);
   public events = signal<Event[]>([]);
   public mapFiltersOpen = signal(false);
   public mapFilters = signal<MapFilterState>({
     upcoming: false,
     today: false,
-    thisWeek: false,
+    friends: false,
     liked: false,
   });
+
+  public friends = signal<UserPublic[]>([]);
+  public friendsLoaded = signal(false);
 
   public activeMapFilterCount = computed(
     () => Object.values(this.mapFilters()).filter(Boolean).length,
@@ -33,41 +38,55 @@ export class Explore {
   public filteredMapEvents = computed(() => {
     const filters = this.mapFilters();
     const now = new Date();
+    let filtered = this.events();
 
-    return this.events().filter((event) => {
-      const eventDate = new Date(event.dateTime);
-      if (Number.isNaN(eventDate.getTime())) {
-        return false;
-      }
+    if (filters.upcoming) {
+      filtered = filtered.filter(event => {
+        const eventDate = new Date(event.dateTime);
+        return eventDate >= now;
+      });
+    }
 
-      if (filters.upcoming && eventDate < now) {
-        return false;
-      }
+    if (filters.today) {
+      filtered = filtered.filter(event => {
+        const eventDate = new Date(event.dateTime);
+        return this.isSameDay(eventDate, now);
+      });
+    }
 
-      if (filters.today && !this.isSameDay(eventDate, now)) {
-        return false;
-      }
+    if (filters.liked) {
+      filtered = filtered.filter(event => event.liked);
+    }
 
-      if (filters.thisWeek && !this.isInCurrentWeek(eventDate, now)) {
-        return false;
-      }
+    if (filters.friends) {
+      const friendIds = new Set(this.friends().map(f => f.id));
+      filtered = filtered.filter(event => friendIds.has(event.organizer.id));
+    }
 
-      if (filters.liked && !event.liked) {
-        return false;
-      }
-
-      return true;
-    });
+    return filtered;
   });
 
   public isLoading = signal(true);
   public isError = signal(false);
 
+
   public toggleMapFiltersPanel() {
     this.mapFiltersOpen.update((open) => !open);
   }
 
-  public updateMapFilters(nextState: MapFilterState) {
+  public async updateMapFilters(nextState: MapFilterState) {
+    // If friends filter is toggled on and friends not loaded, fetch them
+    if (nextState.friends && !this.friendsLoaded()) {
+      try {
+        const resp = await firstValueFrom(this.friendService.getFriends());
+        this.friends.set(resp.friends);
+        this.friendsLoaded.set(true);
+      } catch (e) {
+        // fallback: no friends loaded
+        this.friends.set([]);
+        this.friendsLoaded.set(true);
+      }
+    }
     this.mapFilters.set(nextState);
   }
 
@@ -75,7 +94,7 @@ export class Explore {
     this.mapFilters.set({
       upcoming: false,
       today: false,
-      thisWeek: false,
+      friends: false,
       liked: false,
     });
   }
@@ -105,18 +124,5 @@ export class Explore {
       left.getMonth() === right.getMonth() &&
       left.getDate() === right.getDate()
     );
-  }
-
-  private isInCurrentWeek(date: Date, now: Date): boolean {
-    const start = new Date(now);
-    const dayIndex = (start.getDay() + 6) % 7;
-
-    start.setHours(0, 0, 0, 0);
-    start.setDate(start.getDate() - dayIndex);
-
-    const end = new Date(start);
-    end.setDate(end.getDate() + 7);
-
-    return date >= start && date < end;
   }
 }
