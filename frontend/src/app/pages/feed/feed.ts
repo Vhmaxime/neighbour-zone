@@ -12,8 +12,7 @@ import { LoadingComponent } from "../../components/loading-component/loading-com
   selector: 'app-feed',
   standalone: true,
   imports: [CommonModule, CreatePostButton, PostTile, LoadingComponent],
-  templateUrl: './feed.html',
-  styleUrl: './feed.css',
+  templateUrl: './feed.html'
 })
 export class Feed implements OnInit {
   private postService = inject(PostService);
