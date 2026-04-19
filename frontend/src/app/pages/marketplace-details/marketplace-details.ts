@@ -14,8 +14,7 @@ import { SaveButton } from '../../components/save-button/save-button';
   selector: 'app-marketplace-details',
   standalone: true,
   imports: [RouterLink, CurrencyPipe, DatePipe, BackButton, ActionButton, LoadingComponent, SaveButton],
-  templateUrl: './marketplace-details.html',
-  styleUrl: './marketplace-details.css',
+  templateUrl: './marketplace-details.html'
 })
 export class MarketplaceDetails {
   private activatedRoute = inject(ActivatedRoute);

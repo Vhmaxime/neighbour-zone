@@ -5,8 +5,7 @@ import { Location } from '@angular/common';
   selector: 'app-back-button',
   standalone: true,
   imports: [],
-  templateUrl: './back-button.html',
-  styleUrl: './back-button.css',
+  templateUrl: './back-button.html'
 })
 export class BackButton {
   private location = inject(Location);

@@ -10,8 +10,7 @@ import { firstValueFrom } from 'rxjs';
   selector: 'app-mail-view',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  templateUrl: './mail-view.html',
-  styleUrl: './mail-view.css',
+  templateUrl: './mail-view.html'
 })
 export class MailView {
   private mailService = inject(MailService);

@@ -9,8 +9,7 @@ import { ActionButton } from '../../components/action-button/action-button';
 @Component({
   selector: 'app-event-tile',
   imports: [DatePipe, LikeButton, ActionButton],
-  templateUrl: './event-tile.html',
-  styleUrl: './event-tile.css',
+  templateUrl: './event-tile.html'
 })
 export class EventTile {
   private router = inject(Router);

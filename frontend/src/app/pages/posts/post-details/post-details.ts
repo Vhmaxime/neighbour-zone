@@ -13,8 +13,7 @@ import { LoadingComponent } from '../../../components/loading-component/loading-
 @Component({
   selector: 'app-post-details',
   imports: [RouterLink, DatePipe, BackButton, ActionButton, LikeButton, LoadingComponent],
-  templateUrl: './post-details.html',
-  styleUrl: './post-details.css',
+  templateUrl: './post-details.html'
 })
 export class PostDetails {
   private activatedRoute = inject(ActivatedRoute);

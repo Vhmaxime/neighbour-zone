@@ -6,8 +6,7 @@ import { NominatimLocation } from '../../types/nominatom-types';
   selector: 'app-location-search-results',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './location-search-results.html',
-  styleUrl: './location-search-results.css',
+  templateUrl: './location-search-results.html'
 })
 export class LocationSearchResults {
   // Input: Receives the list of locations from the parent component

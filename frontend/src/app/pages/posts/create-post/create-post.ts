@@ -8,8 +8,7 @@ import { firstValueFrom } from 'rxjs';
 @Component({
   selector: 'app-create-post',
   imports: [CommonModule, ReactiveFormsModule, RouterLink],
-  templateUrl: './create-post.html',
-  styleUrl: './create-post.css',
+  templateUrl: './create-post.html'
 })
 export class CreatePost implements OnInit {
   private fb = inject(FormBuilder);
