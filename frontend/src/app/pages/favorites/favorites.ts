@@ -1,4 +1,5 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { Title } from '@angular/platform-browser';
 import { firstValueFrom } from 'rxjs';
 import { Post, Event as ApiEvent, MarketplaceItem } from '../../types/api.types';
@@ -16,9 +17,8 @@ type Tab = 'posts' | 'events' | 'marketplace';
 @Component({
   selector: 'app-favorites',
   standalone: true,
-  imports: [PostTile, EventTile, LoadingComponent, SaveButton, RouterLink],
-  templateUrl: './favorites.html',
-  styleUrl: './favorites.css',
+  imports: [CommonModule, PostTile, EventTile, LoadingComponent, SaveButton, RouterLink],
+  templateUrl: './favorites.html'
 })
 export class Favorites implements OnInit {
   private titleService = inject(Title);
