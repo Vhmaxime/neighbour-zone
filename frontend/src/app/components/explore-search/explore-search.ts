@@ -10,8 +10,7 @@ import { Event, MarketplaceItem, Post, SearchResponse, UserPublic } from '../../
   selector: 'app-explore-search',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './explore-search.html',
-  styleUrl: './explore-search.css',
+  templateUrl: './explore-search.html'
 })
 export class ExploreSearch {
   private router = inject(Router);
