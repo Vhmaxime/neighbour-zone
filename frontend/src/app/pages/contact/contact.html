@@ -1,40 +1,39 @@
-<!-- src/app/pages/contact/contact.html -->
-<div class="contact-page">
-  <div class="contact-container">
+<div class="flex justify-center min-h-[calc(100vh-8rem)] py-10 md:py-20 px-4 md:px-10 font-body">
+  <div class="w-full max-w-[800px] flex flex-col gap-7">
 
-    <header class="contact-header">
-      <h1 class="page-title">Contact</h1>
-      <p class="page-subtitle">
+    <header class="text-center">
+      <h1 class="text-3xl md:text-4xl font-extrabold text-pri font-heading mb-2.5">Contact</h1>
+      <p class="text-sec text-sm md:text-base leading-relaxed">
         Need help, have feedback, or want to get in touch? We’re here for you.
       </p>
     </header>
 
-    <section class="contact-card">
-      <h2 class="section-title">Get in touch with Neighbour Zone</h2>
+    <section class="bg-surface border border-gray-100 rounded-[20px] p-6 md:p-9 shadow-sm flex flex-col gap-4">
+      <h2 class="text-lg md:text-xl font-bold text-pri font-heading m-0">Get in touch with Neighbour Zone</h2>
 
-      <p class="text">
+      <p class="text-pri/90 text-sm md:text-base leading-relaxed m-0">
         Neighbour Zone is built to help neighbours connect, share, and support
         each other locally.  
         If you have a question, encountered an issue, or want to share feedback,
         feel free to contact us.
       </p>
 
-      <p class="text">
+      <p class="text-pri/90 text-sm md:text-base leading-relaxed m-0">
         We aim to respond as quickly as possible and usually reply within
-        <strong>1–2 business days</strong>.
+        <strong class="text-pri">1–2 business days</strong>.
       </p>
 
-      <div class="contact-highlight">
-        <span class="label">Email us at</span>
+      <div class="mt-3 p-4 rounded-2xl bg-gray-50/50 border border-gray-100 flex flex-col gap-1.5 items-center text-center">
+        <span class="text-xs text-sec font-medium">Email us at</span>
         <a
           href="mailto:support@neighbourzone.app"
-          class="contact-email"
+          class="text-base md:text-lg font-bold text-accent no-underline hover:underline transition-all"
         >
           support@neighbourzone.app
         </a>
       </div>
 
-      <p class="contact-note">
+      <p class="mt-2 text-xs text-sec font-medium text-center">
         Please include as much detail as possible in your message so we can help
         you efficiently.
       </p>
