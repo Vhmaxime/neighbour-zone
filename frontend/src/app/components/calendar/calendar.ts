@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { DateTime, Info } from 'luxon';
-import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges, HostListener } from '@angular/core';
 
 @Component({
   selector: 'app-calendar',
@@ -15,6 +15,7 @@ export class Calendar implements OnInit, OnChanges {
   public viewDate: DateTime = DateTime.now();
   public days: DateTime[] = [];
   public weekDays: string[] = [];
+  public activeDateISO: string | null = null; // Houdt bij welke dag op mobiel is aangeklikt
 
   ngOnInit(): void {
     this.weekDays = Info.weekdays('short', { locale: 'en' });
@@ -69,5 +70,17 @@ export class Calendar implements OnInit, OnChanges {
   public nextMonth(): void {
     this.viewDate = this.viewDate.plus({ months: 1 });
     this.setupCalendar();
+  }
+
+  public toggleDate(date: DateTime, event: Event): void {
+    event.stopPropagation(); // Voorkomt dat de 'clickOutside' meteen afvuurt
+    const iso = date.toISODate();
+    this.activeDateISO = this.activeDateISO === iso ? null : iso;
+  }
+
+  // Sluit de tooltip als je ergens anders op de pagina klikt
+  @HostListener('document:click')
+  clickOutside() {
+    this.activeDateISO = null;
   }
 }
