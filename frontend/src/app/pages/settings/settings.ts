@@ -8,7 +8,6 @@ import { AccountDeletionForm } from '../../components/account-deletion-form/acco
   selector: 'app-settings',
   standalone: true,
   imports: [ProfileUpdateForm, PasswordUpdateForm, AccountDeletionForm],
-  templateUrl: './settings.html',
-  styleUrls: ['./settings.css'],
+  templateUrl: './settings.html'
 })
 export class Settings { }
