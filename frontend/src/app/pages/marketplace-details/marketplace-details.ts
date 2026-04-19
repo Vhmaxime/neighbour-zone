@@ -1,5 +1,5 @@
 import { Component, inject, signal, computed, OnInit } from '@angular/core';
-import { DatePipe, Location, CurrencyPipe } from '@angular/common';
+import { DatePipe, Location, CurrencyPipe, CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { MarketplaceItem } from '../../types/api.types';
@@ -13,7 +13,7 @@ import { SaveButton } from '../../components/save-button/save-button';
 @Component({
   selector: 'app-marketplace-details',
   standalone: true,
-  imports: [RouterLink, CurrencyPipe, DatePipe, BackButton, ActionButton, LoadingComponent, SaveButton],
+  imports: [CommonModule, RouterLink, CurrencyPipe, DatePipe, BackButton, ActionButton, LoadingComponent, SaveButton],
   templateUrl: './marketplace-details.html'
 })
 export class MarketplaceDetails {
