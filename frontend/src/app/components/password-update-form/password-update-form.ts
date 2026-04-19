@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule } from '@angular/common';CommonModule
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { UserService } from '../../services/user';
 import { firstValueFrom } from 'rxjs';
@@ -37,7 +37,6 @@ export class PasswordUpdateForm {
       .then(() => {
         this.isSuccess.set(true);
         this.error.set(null);
-        this.passwordForm.reset(); // Reset after success
       })
       .catch((error) => {
         if (error.error.message) {
