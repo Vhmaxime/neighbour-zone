@@ -13,8 +13,7 @@ export type ActionMode = 'edit' | 'delete';
 @Component({
   selector: 'app-action-button',
   imports: [CommonModule],
-  templateUrl: './action-button.html',
-  styleUrl: './action-button.css',
+  templateUrl: './action-button.html'
 })
 export class ActionButton {
   private authService = inject(AuthService);

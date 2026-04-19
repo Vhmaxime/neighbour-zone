@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth';
@@ -7,18 +7,24 @@ import { AuthService } from '../../services/auth';
   selector: 'app-navbar',
   standalone: true,
   imports: [RouterLink, CommonModule, RouterLinkActive],
-  templateUrl: './navbar.html',
-  styleUrls: ['./navbar.css'],
+  templateUrl: './navbar.html'
 })
 export class NavbarComponent {
-  // We make this public so the HTML can access 'isAuthenticated' and 'getUser'
   public authService = inject(AuthService);
-
   public today: Date = new Date();
-
+  
+  // Hiermee houden we bij of het mobiele menu open is
+  public isMobileMenuOpen = signal(false);
 
   public logout() {
     this.authService.logout();
-    
+  }
+
+  public toggleMobileMenu() {
+    this.isMobileMenuOpen.update(val => !val);
+  }
+
+  public closeMobileMenu() {
+    this.isMobileMenuOpen.set(false);
   }
 }

@@ -1,14 +1,13 @@
-<div class="max-w-6xl mx-auto py-8 px-4">
-  <div class="flex justify-between items-center mb-8">
+<div class="max-w-[1200px] mx-auto py-8 px-4 font-body">
+  
+  <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
     <div>
-      <h1 class="text-3xl font-bold text-gray-900">Events</h1>
-      <p class="text-gray-500 mt-1">See what's happening around you.</p>
+      <h1 class="text-3xl font-extrabold text-pri font-heading mb-1">Events</h1>
+      <p class="text-sec">See what's happening around you.</p>
     </div>
 
-    <a
-      routerLink="/events/create"
-      class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg shadow-sm transition"
-    >
+    <a routerLink="/events/create"
+      class="btn !m-0 text-center w-full sm:w-auto uppercase tracking-wider text-sm flex justify-center items-center h-12">
       + Create Event
     </a>
   </div>
@@ -16,44 +15,38 @@
   @if (isLoading()) {
     <app-loading-component />
   } @else {
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
       @for (event of events(); track event.id) {
         <div
-          class="bg-white border rounded-xl overflow-hidden shadow-sm hover:shadow-md transition flex flex-col h-full group cursor-pointer"
+          class="bg-surface border border-gray-100 rounded-[20px] overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col h-full group cursor-pointer"
           [routerLink]="['/events', event.id]"
         >
           <div class="p-5 flex flex-col flex-grow">
             <div class="flex justify-between items-start gap-3 mb-3">
-              <h3 class="font-bold text-gray-900 leading-tight line-clamp-2" [title]="event.title">
+              <h3 class="font-bold text-pri leading-tight line-clamp-2 font-heading text-lg" [title]="event.title">
                 {{ event.title }}
               </h3>
 
-              <div
-                class="shrink-0 bg-blue-50 px-2.5 py-1 rounded-md flex flex-col items-center text-blue-700 border border-blue-100"
-              >
-                <span class="text-[10px] uppercase font-bold leading-none">{{
-                  event.dateTime | date: 'MMM'
-                }}</span>
+              <div class="shrink-0 bg-main px-2.5 py-1.5 rounded-lg flex flex-col items-center text-accent border border-gray-100 min-w-[55px]">
+                <span class="text-[10px] uppercase font-bold leading-none mb-1">{{ event.dateTime | date: 'MMM' }}</span>
                 <span class="text-lg font-bold leading-none">{{ event.dateTime | date: 'd' }}</span>
               </div>
             </div>
 
-            <p class="text-gray-500 text-sm line-clamp-3 mb-4 flex-grow">
+            <p class="text-sec text-sm line-clamp-3 mb-4 flex-grow">
               {{ event.description }}
             </p>
 
-            <div
-              class="pt-3 border-t border-gray-100 mt-auto flex items-center text-xs text-gray-400 gap-1"
-            >
+            <div class="pt-3 border-t border-gray-50 mt-auto flex items-center text-xs text-sec gap-1.5">
               <span>📍</span>
-              <span class="truncate">{{ event.placeDisplayName }}</span>
+              <span class="truncate font-medium">{{ event.placeDisplayName }}</span>
             </div>
           </div>
         </div>
       } @empty {
-        <div class="col-span-full py-16 text-center">
-          <h3 class="text-lg font-medium text-gray-900">No events yet</h3>
-          <p class="text-gray-500">Be the first to organize something!</p>
+        <div class="col-span-full py-20 text-center bg-surface border border-gray-100 rounded-[20px]">
+          <h3 class="text-xl font-bold text-pri font-heading mb-2">No events yet</h3>
+          <p class="text-sec">Be the first to organize something!</p>
         </div>
       }
     </div>

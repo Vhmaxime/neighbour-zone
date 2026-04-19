@@ -7,8 +7,7 @@ import { firstValueFrom } from 'rxjs';
 @Component({
   selector: 'app-friend-button',
   imports: [],
-  templateUrl: './friend-button.html',
-  styleUrl: './friend-button.css',
+  templateUrl: './friend-button.html'
 })
 export class FriendButton {
   private friendService = inject(FriendService);

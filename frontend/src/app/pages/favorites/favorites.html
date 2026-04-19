@@ -1,117 +1,104 @@
-<div class="max-w-3xl mx-auto py-8 px-4">
-    <h1 class="text-3xl font-bold text-gray-900 mb-6">Favorites</h1>
+<div class="max-w-[1200px] mx-auto py-8 px-4 font-body">
+  
+  <div class="mb-8">
+    <h1 class="text-3xl font-extrabold text-pri font-heading mb-2">Favorites</h1>
+    <p class="text-sec">A collection of everything you've liked and saved.</p>
+  </div>
 
-    <!-- Tabs -->
-    <div class="flex border-b border-gray-200 mb-6">
-        <button (click)="setTab('posts')" class="px-5 py-3 text-sm font-semibold transition-colors border-b-2 -mb-px"
-            [class.border-blue-600]="activeTab() === 'posts'" [class.text-blue-600]="activeTab() === 'posts'"
-            [class.border-transparent]="activeTab() !== 'posts'" [class.text-gray-500]="activeTab() !== 'posts'"
-            [class.hover:text-gray-700]="activeTab() !== 'posts'">
-            Liked Posts
-        </button>
-        <button (click)="setTab('events')" class="px-5 py-3 text-sm font-semibold transition-colors border-b-2 -mb-px"
-            [class.border-blue-600]="activeTab() === 'events'" [class.text-blue-600]="activeTab() === 'events'"
-            [class.border-transparent]="activeTab() !== 'events'" [class.text-gray-500]="activeTab() !== 'events'"
-            [class.hover:text-gray-700]="activeTab() !== 'events'">
-            Liked Events
-        </button>
-        <button (click)="setTab('marketplace')"
-            class="px-5 py-3 text-sm font-semibold transition-colors border-b-2 -mb-px"
-            [class.border-blue-600]="activeTab() === 'marketplace'"
-            [class.text-blue-600]="activeTab() === 'marketplace'"
-            [class.border-transparent]="activeTab() !== 'marketplace'"
-            [class.text-gray-500]="activeTab() !== 'marketplace'"
-            [class.hover:text-gray-700]="activeTab() !== 'marketplace'">
-            Saved Items
-        </button>
-    </div>
+  <div class="flex overflow-x-auto custom-scrollbar border-b border-gray-100 mb-8 gap-2 pb-1">
+    <button (click)="setTab('posts')" 
+      class="px-5 py-3 font-bold text-sm whitespace-nowrap border-b-2 transition-colors !bg-transparent !m-0"
+      [ngClass]="activeTab() === 'posts' ? 'border-accent text-accent' : 'border-transparent text-sec hover:text-pri'">
+      Liked Posts ({{ likedPosts().length }})
+    </button>
+    <button (click)="setTab('events')" 
+      class="px-5 py-3 font-bold text-sm whitespace-nowrap border-b-2 transition-colors !bg-transparent !m-0"
+      [ngClass]="activeTab() === 'events' ? 'border-accent text-accent' : 'border-transparent text-sec hover:text-pri'">
+      Liked Events ({{ likedEvents().length }})
+    </button>
+    <button (click)="setTab('marketplace')" 
+      class="px-5 py-3 font-bold text-sm whitespace-nowrap border-b-2 transition-colors !bg-transparent !m-0"
+      [ngClass]="activeTab() === 'marketplace' ? 'border-accent text-accent' : 'border-transparent text-sec hover:text-pri'">
+      Saved Items ({{ savedItems().length }})
+    </button>
+  </div>
 
-    <!-- Liked Posts -->
-    @if (activeTab() === 'posts') {
+  @if (activeTab() === 'posts') {
     @if (isLoadingPosts()) {
-    <app-loading-component />
+      <div class="flex justify-center py-12"><app-loading-component /></div>
     } @else if (likedPosts().length === 0) {
-    <div class="text-center py-16 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
-        <p class="text-gray-500 font-medium">You haven't liked any posts yet.</p>
-    </div>
+      <div class="text-center py-20 bg-surface border border-gray-100 rounded-[20px]">
+          <p class="text-sec font-medium">You haven't liked any posts yet.</p>
+      </div>
     } @else {
-    <div class="flex flex-col gap-4">
-        @for (post of likedPosts(); track post.id) {
-        <app-post-tile [post]="post" (deleted)="handlePostDeleted($event)" />
-        }
-    </div>
+      <div class="flex flex-col gap-6 max-w-2xl mx-auto">
+          @for (post of likedPosts(); track post.id) {
+            <app-post-tile [post]="post" (deleted)="handlePostDeleted($event)" />
+          }
+      </div>
     }
-    }
+  }
 
-    <!-- Liked Events -->
-    @if (activeTab() === 'events') {
+  @if (activeTab() === 'events') {
     @if (isLoadingEvents()) {
-    <app-loading-component />
+      <div class="flex justify-center py-12"><app-loading-component /></div>
     } @else if (likedEvents().length === 0) {
-    <div class="text-center py-16 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
-        <p class="text-gray-500 font-medium">You haven't liked any events yet.</p>
-    </div>
+      <div class="text-center py-20 bg-surface border border-gray-100 rounded-[20px]">
+          <p class="text-sec font-medium">You haven't liked any events yet.</p>
+      </div>
     } @else {
-    <div class="flex flex-col gap-3">
-        @for (event of likedEvents(); track event.id) {
-        <app-event-tile [event]="event" />
-        }
-    </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          @for (event of likedEvents(); track event.id) {
+            <app-event-tile [event]="event" />
+          }
+      </div>
     }
-    }
+  }
 
-    <!-- Saved Marketplace Items -->
-    @if (activeTab() === 'marketplace') {
+  @if (activeTab() === 'marketplace') {
     @if (isLoadingMarketplace()) {
-    <app-loading-component />
+      <div class="flex justify-center py-12"><app-loading-component /></div>
     } @else if (savedItems().length === 0) {
-    <div class="text-center py-16 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
-        <p class="text-gray-500 font-medium">You haven't saved any marketplace items yet.</p>
-    </div>
+      <div class="text-center py-20 bg-surface border border-gray-100 rounded-[20px]">
+          <p class="text-sec font-medium">You haven't saved any marketplace items yet.</p>
+      </div>
     } @else {
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        @for (item of savedItems(); track item.id) {
-        <div class="bg-white border rounded-xl overflow-hidden shadow-sm hover:shadow-md transition flex flex-col h-full cursor-pointer"
-            [routerLink]="['/marketplace', item.id]">
-            <div class="p-5 flex flex-col flex-grow">
-                <div class="flex justify-between items-start gap-3 mb-3">
-                    <div class="flex-1 min-w-0">
-                        <span
-                            class="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full mb-1.5 inline-block"
-                            [class.bg-green-100]="item.category === 'offered'"
-                            [class.text-green-700]="item.category === 'offered'"
-                            [class.bg-orange-100]="item.category === 'wanted'"
-                            [class.text-orange-700]="item.category === 'wanted'">
-                            {{ item.category }}
-                        </span>
-                        <h3 class="font-bold text-gray-900 leading-tight line-clamp-2">{{ item.title }}</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          @for (item of savedItems(); track item.id) {
+            <div class="bg-surface border border-gray-100 rounded-[20px] overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col h-full group cursor-pointer"
+                [routerLink]="['/marketplace', item.id]">
+                <div class="p-5 flex flex-col flex-grow">
+                    <div class="flex justify-between items-start gap-3 mb-3">
+                        <div class="flex-1 min-w-0">
+                            <span class="text-[10px] font-bold tracking-wider uppercase px-2.5 py-1 rounded-full mb-2 inline-block"
+                                [ngClass]="{
+                                      'bg-green-50 text-green-700 border border-green-200': item.category === 'offered',
+                                      'bg-orange-50 text-accent border border-orange-200': item.category === 'wanted'
+                                    }">
+                                {{ item.category }}
+                            </span>
+                            <h3 class="font-bold text-pri leading-tight line-clamp-2 font-heading text-lg">{{ item.title }}</h3>
+                        </div>
+                        <div class="shrink-0 bg-main px-3 py-1.5 rounded-lg border border-gray-100 text-center min-w-[60px]">
+                            <div class="text-sm font-bold text-pri leading-none">
+                                @if (item.price) { €{{ item.price }} } @else { <span class="text-green-600">Free</span> }
+                            </div>
+                        </div>
                     </div>
-                    <div
-                        class="shrink-0 bg-gray-50 px-2 py-1.5 rounded-md border border-gray-100 text-center min-w-[60px]">
-                        <div class="text-sm font-bold text-gray-900 leading-none">
-                            @if (item.price) {
-                            €{{ item.price }}
-                            } @else {
-                            <span class="text-green-600">Free</span>
-                            }
+                    <p class="text-sec text-sm line-clamp-3 mb-4 flex-grow">{{ item.description }}</p>
+                    <div class="pt-3 border-t border-gray-50 mt-auto flex items-center justify-between text-xs text-sec">
+                        <div class="flex items-center gap-1.5 truncate">
+                            <span>📍</span>
+                            <span class="truncate font-medium">{{ item.placeDisplayName }}</span>
+                        </div>
+                        <div (click)="$event.stopPropagation()">
+                            <app-save-button [id]="item.id" [isSaved]="item.saved" />
                         </div>
                     </div>
                 </div>
-                <p class="text-gray-500 text-sm line-clamp-3 mb-4 flex-grow">{{ item.description }}</p>
-                <div
-                    class="pt-3 border-t border-gray-100 mt-auto flex items-center justify-between text-xs text-gray-400">
-                    <div class="flex items-center gap-1 truncate">
-                        <span>📍</span>
-                        <span class="truncate">{{ item.placeDisplayName }}</span>
-                    </div>
-                    <div (click)="$event.stopPropagation()">
-                        <app-save-button [id]="item.id" [isSaved]="item.saved" />
-                    </div>
-                </div>
             </div>
-        </div>
-        }
-    </div>
+          }
+      </div>
     }
-    }
+  }
 </div>

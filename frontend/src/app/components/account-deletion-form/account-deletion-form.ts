@@ -9,8 +9,7 @@ import { CommonModule } from '@angular/common';
     selector: 'app-account-deletion-form',
     standalone: true,
     imports: [ReactiveFormsModule, CommonModule],
-    templateUrl: './account-deletion-form.html',
-    styleUrl: './account-deletion-form.css',
+    templateUrl: './account-deletion-form.html'
 })
 export class AccountDeletionForm {
     private formBuilder = inject(FormBuilder);

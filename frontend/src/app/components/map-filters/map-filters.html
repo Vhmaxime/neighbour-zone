@@ -1,32 +1,32 @@
 <div
   #dragRoot
-  class="map-filters"
-  [class.map-filters--dragging]="isDragging()"
+  class="relative w-max select-none will-change-transform"
+  [class.cursor-grabbing]="isDragging()"
   [style.transform]="'translate(' + dragOffset().x + 'px, ' + dragOffset().y + 'px)'"
 >
   <button
     type="button"
-    class="filter-toggle"
+    class="inline-flex items-center gap-2 border border-accent bg-white text-pri rounded-[10px] px-3 py-2 text-[0.85rem] font-semibold cursor-grab touch-none shadow-[0_8px_20px_rgba(0,0,0,0.08)] hover:bg-[#fff7f4]"
     [attr.aria-expanded]="isOpen()"
     aria-controls="map-filter-panel"
     (pointerdown)="startDrag($event)"
     (click)="onToggleClick()"
   >
-    <span class="filter-toggle__label">Filters</span>
+    <span>Filters</span>
     @if (activeCount() > 0) {
-      <span class="filter-toggle__badge">{{ activeCount() }}</span>
+      <span class="min-w-[20px] h-[20px] rounded-full bg-accent text-white inline-flex items-center justify-center text-[0.7rem] px-1.5">{{ activeCount() }}</span>
     }
   </button>
 
   @if (isOpen()) {
-    <div id="map-filter-panel" class="filter-panel" role="group" aria-label="Map filters">
-      <p class="filter-panel__title">Filter map events</p>
+    <div id="map-filter-panel" class="mt-2.5 w-[260px] border border-gray-200 rounded-xl bg-white p-3 shadow-[0_14px_32px_rgba(0,0,0,0.12)]" role="group" aria-label="Map filters">
+      <p class="text-[0.78rem] uppercase tracking-wider text-sec mb-2.5 font-bold">Filter map events</p>
 
-      <div class="filter-chips">
+      <div class="flex flex-wrap gap-2">
         <button
           type="button"
-          class="filter-chip"
-          [class.filter-chip--active]="state().upcoming"
+          class="border border-gray-200 rounded-full bg-gray-50 text-sec px-2.5 py-1.5 text-[0.78rem] font-semibold cursor-pointer hover:bg-gray-100"
+          [ngClass]="{'!border-accent !bg-[#fef2ed] !text-[#9a3412]': state().upcoming}"
           (click)="toggleFilter('upcoming')"
         >
           Upcoming
@@ -34,8 +34,8 @@
 
         <button
           type="button"
-          class="filter-chip"
-          [class.filter-chip--active]="state().today"
+          class="border border-gray-200 rounded-full bg-gray-50 text-sec px-2.5 py-1.5 text-[0.78rem] font-semibold cursor-pointer hover:bg-gray-100"
+          [ngClass]="{'!border-accent !bg-[#fef2ed] !text-[#9a3412]': state().today}"
           (click)="toggleFilter('today')"
         >
           Today
@@ -43,8 +43,8 @@
 
         <button
           type="button"
-          class="filter-chip"
-          [class.filter-chip--active]="state().thisWeek"
+          class="border border-gray-200 rounded-full bg-gray-50 text-sec px-2.5 py-1.5 text-[0.78rem] font-semibold cursor-pointer hover:bg-gray-100"
+          [ngClass]="{'!border-accent !bg-[#fef2ed] !text-[#9a3412]': state().thisWeek}"
           (click)="toggleFilter('thisWeek')"
         >
           This Week
@@ -52,17 +52,17 @@
 
         <button
           type="button"
-          class="filter-chip"
-          [class.filter-chip--active]="state().liked"
+          class="border border-gray-200 rounded-full bg-gray-50 text-sec px-2.5 py-1.5 text-[0.78rem] font-semibold cursor-pointer hover:bg-gray-100"
+          [ngClass]="{'!border-accent !bg-[#fef2ed] !text-[#9a3412]': state().liked}"
           (click)="toggleFilter('liked')"
         >
           Liked
         </button>
       </div>
 
-      <div class="filter-footer">
-        <span class="filter-count">{{ visibleCount() }} / {{ totalCount() }} visible</span>
-        <button type="button" class="reset-button" (click)="resetFilters()">Reset</button>
+      <div class="mt-3 flex items-center justify-between gap-2">
+        <span class="text-xs text-sec">{{ visibleCount() }} / {{ totalCount() }} visible</span>
+        <button type="button" class="!border-none !bg-transparent text-[#b45309] text-xs font-bold cursor-pointer hover:underline !p-0 !m-0" (click)="resetFilters()">Reset</button>
       </div>
     </div>
   }

@@ -25,8 +25,7 @@ type Tab = 'posts' | 'events' | 'marketplace';
     MarketplaceTile,
     BackButton,
   ],
-  templateUrl: './community-detail.html',
-  styleUrl: './community-detail.css',
+  templateUrl: './community-detail.html'
 })
 export class CommunityDetail implements OnInit {
   private route = inject(ActivatedRoute);

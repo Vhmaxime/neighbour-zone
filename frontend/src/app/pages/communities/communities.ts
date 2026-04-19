@@ -11,8 +11,7 @@ import { firstValueFrom } from 'rxjs';
   selector: 'app-communities',
   standalone: true,
   imports: [CommonModule, RouterLink, LoadingComponent],
-  templateUrl: './communities.html',
-  styleUrl: './communities.css',
+  templateUrl: './communities.html'
 })
 export class Communities implements OnInit {
   private communityService = inject(CommunityService);

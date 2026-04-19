@@ -8,8 +8,7 @@ import { ActionButton } from '../../components/action-button/action-button';
 @Component({
   selector: 'app-post-tile',
   imports: [DatePipe, RouterLink, LikeButton, ActionButton],
-  templateUrl: './post-tile.html',
-  styleUrl: './post-tile.css',
+  templateUrl: './post-tile.html'
 })
 export class PostTile {
   public post = input.required<P>();

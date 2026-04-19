@@ -10,8 +10,7 @@ import { PasswordValidation } from '../../components/password-validation/passwor
   selector: 'app-register',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterLink, PasswordValidation],
-  templateUrl: './register.html',
-  styleUrls: ['./register.css'],
+  templateUrl: './register.html'
 })
 export class Register {
   // Inject dependencies

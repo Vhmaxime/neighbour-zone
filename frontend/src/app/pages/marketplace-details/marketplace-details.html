@@ -1,91 +1,108 @@
-<div class="max-w-2xl mx-auto py-10 px-4">
-  <div class="flex items-center justify-between mb-8">
-    <app-back-button />
-
-    @if (item(); as data) {
-      <div class="flex items-center gap-3">
-        <app-save-button [id]="data.id" [isSaved]="data.saved" />
-        <app-action-button
-          [itemId]="data.id"
-          [authorId]="data.provider.id"
-          [itemType]="'marketplace'"
-          [routePath]="'marketplace'"
-          mode="edit"
-        />
-      </div>
-    }
-  </div>
-
+<div class="font-body">
   @if (isLoading()) {
-    <app-loading-component />
-  } @else if (isError()) {
-    <div class="text-center py-20 bg-red-50 rounded-3xl border border-red-100">
-      <p class="text-red-600 font-medium">Something went wrong while loading the item.</p>
+    <div class="flex justify-center py-20">
+      <app-loading-component />
     </div>
-  } @else if (item(); as data) {
-    <article class="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
-      <div class="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-6">
-        <div>
-          <div class="flex items-center gap-3 mb-3">
-            <span
-              class="px-3 py-1 text-xs font-bold uppercase tracking-wider rounded-full"
-              [class.bg-green-100]="data.category === 'offered'"
-              [class.text-green-700]="data.category === 'offered'"
-              [class.bg-blue-100]="data.category === 'wanted'"
-              [class.text-blue-700]="data.category === 'wanted'"
-            >
-              {{ data.category === 'offered' ? 'Offered' : 'Wanted' }}
-            </span>
-            <span class="text-gray-500 text-sm font-medium flex items-center gap-1">
-              📍 {{ data.placeDisplayName }}
-            </span>
-          </div>
-          <h1 class="text-3xl font-black text-gray-900 leading-tight">{{ data.title }}</h1>
-        </div>
+  }
 
-        <div class="shrink-0">
-          @if (data.price) {
-            <span class="text-3xl font-bold text-green-600 block">{{
-              data.price | currency: 'EUR'
-            }}</span>
-          } @else {
-            <span class="text-3xl font-bold text-green-600 block">Free</span>
-          }
-        </div>
-      </div>
+  @if (item(); as data) {
+    <div class="max-w-[800px] mx-auto py-8 md:py-10 px-4">
+      
+      <div class="flex items-center justify-between mb-6 md:mb-8">
+        <app-back-button />
 
-      <hr class="border-gray-100 mb-8" />
-
-      <p class="text-gray-700 leading-relaxed text-lg whitespace-pre-wrap mb-10">
-        {{ data.description }}
-      </p>
-
-      <div class="flex items-center justify-between pt-6 border-t border-gray-50">
         <div class="flex items-center gap-3">
-          <div
-            class="w-12 h-12 bg-gray-100 text-gray-600 rounded-full flex items-center justify-center font-bold text-xl"
-          >
-            {{ data.provider.username.charAt(0).toUpperCase() }}
+          <app-save-button [id]="data.id" [isSaved]="data.saved" />
+          <app-action-button
+            [itemId]="data.id"
+            [authorId]="data.provider.id"
+            [itemType]="'marketplace'"
+            [routePath]="'marketplace'"
+            mode="edit"
+          />
+        </div>
+      </div>
+
+      <article class="bg-surface rounded-[20px] p-6 md:p-8 shadow-sm border border-gray-100 flex flex-col gap-6">
+        
+        <div class="flex flex-col md:flex-row md:items-start justify-between gap-5">
+          <div class="flex-1">
+            <div class="flex items-center gap-3 mb-3 flex-wrap">
+              <span
+                class="px-3 py-1.5 text-xs font-bold uppercase tracking-wider rounded-lg border"
+                [ngClass]="{
+                  'bg-green-50 text-green-700 border-green-200': data.category === 'offered',
+                  'bg-orange-50 text-accent border-orange-200': data.category === 'wanted'
+                }"
+              >
+                {{ data.category === 'offered' ? 'Offered' : 'Wanted' }}
+              </span>
+              <span class="text-sec text-sm md:text-base font-medium flex items-center gap-1.5">
+                <span class="text-lg">📍</span> {{ data.placeDisplayName }}
+              </span>
+            </div>
+            <h1 class="text-2xl md:text-3xl font-extrabold text-pri font-heading leading-tight m-0">{{ data.title }}</h1>
           </div>
-          <div>
-            <p class="text-xs text-gray-400 uppercase font-bold mb-0.5">Sold by</p>
-            <a
-              [routerLink]="['/user', data.provider.id]"
-              class="font-bold text-blue-600 hover:underline hover:text-blue-800 transition-colors"
-            >
-              {{ data.provider.username }}
-            </a>
+
+          <div class="shrink-0 bg-main px-5 py-3 rounded-xl border border-gray-100 text-center flex flex-col justify-center min-w-[100px]">
+            @if (data.price) {
+              <span class="text-2xl font-black text-pri block">{{ data.price | currency: 'EUR' }}</span>
+            } @else {
+              <span class="text-2xl font-black text-green-600 block">Free</span>
+            }
           </div>
         </div>
 
-        <p class="text-xs text-gray-400 font-medium">
-          Posted {{ data.createdAt | date: 'mediumDate' }}
-        </p>
+        <div class="pt-2">
+          <h3 class="text-sm font-bold text-sec uppercase tracking-wider mb-2">Description</h3>
+          <p class="text-base md:text-lg text-pri/90 leading-relaxed whitespace-pre-wrap m-0">
+            {{ data.description }}
+          </p>
+        </div>
+
+        <div class="pt-6 border-t border-gray-50 mt-2 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-gray-200 text-sec rounded-full flex items-center justify-center font-bold text-lg shadow-sm">
+              {{ data.provider.username.charAt(0).toUpperCase() }}
+            </div>
+            <div class="flex flex-col">
+              <span class="text-xs text-sec font-medium leading-none mb-1">Sold by</span>
+              <a
+                [routerLink]="['/user', data.provider.id]"
+                class="text-sm font-bold text-pri hover:text-accent transition-colors leading-none no-underline"
+              >
+                {{ data.provider.username }}
+              </a>
+            </div>
+          </div>
+
+          <p class="text-xs text-sec font-medium m-0">
+            Posted {{ data.createdAt | date: 'mediumDate' }}
+          </p>
+        </div>
+      </article>
+    </div>
+  }
+
+  @if (isError()) {
+    <div class="max-w-[800px] mx-auto py-20 px-4 text-center">
+      <div class="bg-surface rounded-[20px] p-8 md:p-12 border border-gray-100 shadow-sm flex flex-col items-center gap-4">
+        <h2 class="text-xl md:text-2xl font-bold text-pri font-heading m-0">Oops!</h2>
+        <p class="text-sec m-0 max-w-md">Something went wrong while loading the item.</p>
+        <div class="mt-4">
+          <app-back-button />
+        </div>
       </div>
-    </article>
-  } @else {
-    <div class="text-center py-20 bg-gray-50 rounded-3xl border border-gray-200">
-      <p class="text-gray-500 font-medium">Item not found.</p>
+    </div>
+  } @else if (!isLoading() && !item() && !isError()) {
+    <div class="max-w-[800px] mx-auto py-20 px-4 text-center">
+      <div class="bg-surface rounded-[20px] p-8 md:p-12 border border-gray-100 shadow-sm flex flex-col items-center gap-4">
+        <h2 class="text-xl md:text-2xl font-bold text-pri font-heading m-0">Not Found</h2>
+        <p class="text-sec m-0 max-w-md">The marketplace item could not be found.</p>
+        <div class="mt-4">
+          <app-back-button />
+        </div>
+      </div>
     </div>
   }
 </div>

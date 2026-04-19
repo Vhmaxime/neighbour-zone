@@ -3,8 +3,7 @@ import { Component, input } from '@angular/core';
 @Component({
   selector: 'app-password-validation',
   imports: [],
-  templateUrl: './password-validation.html',
-  styleUrl: './password-validation.css',
+  templateUrl: './password-validation.html'
 })
 export class PasswordValidation {
   public value = input.required<string>();

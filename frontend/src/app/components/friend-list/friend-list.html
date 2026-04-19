@@ -1,123 +1,108 @@
-<div class="w-full bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
-  <div class="flex flex-col border-b border-gray-100">
+<div class="w-full bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden font-body">
+  <div class="flex border-b border-gray-100 bg-gray-50/50">
     @for (tab of tabs; track tab) {
       <button
         (click)="setActiveTab(tab)"
-        [class]="activeTab() === tab ? 'tab-button active' : 'tab-button'"
-        class="tab-button"
+        class="flex-1 py-3 px-2 transition-all border-b-2 text-sm cursor-pointer !m-0 !rounded-none !bg-transparent"
+        [ngClass]="activeTab() === tab ? '!border-accent !text-accent' : '!border-transparent !text-sec hover:!bg-gray-100 hover:!text-pri'"
       >
-        <div class="flex items-center justify-between w-full">
-          <span class="font-bold text-base">{{ tab }}</span>
-          <span>{{ badgeCounts()[tabs.indexOf(tab)] }}</span>
+        <div class="flex items-center justify-center gap-1.5">
+          <span class="font-bold">{{ tab }}</span>
+          <span class="text-[0.65rem] px-2 py-0.5 rounded-full font-bold transition-colors"
+                [ngClass]="activeTab() === tab ? 'bg-accent text-white' : 'bg-gray-200 text-sec'">
+            {{ badgeCounts()[tabs.indexOf(tab)] }}
+          </span>
         </div>
       </button>
     }
   </div>
 
-  <div class="p-6">
+  <div class="p-4">
     @if (isLoading()) {
-      <app-loading-component />
+      <div class="flex justify-center py-8">
+         <svg class="animate-spin h-6 w-6 text-accent" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+      </div>
     } @else if (error()) {
       <div class="text-center py-8">
         <div class="text-red-500 mb-4">
-          <svg class="w-12 h-12 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-            ></path>
+          <svg class="w-10 h-10 mx-auto mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
           </svg>
-          <p class="text-lg font-semibold">{{ error() }}</p>
+          <p class="text-sm font-semibold">{{ error() }}</p>
         </div>
       </div>
     } @else {
+      
       @if (activeTab() === 'Friends') {
-        <div class="space-y-4">
+        <div class="flex flex-col gap-2">
           @if (friends()?.friends && friends()!.friends.length > 0) {
             @for (friend of friends()?.friends; track friend.id) {
-              <div class="friend-item">
-                <div class="flex items-center justify-between gap-3">
-                  <span class="font-semibold text-gray-900">{{ friend.username }}</span>
-                  @if (actionState() === 'deleting' && targetUserId() === friend.id) {
-                    <span class="text-xs text-gray-500 p-2 m-2">Removing...</span>
-                  } @else {
-                    <button
-                      (click)="deleteFriend(friend.id)"
-                      class="text-xs! hover:underline! p-1! m-1! bg-transparent! text-red-500!"
-                    >
-                      remove
-                    </button>
-                  }
-                </div>
+              <div class="flex items-center justify-between p-3 bg-white border border-gray-100 rounded-xl shadow-sm">
+                <span class="font-bold text-pri text-sm">{{ friend.username }}</span>
+                @if (actionState() === 'deleting' && targetUserId() === friend.id) {
+                  <span class="text-xs text-sec font-medium">Removing...</span>
+                } @else {
+                  <button (click)="deleteFriend(friend.id)" class="!m-0 !p-1.5 text-xs font-bold !text-red-500 hover:!text-red-700 hover:!bg-red-50 rounded-lg transition-colors !bg-transparent !border-none cursor-pointer">
+                    Remove
+                  </button>
+                }
               </div>
             }
           } @else {
-            <div class="text-center py-8 text-gray-500">
-              <p class="text-lg font-semibold mb-2">No friends yet</p>
-              <p class="text-sm">Start adding friends to see them here</p>
+            <div class="text-center py-8 text-sec">
+              <p class="text-sm font-bold text-pri mb-1">No friends yet</p>
+              <p class="text-xs">Start adding friends to see them here</p>
             </div>
           }
         </div>
+      
       } @else if (activeTab() === 'Requests') {
-        <div class="space-y-4">
+        <div class="flex flex-col gap-2">
           @if (friends()?.requests && friends()!.requests.length > 0) {
             @for (request of friends()?.requests; track request.id) {
-              <div class="friend-item">
-                <div class="flex items-center justify-between gap-3">
-                  <span class="font-semibold text-gray-900">{{ request.username }}</span>
-                  <div>
-                    @if (actionState() === 'accepting' && targetUserId() === request.id) {
-                      <span class="text-xs text-gray-500 p-2 m-2">accepting...</span>
-                    } @else if (actionState() === 'rejecting' && targetUserId() === request.id) {
-                      <span class="text-xs text-gray-500 p-2 m-2">rejecting...</span>
-                    } @else {
-                      <button
-                        (click)="acceptRequest(request.id)"
-                        class="text-xs! hover:underline! p-1! m-1! bg-transparent! text-green-500!"
-                      >
-                        accept
-                      </button>
-                      <button
-                        (click)="rejectRequest(request.id)"
-                        class="text-xs! hover:underline! p-1! m-1! bg-transparent! text-red-500!"
-                      >
-                        reject
-                      </button>
-                    }
-                  </div>
-                </div>
-              </div>
-            }
-          } @else {
-            <div class="text-center py-8 text-gray-500">
-              <p class="text-lg font-semibold mb-2">No requests</p>
-            </div>
-          }
-        </div>
-      } @else if (activeTab() === 'Sent') {
-        <div class="space-y-4">
-          @if (friends()?.sent && friends()!.sent.length > 0) {
-            @for (request of friends()?.sent; track request.id) {
-              <div class="friend-item">
-                <div class="flex items-center justify-between gap-3">
-                  <span class="font-semibold text-gray-900">{{ request.username }}</span>
-                  @if (actionState() === 'cancelling' && targetUserId() === request.id) {
-                    <span class="text-xs text-gray-500 p-2 m-2">cancelling...</span>
+              <div class="flex items-center justify-between p-3 bg-white border border-gray-100 rounded-xl shadow-sm">
+                <span class="font-bold text-pri text-sm truncate mr-2">{{ request.username }}</span>
+                <div class="flex gap-1 shrink-0">
+                  @if (actionState() === 'accepting' && targetUserId() === request.id) {
+                    <span class="text-xs text-sec font-medium">Accepting...</span>
+                  } @else if (actionState() === 'rejecting' && targetUserId() === request.id) {
+                    <span class="text-xs text-sec font-medium">Rejecting...</span>
                   } @else {
-                    <button
-                      (click)="cancelSentRequest(request.id)"
-                      class="text-xs! hover:underline! p-1! m-1! bg-transparent! text-red-500!"
-                    >
-                      cancel
+                    <button (click)="acceptRequest(request.id)" class="!m-0 !p-1.5 text-xs font-bold !text-green-600 hover:!text-green-700 hover:!bg-green-50 rounded-lg transition-colors !bg-transparent !border-none cursor-pointer">
+                      Accept
+                    </button>
+                    <button (click)="rejectRequest(request.id)" class="!m-0 !p-1.5 text-xs font-bold !text-red-500 hover:!text-red-700 hover:!bg-red-50 rounded-lg transition-colors !bg-transparent !border-none cursor-pointer">
+                      Reject
                     </button>
                   }
                 </div>
               </div>
             }
           } @else {
-            <div class="text-center py-8 text-gray-500">
-              <p class="text-lg font-semibold mb-2">No sent requests</p>
+            <div class="text-center py-8 text-sec">
+              <p class="text-sm font-bold text-pri mb-1">No requests</p>
+            </div>
+          }
+        </div>
+
+      } @else if (activeTab() === 'Sent') {
+        <div class="flex flex-col gap-2">
+          @if (friends()?.sent && friends()!.sent.length > 0) {
+            @for (request of friends()?.sent; track request.id) {
+              <div class="flex items-center justify-between p-3 bg-white border border-gray-100 rounded-xl shadow-sm">
+                <span class="font-bold text-pri text-sm">{{ request.username }}</span>
+                @if (actionState() === 'cancelling' && targetUserId() === request.id) {
+                  <span class="text-xs text-sec font-medium">Cancelling...</span>
+                } @else {
+                  <button (click)="cancelSentRequest(request.id)" class="!m-0 !p-1.5 text-xs font-bold !text-red-500 hover:!text-red-700 hover:!bg-red-50 rounded-lg transition-colors !bg-transparent !border-none cursor-pointer">
+                    Cancel
+                  </button>
+                }
+              </div>
+            }
+          } @else {
+            <div class="text-center py-8 text-sec">
+              <p class="text-sm font-bold text-pri mb-1">No sent requests</p>
             </div>
           }
         </div>

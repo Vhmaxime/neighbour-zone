@@ -1,57 +1,73 @@
-<div class="search-container">
+<div class="relative w-full max-w-[700px] mx-auto font-body">
+  
   @if (searchControl.value) {
-  <div class="backdrop"></div>
+  <div class="fixed inset-0 bg-black/20 z-40 transition-opacity" (click)="searchControl.setValue('')"></div>
   }
 
-  <input [formControl]="searchControl" type="text" placeholder="Search events or items..." class="search-input" />
+  <input 
+    [formControl]="searchControl" 
+    type="text" 
+    placeholder="Search events or items..." 
+    class="w-full p-3.5 border border-gray-200 rounded-xl relative z-50 bg-white text-pri placeholder:text-gray-400 focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all shadow-sm" 
+  />
 
   @if (searchControl.value) {
-  <div class="results-dropdown">
+  <div class="absolute top-full left-0 right-0 bg-white border border-gray-100 shadow-xl z-50 max-h-[600px] overflow-y-auto rounded-xl mt-2 overflow-hidden">
+    
     @if (isSearching()) {
-    <div class="loading-state">Searching...</div>
-    } @else if (searchResults(); as searchResults) { @if (searchResults.users.length > 0) {
-    <div>
-      <div class="section-header">Users</div>
-      @for (user of searchResults.users; track user.id) {
-      <div class="result-item" (click)="onSelectUser(user.id)">
-        <span class="title">{{ user.username }}</span>
+    <div class="p-6 text-center text-sec animate-pulse">Searching...</div>
+    } @else if (searchResults(); as searchResults) { 
+      
+      @if (searchResults.users.length > 0) {
+      <div>
+        <div class="bg-main text-sec px-4 py-2 text-xs font-bold uppercase tracking-wider">Users</div>
+        @for (user of searchResults.users; track user.id) {
+        <div class="px-4 py-3 cursor-pointer flex justify-between items-center border-b border-gray-50 hover:bg-gray-50 transition-colors" (click)="onSelectUser(user.id)">
+          <span class="font-medium text-pri">{{ user.username }}</span>
+        </div>
+        }
       </div>
-      }
-    </div>
-    } @if (searchResults.posts.length > 0) {
-    <div>
-      <div class="section-header">Posts</div>
-      @for (post of searchResults.posts; track post.id) {
-      <div class="result-item" (click)="onSelectPost(post.id)">
-        <span class="title">{{ post.title }}</span>
+      } 
+      
+      @if (searchResults.posts.length > 0) {
+      <div>
+        <div class="bg-main text-sec px-4 py-2 text-xs font-bold uppercase tracking-wider">Posts</div>
+        @for (post of searchResults.posts; track post.id) {
+        <div class="px-4 py-3 cursor-pointer flex justify-between items-center border-b border-gray-50 hover:bg-gray-50 transition-colors" (click)="onSelectPost(post.id)">
+          <span class="font-medium text-pri">{{ post.title }}</span>
+        </div>
+        }
       </div>
-      }
-    </div>
-    } @if (searchResults.events.length > 0) {
-    <div>
-      <div class="section-header">Events</div>
-      @for (event of searchResults.events; track event.id) {
-      <div class="result-item" (click)="onSelectEvent(event.id)">
-        <span class="title">{{ event.title }}</span>
-        <span class="meta">{{ event.dateTime | date : 'short' }}</span>
+      } 
+      
+      @if (searchResults.events.length > 0) {
+      <div>
+        <div class="bg-main text-sec px-4 py-2 text-xs font-bold uppercase tracking-wider">Events</div>
+        @for (event of searchResults.events; track event.id) {
+        <div class="px-4 py-3 cursor-pointer flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 border-b border-gray-50 hover:bg-gray-50 transition-colors" (click)="onSelectEvent(event.id)">
+          <span class="font-medium text-pri truncate">{{ event.title }}</span>
+          <span class="text-xs text-sec whitespace-nowrap bg-gray-100 px-2 py-1 rounded-md">{{ event.dateTime | date : 'short' }}</span>
+        </div>
+        }
       </div>
-      }
-    </div>
-    } @if (searchResults.marketplace.length > 0) {
-    <div>
-      <div class="section-header">Marketplace</div>
-      @for (item of searchResults.marketplace ; track item.id) {
-      <div class="result-item" (click)="onSelectMarketplace(item.id)">
-        <span class="title">{{ item.title }}</span>
-        <span class="meta">{{ (item.description || '').slice(0, 30) }}...</span>
+      } 
+      
+      @if (searchResults.marketplace.length > 0) {
+      <div>
+        <div class="bg-main text-sec px-4 py-2 text-xs font-bold uppercase tracking-wider">Marketplace</div>
+        @for (item of searchResults.marketplace ; track item.id) {
+        <div class="px-4 py-3 cursor-pointer flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 border-b border-gray-50 hover:bg-gray-50 transition-colors" (click)="onSelectMarketplace(item.id)">
+          <span class="font-medium text-pri truncate">{{ item.title }}</span>
+          <span class="text-xs text-sec truncate max-w-[200px]">{{ (item.description || '').slice(0, 30) }}...</span>
+        </div>
+        }
       </div>
-      }
-    </div>
-    } @if ( searchResults.users.length === 0 && searchResults.posts.length === 0 &&
-    searchResults.events.length === 0 && searchResults.marketplace.length === 0 && !isSearching() )
-    {
-    <div class="no-results">No matches found.</div>
-    } }
+      } 
+      
+      @if ( searchResults.users.length === 0 && searchResults.posts.length === 0 && searchResults.events.length === 0 && searchResults.marketplace.length === 0 && !isSearching() ) {
+      <div class="p-8 text-center text-sec">No matches found.</div>
+      } 
+    }
   </div>
   }
 </div>

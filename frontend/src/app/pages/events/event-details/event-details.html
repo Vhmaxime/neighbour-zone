@@ -1,72 +1,87 @@
-@if (isLoading()) {
-  <app-loading-component />
-}
+<div class="font-body">
+  @if (isLoading()) {
+    <div class="flex justify-center py-20">
+      <app-loading-component />
+    </div>
+  }
 
-@if (event(); as e) {
-  <div class="max-w-2xl mx-auto py-10 px-4">
-    <div class="flex items-center justify-between mb-8">
-      <app-back-button />
+  @if (event(); as e) {
+    <div class="max-w-[800px] mx-auto py-8 md:py-10 px-4">
+      
+      <div class="flex items-center justify-between mb-6 md:mb-8">
+        <app-back-button />
 
-      <div class="flex items-center gap-3">
-        <app-action-button
-          [itemId]="e.id"
-          [authorId]="e.organizer.id"
-          [itemType]="'event'"
-          [routePath]="'events'"
-          mode="edit"
-        />
+        <div class="flex items-center gap-3">
+          <app-action-button
+            [itemId]="e.id"
+            [authorId]="e.organizer.id"
+            [itemType]="'event'"
+            [routePath]="'events'"
+            mode="edit"
+          />
+        </div>
+      </div>
+
+      <article class="bg-surface rounded-[20px] p-6 md:p-8 shadow-sm border border-gray-100 flex flex-col gap-6">
+        
+        <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+          <h1 class="text-2xl md:text-3xl font-extrabold text-pri font-heading leading-tight m-0">{{ e.title }}</h1>
+          <span class="shrink-0 self-start px-3 py-1.5 bg-orange-50 text-accent border border-orange-100 text-xs font-bold uppercase tracking-wider rounded-lg">
+            Event
+          </span>
+        </div>
+
+        <div class="flex flex-col gap-3 p-4 bg-gray-50/50 rounded-xl border border-gray-100">
+          <p class="text-pri font-medium flex items-center gap-3 m-0 text-sm md:text-base">
+            <span class="text-xl shrink-0">📅</span> 
+            <span>{{ e.dateTime | date: 'fullDate' }} <span class="text-sec ml-1">at {{ e.dateTime | date: 'shortTime' }}</span></span>
+          </p>
+          <p class="text-pri font-medium flex items-center gap-3 m-0 text-sm md:text-base">
+            <span class="text-xl shrink-0">📍</span> 
+            <span>{{ e.placeDisplayName }}</span>
+          </p>
+        </div>
+
+        <div class="pt-2">
+          <h3 class="text-sm font-bold text-sec uppercase tracking-wider mb-2">About this event</h3>
+          <p class="text-base md:text-lg text-pri/90 leading-relaxed whitespace-pre-wrap m-0">
+            {{ e.description }}
+          </p>
+        </div>
+
+        <div class="pt-6 border-t border-gray-50 mt-2 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-sec font-bold text-xs">
+              {{ e.organizer.username.charAt(0).toUpperCase() }}
+            </div>
+            <div class="flex flex-col">
+              <span class="text-xs text-sec font-medium leading-none mb-1">Organized by</span>
+              <a [routerLink]="['/user', e.organizer.id]" class="text-sm font-bold text-pri hover:text-accent transition-colors leading-none no-underline">
+                {{ e.organizer.username }}
+              </a>
+            </div>
+          </div>
+
+          <div class="shrink-0">
+            <app-like-button [type]="'event'" [id]="e.id" [isLiked]="e.liked" [likes]="e.likes" />
+          </div>
+        </div>
+      </article>
+
+    </div>
+  }
+  
+  @if (error()) {
+    <div class="max-w-[800px] mx-auto py-20 px-4 text-center">
+      <div class="bg-surface rounded-[20px] p-8 md:p-12 border border-gray-100 shadow-sm flex flex-col items-center gap-4">
+        <h2 class="text-xl md:text-2xl font-bold text-pri font-heading m-0">Oops! Something went wrong.</h2>
+        <p class="text-sec m-0 max-w-md">
+          {{ error() }}
+        </p>
+        <div class="mt-4">
+          <app-back-button />
+        </div>
       </div>
     </div>
-
-    <article class="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
-      <div class="flex items-center justify-between mb-6">
-        <h1 class="text-3xl font-black text-gray-900">{{ e.title }}</h1>
-        <span
-          class="px-3 py-1 bg-purple-100 text-purple-700 text-xs font-bold uppercase tracking-wider rounded-full"
-        >
-          Event
-        </span>
-      </div>
-
-      <div class="space-y-4 mb-8">
-        <p class="text-gray-700 flex items-center gap-2">
-          <span class="text-xl">📅</span> {{ e.dateTime | date: 'fullDate' }}
-        </p>
-        <p class="text-gray-700 flex items-center gap-2">
-          <span class="text-xl">📍</span> {{ e.placeDisplayName }}
-        </p>
-      </div>
-
-      <hr class="border-gray-100 mb-8" />
-
-      <p class="text-lg text-gray-700 leading-relaxed whitespace-pre-wrap mb-8">
-        {{ e.description }}
-      </p>
-
-      <div class="pt-6 border-t border-gray-50">
-        <small class="text-gray-500 font-medium">
-          Organized by:
-          <a
-            [routerLink]="['/user', e.organizer.id]"
-            class="text-blue-600 hover:text-blue-800 transition-colors"
-          >
-            {{ e.organizer.username }}
-          </a>
-        </small>
-
-        <app-like-button [type]="'event'" [id]="e.id" [isLiked]="e.liked" [likes]="e.likes" />
-      </div>
-    </article>
-  </div>
-}
-@if (error()) {
-  <div class="max-w-2xl mx-auto py-20 px-4 text-center">
-    <div class="bg-gray-50 rounded-3xl p-12 border-2 border-dashed border-gray-200">
-      <h2 class="text-xl font-bold text-gray-900 mb-2">Oops! Something went wrong.</h2>
-      <p class="text-gray-500 mb-8">
-        {{ error() }}
-      </p>
-      <app-back-button />
-    </div>
-  </div>
-}
+  }
+</div>

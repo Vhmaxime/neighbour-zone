@@ -7,8 +7,7 @@ import { firstValueFrom } from 'rxjs';
   selector: 'app-like-button',
   standalone: true,
   imports: [],
-  templateUrl: './like-button.html',
-  styleUrl: './like-button.css',
+  templateUrl: './like-button.html'
 })
 export class LikeButton {
   private postService = inject(PostService);

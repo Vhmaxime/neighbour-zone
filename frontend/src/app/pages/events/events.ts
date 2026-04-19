@@ -11,8 +11,7 @@ import { LoadingComponent } from '../../components/loading-component/loading-com
   selector: 'app-events',
   standalone: true,
   imports: [CommonModule, RouterLink, LoadingComponent],
-  templateUrl: './events.html',
-  styleUrl: './events.css',
+  templateUrl: './events.html'
 })
 export class Events {
   private eventService = inject(EventService);

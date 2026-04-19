@@ -11,8 +11,7 @@ import { SaveButton } from '../../components/save-button/save-button';
   selector: 'app-marketplace',
   standalone: true,
   imports: [CommonModule, RouterLink, LoadingComponent, SaveButton],
-  templateUrl: './marketplace.html',
-  styleUrl: './marketplace.css',
+  templateUrl: './marketplace.html'
 })
 export class Marketplace {
   private marketplaceService = inject(MarketplaceService);

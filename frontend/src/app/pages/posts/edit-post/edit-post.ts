@@ -14,8 +14,7 @@ import { Post } from '../../../types/api.types';
   selector: 'app-edit-post',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterLink, ActionButton, LoadingComponent],
-  templateUrl: './edit-post.html',
-  styleUrl: './edit-post.css',
+  templateUrl: './edit-post.html'
 })
 export class EditPost {
   // Injected services

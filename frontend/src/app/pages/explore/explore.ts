@@ -13,8 +13,7 @@ import { Event } from '../../types/api.types';
   selector: 'app-explore',
   standalone: true,
   imports: [CommonModule, ExploreSearch, FriendList, Calendar, MapComponent, MapFiltersComponent],
-  templateUrl: './explore.html',
-  styleUrls: ['./explore.css'],
+  templateUrl: './explore.html'
 })
 export class Explore {
   private eventService = inject(EventService);

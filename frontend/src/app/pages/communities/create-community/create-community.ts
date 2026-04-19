@@ -10,8 +10,7 @@ import { firstValueFrom } from 'rxjs';
   selector: 'app-create-community',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, BackButton],
-  templateUrl: './create-community.html',
-  styleUrl: './create-community.css',
+  templateUrl: './create-community.html'
 })
 export class CreateCommunity {
   private fb = inject(FormBuilder);

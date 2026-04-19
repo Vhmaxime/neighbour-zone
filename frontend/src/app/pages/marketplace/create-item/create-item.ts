@@ -14,8 +14,7 @@ import { LocationSearchResults } from '../../../components/location-search-bar/l
   selector: 'app-create-item',
   standalone: true,
   imports: [CommonModule, FormsModule, ReactiveFormsModule, BackButton, LocationSearchResults],
-  templateUrl: './create-item.html',
-  styleUrl: './create-item.css',
+  templateUrl: './create-item.html'
 })
 export class CreateItem {
   private fb = inject(FormBuilder);

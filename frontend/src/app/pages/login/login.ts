@@ -9,8 +9,7 @@ import { firstValueFrom } from 'rxjs';
   selector: 'app-login',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterLink],
-  templateUrl: './login.html',
-  styleUrls: ['./login.css'],
+  templateUrl: './login.html'
 })
 export class Login {
   // Inject dependencies

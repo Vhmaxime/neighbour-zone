@@ -1,51 +1,58 @@
-<div class="max-w-4xl mx-auto py-8 px-4">
-    <div class="flex items-center justify-between mb-6">
-        <h1 class="text-2xl font-bold text-gray-900">Communities</h1>
-        <a routerLink="/communities/create"
-            class="bg-[#D97757] text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-[#c0694a] transition-colors">
-            + New Community
-        </a>
+<div class="max-w-[1000px] mx-auto py-8 px-4 font-body">
+  
+  <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
+    <div>
+      <h1 class="text-3xl font-extrabold text-pri font-heading mb-1">Communities</h1>
+      <p class="text-sec">Join local groups and connect with neighbours.</p>
     </div>
 
-    @if (isLoading()) {
+    <a routerLink="/communities/create"
+      class="btn !m-0 text-center w-full sm:w-auto uppercase tracking-wider text-sm flex justify-center items-center h-12">
+      + New Community
+    </a>
+  </div>
+
+  @if (isLoading()) {
     <app-loading-component [message]="'Loading communities...'" />
-    } @else {
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+  } @else {
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         @for (community of communities(); track community.id) {
-        <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-5 flex flex-col gap-3">
-            <div class="flex items-start justify-between gap-2">
+        <div class="bg-surface border border-gray-100 rounded-[20px] shadow-sm p-6 flex flex-col gap-4 hover:shadow-md transition-all">
+            <div class="flex items-start justify-between gap-3">
                 <a [routerLink]="['/communities', community.id]"
-                    class="text-lg font-bold text-gray-900 hover:text-[#D97757] transition-colors truncate">
+                    class="text-xl font-bold text-pri font-heading hover:text-accent transition-colors truncate">
                     {{ community.name }}
                 </a>
-                @if (community.role === 'admin') {
-                <span class="text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full font-medium shrink-0">
-                    Admin
-                </span>
-                } @else if (community.isMember) {
-                <span class="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-medium shrink-0">
-                    Member
-                </span>
-                }
+                <div class="flex gap-1 shrink-0">
+                    @if (community.role === 'admin') {
+                    <span class="text-[10px] bg-amber-50 text-amber-700 border border-amber-100 px-2 py-1 rounded-full font-bold uppercase tracking-wider">
+                        Admin
+                    </span>
+                    } @else if (community.isMember) {
+                    <span class="text-[10px] bg-green-50 text-green-700 border border-green-100 px-2 py-1 rounded-full font-bold uppercase tracking-wider">
+                        Member
+                    </span>
+                    }
+                </div>
             </div>
 
             @if (community.description) {
-            <p class="text-sm text-gray-600 line-clamp-2">{{ community.description }}</p>
+            <p class="text-sec text-sm line-clamp-2 leading-relaxed">{{ community.description }}</p>
             }
 
-            <div class="flex items-center justify-between mt-auto pt-2 border-t border-gray-100">
-                <span class="text-xs text-gray-500">
-                    {{ community.memberCount }} {{ community.memberCount === 1 ? 'member' : 'members' }}
+            <div class="flex items-center justify-between mt-auto pt-4 border-t border-gray-50">
+                <span class="text-xs text-sec font-medium">
+                    {{ community.memberCount }} {{ community.memberCount === 1 ? 'neighbour' : 'neighbours' }}
                 </span>
 
                 @if (community.isMember) {
                 <a [routerLink]="['/communities', community.id]"
-                    class="text-sm font-medium text-[#D97757] hover:underline">
+                    class="text-sm font-bold text-accent hover:underline">
                     View →
                 </a>
                 } @else {
                 <button (click)="toggleMembership(community)" [disabled]="joiningId() === community.id"
-                    class="text-sm font-medium bg-gray-900 text-white px-3 py-1 rounded-lg hover:bg-gray-700 transition-colors disabled:opacity-50">
+                    class="!m-0 !py-2 !px-5 text-sm font-bold bg-pri text-white rounded-xl hover:bg-pri/90 transition-all disabled:opacity-50 cursor-pointer">
                     @if (joiningId() === community.id) {
                     Joining...
                     } @else {
@@ -56,13 +63,13 @@
             </div>
         </div>
         } @empty {
-        <div class="col-span-2 text-center py-16 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
-            <p class="text-gray-500 mb-4">No communities yet.</p>
-            <a routerLink="/communities/create" class="text-[#D97757] font-semibold hover:underline">
+        <div class="col-span-full py-20 text-center bg-surface border border-gray-100 rounded-[20px]">
+            <p class="text-sec mb-4 font-medium">No communities yet.</p>
+            <a routerLink="/communities/create" class="text-accent font-bold hover:underline">
                 Create the first one
             </a>
         </div>
         }
     </div>
-    }
+  }
 </div>

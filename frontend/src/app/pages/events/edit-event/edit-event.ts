@@ -27,8 +27,7 @@ import { NominatimService } from '../../../services/nominatim';
     ReactiveFormsModule,
     LocationSearchResults,
   ],
-  templateUrl: './edit-event.html',
-  styleUrl: './edit-event.html',
+  templateUrl: './edit-event.html'
 })
 export class EditEvent {
   // Injected services

@@ -35,8 +35,7 @@ interface Message {
   standalone: true,
   imports: [CommonModule, FormsModule, ChatComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './social.html',
-  styleUrl: './social.css',
+  templateUrl: './social.html'
 })
 export class SocialComponent implements OnInit, OnDestroy {
   conversations: Conversation[] = [];

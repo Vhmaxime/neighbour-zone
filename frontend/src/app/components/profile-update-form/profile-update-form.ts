@@ -1,4 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { UserService } from '../../services/user';
 import { firstValueFrom } from 'rxjs';
@@ -8,9 +9,8 @@ import { LoadingComponent } from '../loading-component/loading-component';
 @Component({
   selector: 'app-profile-update-form',
   standalone: true,
-  imports: [ReactiveFormsModule, LoadingComponent],
-  templateUrl: './profile-update-form.html',
-  styleUrl: './profile-update-form.css',
+  imports: [CommonModule, ReactiveFormsModule, LoadingComponent],
+  templateUrl: './profile-update-form.html'
 })
 export class ProfileUpdateForm {
   private formBuilder = inject(FormBuilder);

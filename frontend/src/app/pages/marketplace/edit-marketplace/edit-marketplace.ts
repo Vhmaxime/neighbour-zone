@@ -25,8 +25,7 @@ import { MarketplaceItem } from '../../../types/api.types';
     ReactiveFormsModule,
     LocationSearchResults,
   ],
-  templateUrl: './edit-marketplace.html',
-  styleUrl: './edit-marketplace.css',
+  templateUrl: './edit-marketplace.html'
 })
 export class EditMarketplace {
   // Injected services

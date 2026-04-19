@@ -22,8 +22,7 @@ import { LoadingComponent } from '../../../components/loading-component/loading-
     LikeButton,
     LoadingComponent,
   ],
-  templateUrl: './event-details.html',
-  styleUrl: './event-details.css',
+  templateUrl: './event-details.html'
 })
 export class EventDetails {
   // Inject dependencies

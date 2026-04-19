@@ -14,8 +14,7 @@ import { BackButton } from '../../../components/back-button/back-button';
   selector: 'app-create-event',
   standalone: true,
   imports: [CommonModule, FormsModule, ReactiveFormsModule, LocationSearchResults, BackButton],
-  templateUrl: './create-event.html',
-  styleUrl: './create-event.css',
+  templateUrl: './create-event.html'
 })
 export class CreateEvent {
   // Inject dependencies

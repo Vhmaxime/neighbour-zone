@@ -6,8 +6,7 @@ import { ActionButton } from '../../components/action-button/action-button';
 @Component({
   selector: 'app-marketplace-tile',
   imports: [ActionButton],
-  templateUrl: './marketplace-tile.html',
-  styleUrl: './marketplace-tile.css',
+  templateUrl: './marketplace-tile.html'
 })
 export class MarketplaceTile {
   public item = input.required<MarketplaceItem>();

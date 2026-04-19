@@ -12,8 +12,7 @@ export interface MapFilterState {
   selector: 'app-map-filters',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './map-filters.html',
-  styleUrl: './map-filters.css',
+  templateUrl: './map-filters.html'
 })
 export class MapFiltersComponent {
   @ViewChild('dragRoot', { static: true }) private dragRoot!: ElementRef<HTMLElement>;

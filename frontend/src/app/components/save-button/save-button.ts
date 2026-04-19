@@ -6,8 +6,7 @@ import { firstValueFrom } from 'rxjs';
   selector: 'app-save-button',
   standalone: true,
   imports: [],
-  templateUrl: './save-button.html',
-  styleUrl: './save-button.css',
+  templateUrl: './save-button.html'
 })
 export class SaveButton implements OnInit {
   private marketplaceService = inject(MarketplaceService);
