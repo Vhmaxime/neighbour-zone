@@ -1,40 +1,48 @@
 @if (!showConfirmation()) {
-<div class="danger-card">
-    <div class="danger-text">
-        <button type="button" class="btn-danger" (click)="initiateDelete()">Delete Account</button>
-        <span class="danger-desc">
-            Once you delete your account, all data will be permanently removed
-        </span>
+<div class="bg-red-50 border border-red-100 rounded-[20px] p-6 md:p-8 flex flex-col md:flex-row md:items-center justify-between gap-5 md:gap-6 w-full shadow-sm">
+    <div class="flex flex-col gap-1.5 order-2 md:order-1">
+      <h3 class="text-red-800 font-bold text-lg md:text-xl m-0 font-heading">Danger Zone</h3>
+      <p class="text-red-600/90 text-sm m-0 leading-relaxed max-w-md">Once you delete your account, all data will be permanently removed. This action cannot be undone.</p>
     </div>
+    
+    <button type="button" class="!m-0 bg-red-500 text-white font-bold px-6 py-3.5 h-12 rounded-xl hover:bg-red-600 transition-colors shrink-0 order-1 md:order-2 w-full md:w-auto uppercase tracking-wider text-sm shadow-sm" (click)="initiateDelete()">
+      Delete Account
+    </button>
 </div>
 } @else {
-<div class="danger-card" style="flex-direction: column; align-items: flex-start; gap: 16px;">
+<div class="bg-red-50 border border-red-100 rounded-[20px] p-6 md:p-8 flex flex-col gap-6 w-full shadow-sm">
 
     @if (isError()){
-    <div class="p-2 w-full mb-2 text-red-800 bg-red-100 border border-red-200 rounded-lg text-sm">
+    <div class="p-4 w-full bg-red-100 border border-red-200 text-red-800 rounded-xl text-sm font-medium">
         {{ isError() }}
     </div>
     }
 
-    <p class="text-red-600 text-sm font-bold">
-        Are you sure? This action cannot be undone.
-    </p>
+    <div class="flex flex-col gap-1.5">
+      <h3 class="text-red-800 font-bold text-lg md:text-xl m-0 font-heading">Are you absolutely sure?</h3>
+      <p class="text-red-600/90 text-sm m-0 leading-relaxed">
+          This will permanently delete your account and remove all your data from our servers. 
+      </p>
+    </div>
 
-    <form [formGroup]="deleteForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-4 w-full">
-        <div class="flex flex-col">
-            <label class="text-xs font-bold text-red-800 mb-1" for="confirmation">
+    <form [formGroup]="deleteForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-5 w-full">
+        <div class="flex flex-col gap-1.5">
+            <label class="text-sm font-bold text-red-800" for="confirmation">
                 Type <strong>DELETE</strong> to confirm
             </label>
             <input id="confirmation" type="text" formControlName="confirmation" placeholder="DELETE"
-                class="border border-red-300 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-red-500 bg-white" />
+                class="w-full p-3.5 border border-red-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500/30 transition-all font-body text-base bg-white placeholder:text-red-200 text-red-900" />
         </div>
 
-        <div class="flex gap-3">
-            <button type="submit" [disabled]="deleteForm.invalid || isLoading()" class="btn-danger">
-                @if (isLoading()) { Deleting... } @else { Confirm Delete }
+        <div class="flex flex-col md:flex-row gap-3 pt-2">
+            <button type="submit" [disabled]="deleteForm.invalid || isLoading()" class="!m-0 w-full md:w-auto min-w-[160px] h-12 flex justify-center items-center font-bold bg-red-600 text-white rounded-xl hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed uppercase tracking-wider text-sm shadow-sm">
+                @if (isLoading()) {
+                  <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                  Deleting...
+                } @else { Confirm Delete }
             </button>
             <button type="button" (click)="cancelDelete()"
-                class="bg-white border border-gray-300 text-gray-700 rounded-lg px-4 py-2 font-medium hover:bg-gray-50 transition-colors text-sm">
+                class="!m-0 w-full md:w-auto h-12 bg-white border border-gray-200 text-sec rounded-xl font-bold hover:bg-gray-50 hover:text-pri transition-colors text-sm uppercase tracking-wider px-6 shadow-sm">
                 Cancel
             </button>
         </div>
