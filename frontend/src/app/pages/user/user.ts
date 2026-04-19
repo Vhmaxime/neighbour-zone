@@ -1,5 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { CommonModule } from '@angular/common';
 import {
   UserPublic,
   PostsResponse,
@@ -21,12 +22,10 @@ import { LoadingComponent } from '../../components/loading-component/loading-com
 @Component({
   selector: 'app-user',
   standalone: true,
-  imports: [PostComponent, EventTile, MarketplaceTile, FriendButton, LoadingComponent],
-  templateUrl: './user.html',
-  styleUrl: './user.css',
+  imports: [CommonModule, RouterLink, PostComponent, EventTile, MarketplaceTile, FriendButton, LoadingComponent],
+  templateUrl: './user.html'
 })
 export class User {
-  // Injected services
   private activatedRoute = inject(ActivatedRoute);
   private router = inject(Router);
   private userService = inject(UserService);
@@ -40,6 +39,7 @@ export class User {
   public events = signal<EventsResponse | null>(null);
   public marketplaceItems = signal<MarketplaceItemsResponse | null>(null);
   public isLoading = signal(true);
+  public activeTab = signal<'posts' | 'events' | 'marketplace'>('posts');
   private userId: string = '';
 
   public ngOnInit() {

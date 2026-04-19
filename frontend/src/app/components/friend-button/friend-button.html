@@ -1,35 +1,30 @@
 @if (!isSelf()) {
-@if (isLoading()) {
-<button disabled class="bg-transparent! text-gray-400! text-sm! font-normal! p-1! cursor-not-allowed!">
-  Loading...
-</button>
-} @else if (friendship(); as friendship ) { @if (friendship.friendship.status === "accepted") {
-<button (click)="deleteFriend()"
-  class="bg-transparent! text-(--accent)! text-sm! font-normal! hover:text-(--accent-dark)! p-1!">
-  Remove
-</button>
-} @else if (friendship.friendship.status === "pending" && friendship.friendship.userId1 ===
-friendId()) {
-<div class="flex gap-2">
-  <button (click)="acceptFriendRequest()"
-    class="bg-transparent! text-green-500! text-sm! font-normal! hover:text-green-600! p-1!">
-    Accept
-  </button>
-  <button (click)="rejectFriendRequest()"
-    class="bg-transparent! text-red-600! text-sm! font-normal! hover:text-red-700! p-1!">
-    Reject
-  </button>
-</div>
-} @else if (friendship.friendship.status === "pending" && friendship.friendship.userId2 ===
-friendId()) {
-<button (click)="cancelFriendRequest()"
-  class="bg-transparent! text-(--accent)! text-sm! font-normal! hover:text-(--accent-dark)! p-1!">
-  Cancel
-</button>
-}} @else if (!isError()) {
-<button (click)="sendFriendRequest()"
-  class="bg-transparent! text-(--accent)! text-sm! font-normal! hover:text-(--accent-dark)! p-1!">
-  Add Friend
-</button>
-}
+  @if (isLoading()) {
+    <button disabled class="!bg-gray-50 !text-gray-400 !text-sm !font-bold !px-4 !py-2 !m-0 cursor-not-allowed border !border-gray-200 rounded-xl">
+      Loading...
+    </button>
+  } @else if (friendship(); as friendship) { 
+    @if (friendship.friendship.status === "accepted") {
+      <button (click)="deleteFriend()" class="!bg-white !text-red-500 !text-sm !font-bold hover:!bg-red-50 !px-4 !py-2 !m-0 border border-gray-200 rounded-xl transition-colors shadow-sm cursor-pointer">
+        Remove Friend
+      </button>
+    } @else if (friendship.friendship.status === "pending" && friendship.friendship.userId1 === friendId()) {
+      <div class="flex gap-2 w-full sm:w-auto">
+        <button (click)="acceptFriendRequest()" class="flex-1 sm:flex-none !bg-green-500 !text-white !text-sm !font-bold hover:!bg-green-600 !px-4 !py-2 !m-0 border-none rounded-xl transition-colors shadow-sm cursor-pointer">
+          Accept
+        </button>
+        <button (click)="rejectFriendRequest()" class="flex-1 sm:flex-none !bg-white !text-red-500 !text-sm !font-bold hover:!bg-red-50 !px-4 !py-2 !m-0 border border-gray-200 rounded-xl transition-colors shadow-sm cursor-pointer">
+          Reject
+        </button>
+      </div>
+    } @else if (friendship.friendship.status === "pending" && friendship.friendship.userId2 === friendId()) {
+      <button (click)="cancelFriendRequest()" class="!bg-white !text-sec !text-sm !font-bold hover:!bg-gray-50 hover:!text-pri !px-4 !py-2 !m-0 border border-gray-200 rounded-xl transition-colors shadow-sm cursor-pointer">
+        Cancel Request
+      </button>
+    }
+  } @else {
+    <button (click)="sendFriendRequest()" class="!bg-accent !text-white !text-sm !font-bold hover:!bg-[#c25a47] !px-4 !py-2 !m-0 border-none rounded-xl transition-colors shadow-sm cursor-pointer">
+      Add Friend
+    </button>
+  }
 }
