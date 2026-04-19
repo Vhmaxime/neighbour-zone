@@ -1,8 +1,12 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FriendsResponse } from '../../types/api.types';
+import { RouterLink } from '@angular/router';
+import { FriendsResponse, UserSearchResult } from '../../types/api.types';
 import { FriendService } from '../../services/friend';
-import { firstValueFrom } from 'rxjs';
+import { SearchService } from '../../services/search'; 
+import { firstValueFrom, Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { FriendButton } from '../../components/friend-button/friend-button';
 
 interface State {
   tabs: 'Friends' | 'Requests' | 'Sent';
@@ -11,11 +15,14 @@ interface State {
 
 @Component({
   selector: 'app-friend-list',
-  imports: [CommonModule],
+  standalone: true,
+  imports: [CommonModule, RouterLink, FriendButton],
   templateUrl: './friend-list.html'
 })
 export class FriendList {
   private friendService = inject(FriendService);
+  private searchService = inject(SearchService);
+
   public tabs: State['tabs'][] = ['Friends', 'Requests', 'Sent'];
   public friends = signal<FriendsResponse | null>(null);
   public isLoading = signal<boolean>(true);
@@ -25,8 +32,57 @@ export class FriendList {
   public activeTab = signal<State['tabs']>('Friends');
   public badgeCounts = signal<number[]>([]);
 
+  // --- Nieuwe Signals & Subject voor het Zoeken ---
+  public searchQuery = signal<string>('');
+  public searchResults = signal<UserSearchResult[]>([]);
+  public isSearching = signal<boolean>(false);
+  private searchSubject = new Subject<string>();
+
+  constructor() {
+    // Luister naar het typen, wacht 300ms, en zoek dan pas!
+    this.searchSubject.pipe(
+      debounceTime(300),
+      distinctUntilChanged()
+    ).subscribe(query => {
+      this.performSearch(query);
+    });
+  }
+
   public ngOnInit() {
     this.getFriends();
+  }
+
+  public onSearchInput(event: Event) {
+    const query = (event.target as HTMLInputElement).value;
+    this.searchQuery.set(query);
+    
+    if (query.trim().length === 0) {
+      this.searchResults.set([]);
+      this.isSearching.set(false);
+      return;
+    }
+    
+    this.isSearching.set(true);
+    this.searchSubject.next(query.trim());
+  }
+
+  private performSearch(query: string) {
+    // Zorg dat this.searchService.search overeenkomt met de methode in jouw service!
+    firstValueFrom(this.searchService.search(query))
+      .then((data) => {
+        this.searchResults.set(data.users || []);
+      })
+      .catch((error) => {
+        console.error('Error during search:', error);
+      })
+      .finally(() => {
+        this.isSearching.set(false);
+      });
+  }
+
+  public clearSearch() {
+    this.searchQuery.set('');
+    this.searchResults.set([]);
   }
 
   public getFriends() {
@@ -54,32 +110,24 @@ export class FriendList {
     this.actionState.set('deleting');
     this.targetUserId.set(friendId);
     firstValueFrom(this.friendService.deleteFriend(friendId))
-      .then(() => {
-        this.getFriends();
-      })
+      .then(() => this.getFriends())
       .catch((error) => {
         console.error(error);
         this.error.set('Something went wrong. Please try again later.');
       })
-      .finally(() => {
-        this.actionState.set(null);
-      });
+      .finally(() => this.actionState.set(null));
   }
 
   public acceptRequest(requestId: string) {
     this.actionState.set('accepting');
     this.targetUserId.set(requestId);
     firstValueFrom(this.friendService.acceptFriendRequest(requestId))
-      .then(() => {
-        this.getFriends();
-      })
+      .then(() => this.getFriends())
       .catch((error) => {
         console.error(error);
         this.error.set('Something went wrong. Please try again later.');
       })
-      .finally(() => {
-        this.actionState.set(null);
-      });
+      .finally(() => this.actionState.set(null));
   }
 
   public rejectRequest(requestId: string) {
@@ -94,9 +142,7 @@ export class FriendList {
         console.error(error);
         this.error.set('Something went wrong. Please try again later.');
       })
-      .finally(() => {
-        this.actionState.set(null);
-      });
+      .finally(() => this.actionState.set(null));
   }
 
   public cancelSentRequest(requestId: string) {
@@ -111,8 +157,6 @@ export class FriendList {
         console.error(error);
         this.error.set('Something went wrong. Please try again later.');
       })
-      .finally(() => {
-        this.actionState.set(null);
-      });
+      .finally(() => this.actionState.set(null));
   }
 }
