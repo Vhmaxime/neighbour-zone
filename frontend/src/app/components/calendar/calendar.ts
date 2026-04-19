@@ -6,8 +6,7 @@ import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/cor
   selector: 'app-calendar',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './calendar.html',
-  styleUrls: ['./calendar.css']
+  templateUrl: './calendar.html'
 })
 export class Calendar implements OnInit, OnChanges {
 
