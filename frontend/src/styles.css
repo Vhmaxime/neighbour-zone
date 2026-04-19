@@ -2,6 +2,18 @@
 
 @import "tailwindcss";
 
+@theme {
+  /* Koppelt de huisstijl variabelen aan Tailwind klassen */
+  --color-main: var(--bg-main);
+  --color-surface: var(--bg-surface);
+  --color-pri: var(--text-pri);
+  --color-sec: var(--text-sec);
+  --color-accent: var(--accent);
+
+  --font-heading: var(--font-heading);
+  --font-body: var(--font-body);
+}
+
 :root {
   /* FONTS */
   --font-heading: 'DM Sans', sans-serif;
