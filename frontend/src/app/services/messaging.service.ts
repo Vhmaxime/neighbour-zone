@@ -93,11 +93,7 @@ export class MessagingService {
       }
 
       const message = await response.json();
-      
-      // Add to local state
-      const currentMessages = this.messagesSubject.value;
-      this.messagesSubject.next([...currentMessages, message]);
-
+      // Niet lokaal toevoegen, alleen via realtime broadcast
       return message;
     } catch (error) {
       console.error('Error sending message:', error);
