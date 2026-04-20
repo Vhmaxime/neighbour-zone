@@ -9,10 +9,7 @@ import { NominatimLocation } from '../../types/nominatom-types';
   templateUrl: './location-search-results.html'
 })
 export class LocationSearchResults {
-  // Input: Receives the list of locations from the parent component
   public locations = input.required<NominatimLocation[]>();
-
-  // Output: Emits the selected location back to the parent
   public locationSelected = output<NominatimLocation>();
 
   public onSelectLocation(location: NominatimLocation) {

@@ -36,7 +36,6 @@ export class ActionButton {
     const user = this.authService.getUser();
     const itemAuthorId = this.authorId();
 
-    // DEBUG LOG
     console.log('Action Button Debug:', { 
     userSub: user?.sub, 
     itemAuthorId: itemAuthorId, 
@@ -46,7 +45,6 @@ export class ActionButton {
   return user?.sub == itemAuthorId;
 }
 
-  // Handle the click based on the current mode
   async handleClick(event: MouseEvent) {
     event.preventDefault();
     event.stopPropagation();

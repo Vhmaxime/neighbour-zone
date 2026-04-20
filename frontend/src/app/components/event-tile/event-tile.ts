@@ -21,7 +21,6 @@ export class EventTile {
   });
 
   public viewEvent() {
-    // Navigates to /events/:id to match the routes
     this.router.navigate(['/events', this.event().id]);
   }
 }

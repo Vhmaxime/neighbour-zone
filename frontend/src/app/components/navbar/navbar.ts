@@ -13,7 +13,6 @@ export class NavbarComponent {
   public authService = inject(AuthService);
   public today: Date = new Date();
   
-  // Hiermee houden we bij of het mobiele menu open is
   public isMobileMenuOpen = signal(false);
 
   public logout() {
