@@ -31,15 +31,12 @@ export class FriendList {
   public error = signal<string | null>(null);
   public activeTab = signal<State['tabs']>('Friends');
   public badgeCounts = signal<number[]>([]);
-
-  // --- Nieuwe Signals & Subject voor het Zoeken ---
   public searchQuery = signal<string>('');
   public searchResults = signal<UserSearchResult[]>([]);
   public isSearching = signal<boolean>(false);
   private searchSubject = new Subject<string>();
 
   constructor() {
-    // Luister naar het typen, wacht 300ms, en zoek dan pas!
     this.searchSubject.pipe(
       debounceTime(300),
       distinctUntilChanged()
@@ -67,7 +64,6 @@ export class FriendList {
   }
 
   private performSearch(query: string) {
-    // Zorg dat this.searchService.search overeenkomt met de methode in jouw service!
     firstValueFrom(this.searchService.search(query))
       .then((data) => {
         this.searchResults.set(data.users || []);
