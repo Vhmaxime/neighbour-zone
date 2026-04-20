@@ -17,7 +17,6 @@ import { Post } from '../../../types/api.types';
   templateUrl: './edit-post.html'
 })
 export class EditPost {
-  // Injected services
   private postService = inject(PostService);
   private activatedRoute = inject(ActivatedRoute);
   private router = inject(Router);
