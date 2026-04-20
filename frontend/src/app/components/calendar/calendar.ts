@@ -15,7 +15,7 @@ export class Calendar implements OnInit, OnChanges {
   public viewDate: DateTime = DateTime.now();
   public days: DateTime[] = [];
   public weekDays: string[] = [];
-  public activeDateISO: string | null = null; // Houdt bij welke dag op mobiel is aangeklikt
+  public activeDateISO: string | null = null;
 
   ngOnInit(): void {
     this.weekDays = Info.weekdays('short', { locale: 'en' });
@@ -73,12 +73,11 @@ export class Calendar implements OnInit, OnChanges {
   }
 
   public toggleDate(date: DateTime, event: Event): void {
-    event.stopPropagation(); // Voorkomt dat de 'clickOutside' meteen afvuurt
+    event.stopPropagation();
     const iso = date.toISODate();
     this.activeDateISO = this.activeDateISO === iso ? null : iso;
   }
 
-  // Sluit de tooltip als je ergens anders op de pagina klikt
   @HostListener('document:click')
   clickOutside() {
     this.activeDateISO = null;
