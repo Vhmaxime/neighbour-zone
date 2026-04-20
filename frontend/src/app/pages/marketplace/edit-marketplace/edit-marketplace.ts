@@ -28,7 +28,6 @@ import { MarketplaceItem } from '../../../types/api.types';
   templateUrl: './edit-marketplace.html'
 })
 export class EditMarketplace {
-  // Injected services
   private marketplaceService = inject(MarketplaceService);
   private activatedRoute = inject(ActivatedRoute);
   private router = inject(Router);

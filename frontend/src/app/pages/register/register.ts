@@ -13,12 +13,10 @@ import { PasswordValidation } from '../../components/password-validation/passwor
   templateUrl: './register.html'
 })
 export class Register {
-  // Inject dependencies
   private formBuilder = inject(FormBuilder);
   private authService = inject(AuthService);
   private router = inject(Router);
 
-  //Form definition
   public registerForm = this.formBuilder.nonNullable.group({
     firstname: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(30)]],
     lastname: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(30)]],
