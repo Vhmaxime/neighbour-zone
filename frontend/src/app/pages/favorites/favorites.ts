@@ -7,7 +7,6 @@ import { PostService } from '../../services/post';
 import { EventService } from '../../services/event';
 import { MarketplaceService } from '../../services/marketplace';
 import { PostTile } from '../../components/post-tile/post-tile';
-import { EventTile } from '../../components/event-tile/event-tile';
 import { LoadingComponent } from '../../components/loading-component/loading-component';
 import { SaveButton } from '../../components/save-button/save-button';
 import { RouterLink } from '@angular/router';
@@ -17,8 +16,8 @@ type Tab = 'posts' | 'events' | 'marketplace';
 @Component({
   selector: 'app-favorites',
   standalone: true,
-  imports: [CommonModule, PostTile, EventTile, LoadingComponent, SaveButton, RouterLink],
-  templateUrl: './favorites.html'
+  imports: [CommonModule, PostTile, LoadingComponent, SaveButton, RouterLink],
+  templateUrl: './favorites.html',
 })
 export class Favorites implements OnInit {
   private titleService = inject(Title);

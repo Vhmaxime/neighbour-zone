@@ -1,5 +1,5 @@
 <div class="max-w-[1200px] mx-auto py-8 px-4 font-body">
-  
+
 
   <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
     <div>
@@ -8,7 +8,8 @@
     </div>
 
     <div class="flex gap-2 items-center">
-      <button (click)="filterFriends()" [class.bg-accent]="showingFriends" class="btn !m-0 text-center w-full sm:w-auto uppercase tracking-wider text-sm flex justify-center items-center h-12">
+      <button (click)="filterFriends()" [class.bg-accent]="showingFriends()"
+        class="btn !m-0 text-center w-full sm:w-auto uppercase tracking-wider text-sm flex justify-center items-center h-12">
         👥 Friends' Events
       </button>
       <a routerLink="/events/create"
@@ -19,42 +20,42 @@
   </div>
 
   @if (isLoading()) {
-    <app-loading-component />
+  <app-loading-component />
   } @else {
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-      @for (event of events(); track event.id) {
-        <div
-          class="bg-surface border border-gray-100 rounded-[20px] overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col h-full group cursor-pointer"
-          [routerLink]="['/events', event.id]"
-        >
-          <div class="p-5 flex flex-col flex-grow">
-            <div class="flex justify-between items-start gap-3 mb-3">
-              <h3 class="font-bold text-pri leading-tight line-clamp-2 font-heading text-lg" [title]="event.title">
-                {{ event.title }}
-              </h3>
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+    @for (event of events(); track event.id) {
+    <div
+      class="bg-surface border border-gray-100 rounded-[20px] overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col h-full group cursor-pointer"
+      [routerLink]="['/events', event.id]">
+      <div class="p-5 flex flex-col flex-grow">
+        <div class="flex justify-between items-start gap-3 mb-3">
+          <h3 class="font-bold text-pri leading-tight line-clamp-2 font-heading text-lg" [title]="event.title">
+            {{ event.title }}
+          </h3>
 
-              <div class="shrink-0 bg-main px-2.5 py-1.5 rounded-lg flex flex-col items-center text-accent border border-gray-100 min-w-[55px]">
-                <span class="text-[10px] uppercase font-bold leading-none mb-1">{{ event.dateTime | date: 'MMM' }}</span>
-                <span class="text-lg font-bold leading-none">{{ event.dateTime | date: 'd' }}</span>
-              </div>
-            </div>
-
-            <p class="text-sec text-sm line-clamp-3 mb-4 flex-grow">
-              {{ event.description }}
-            </p>
-
-            <div class="pt-3 border-t border-gray-50 mt-auto flex items-center text-xs text-sec gap-1.5">
-              <span>📍</span>
-              <span class="truncate font-medium">{{ event.placeDisplayName }}</span>
-            </div>
+          <div
+            class="shrink-0 bg-main px-2.5 py-1.5 rounded-lg flex flex-col items-center text-accent border border-gray-100 min-w-[55px]">
+            <span class="text-[10px] uppercase font-bold leading-none mb-1">{{ event.dateTime | date: 'MMM' }}</span>
+            <span class="text-lg font-bold leading-none">{{ event.dateTime | date: 'd' }}</span>
           </div>
         </div>
-      } @empty {
-        <div class="col-span-full py-20 text-center bg-surface border border-gray-100 rounded-[20px]">
-          <h3 class="text-xl font-bold text-pri font-heading mb-2">No events yet</h3>
-          <p class="text-sec">Be the first to organize something!</p>
+
+        <p class="text-sec text-sm line-clamp-3 mb-4 flex-grow">
+          {{ event.description }}
+        </p>
+
+        <div class="pt-3 border-t border-gray-50 mt-auto flex items-center text-xs text-sec gap-1.5">
+          <span>📍</span>
+          <span class="truncate font-medium">{{ event.placeDisplayName }}</span>
         </div>
-      }
+      </div>
     </div>
+    } @empty {
+    <div class="col-span-full py-20 text-center bg-surface border border-gray-100 rounded-[20px]">
+      <h3 class="text-xl font-bold text-pri font-heading mb-2">No events yet</h3>
+      <p class="text-sec">Be the first to organize something!</p>
+    </div>
+    }
+  </div>
   }
 </div>
