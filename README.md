@@ -1,15 +1,16 @@
-<div align="center">
-<img src="https://github.com/user-attachments/assets/4eed4e75-2e3e-470e-b58d-190829b99e6d" width="800" height="700">
-</div>
-<h1> Neighbour Zone </h1>
+# Neighbour Zone
 
-## 🚀 Introduction ##
+> [!NOTE]
+> **Status:** completed school project (first final assignment, SyntraPXL, 2025–2026).
+> No longer actively maintained.
+
+## 🚀 Introduction
 
 Neighbour Zone, built by three Full Stack **NgIneers**, aims to bring neighbours together—helping them connect, share items, discover local events, and much more.
 
 The focus is on clean architecture, security, and long-term scalability.
 
-## ✨ Core features ##
+## ✨ Core features
 
 - **Explore**: Discover the neighbourhood with a search bar and a map that displays the location of goods and events.
 - **Feed**: Create posts and see what people are posting.
@@ -17,7 +18,7 @@ The focus is on clean architecture, security, and long-term scalability.
 - **Events**: A dedicated hub to create, discover and stay engaged with events.
 - **Global Friends List**: Persistent widget anchored across the entire web app, ensuring your social circle is always accessible.
 
-## 🛠 Tech Stack ##
+## 🛠 Tech Stack
 
 The application is built using a modern, performance-oriented stack that clearly separates concerns while maintaining strong type guarantees across layers.
 
@@ -37,7 +38,7 @@ Before you begin, ensure you have the following installed:
 
 ### Database Setup
 
-### Option 1: Local PostgreSQL Database
+#### Option 1: Local PostgreSQL Database
 
 Create the database using the terminal (or a GUI like pgAdmin):
 ```bash
@@ -45,7 +46,7 @@ Create the database using the terminal (or a GUI like pgAdmin):
 createdb project_db
 ```
 
-### Option 2: Remote PostgreSQL Database
+#### Option 2: Remote PostgreSQL Database
 
 If you're using a remote PostgreSQL database (e.g., Supabase, Neon, AWS RDS):
 1. **Ensure remote access is enabled** on your PostgreSQL server.
